@@ -1,14 +1,16 @@
 <template>
   <div class="txtfield">
+    <div class="txtfield__label label">{{ props.label }}</div>
     <div class="txtfield__textbox">
       <input class="txtfield__input" type="text" :placeholder="props.pholder" />
       <div class="txtfield__icon"></div>
     </div>
+    <div class="txtfield__noti noti"></div>
   </div>
 </template>
 
 <script setup>
-const props = defineProps(["pholder"]);
+const props = defineProps(["pholder", "label"]);
 </script>
 
 <style scoped>

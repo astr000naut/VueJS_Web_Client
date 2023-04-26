@@ -1,10 +1,14 @@
 <template>
+  <Teleport to="body" v-if="isFormOpened">
+    <EmployeeForm @close-form="toggleEmployeeForm" />
+  </Teleport>
   <div class="pcontent">
     <div class="pcontent__heading">
       <div class="pcontent__title">Nhân viên</div>
       <BaseButton
         bname="Thêm mới nhân viên"
-        class="btn btn--medium btn--primary"
+        class="btn--primary"
+        @click="toggleEmployeeForm"
       />
     </div>
     <div class="pcontent__container">
@@ -13,7 +17,7 @@
           pholder="Tìm kiếm theo mã, tên nhân viên"
           class="txtfield--search mw-300"
         />
-        <BaseButton class="btn btn--medium mi mi-36 mi-refresh" />
+        <BaseButton class="mi mi-36 mi-refresh" />
       </div>
       <BaseTable />
     </div>
@@ -21,9 +25,14 @@
 </template>
 
 <script setup>
-import BaseButton from "../base/BaseButton.vue";
-import BaseTextfield from "../base/BaseTextfield.vue";
-import BaseTable from "../base/BaseTable.vue";
+import { ref } from "vue";
+import BaseTable from "@/components/base/BaseTable.vue";
+import EmployeeForm from "./EmployeeForm.vue";
+const isFormOpened = ref(false);
+
+function toggleEmployeeForm() {
+  isFormOpened.value = !isFormOpened.value;
+}
 </script>
 
 <style scoped>
@@ -74,9 +83,5 @@ import BaseTable from "../base/BaseTable.vue";
   justify-content: flex-end;
   column-gap: 24px;
   overflow: hidden;
-}
-
-.pcontent__searchbar .txtfield__input {
-  width: 300px;
 }
 </style>

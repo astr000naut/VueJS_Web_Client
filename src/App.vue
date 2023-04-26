@@ -9,7 +9,7 @@
 <script setup>
 import TheHeader from "./components/layout/TheHeader.vue";
 import TheSidebar from "./components/layout/TheSidebar.vue";
-import EmployeeList from "./components/views/EmployeeList.vue";
+import EmployeeList from "./components/views/employee-management/EmployeeList.vue";
 </script>
 
 <style scoped>

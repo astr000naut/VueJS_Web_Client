@@ -7,15 +7,12 @@ const props = defineProps(["bname"]);
 </script>
 
 <style scoped>
-.btn {
+button {
   border: unset;
   border-radius: var(--border-radius);
   font-weight: 500;
   cursor: pointer;
   overflow: hidden;
-}
-
-.btn--medium {
   height: var(--h-default);
 }
 
