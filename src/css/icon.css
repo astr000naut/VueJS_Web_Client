@@ -64,6 +64,11 @@
   .mi-arrowdown {
     background-position: -1129px -362px;
   }
+
+  .mi-arrowup {
+    background-position: -1129px -362px;
+    transform: rotate(180deg);
+  }
   
   .mi-arrowleft {
     background-position: -29px -356px;

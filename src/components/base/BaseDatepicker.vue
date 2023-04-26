@@ -3,88 +3,83 @@
     <div class="dpicker__label">{{ props.label }}</div>
     <div class="dpicker__selector">
       <div class="dpicker__input">
-        <input type="text" placeholder="DD/MM/YYYY" />
-        <div class="dpicker__icon mi mi-24 mi-calendar"></div>
+        <input type="text" placeholder="DD/MM/YYYY" v-model="inputText" />
+        <div
+          class="dpicker__icon mi mi-24 mi-calendar"
+          @click="miCalendarOnClick"
+        ></div>
       </div>
     </div>
-    <div class="dpicker__box display--none">
+    <div v-if="isBoxOpen" class="dpicker__box">
       <div class="dpicker__header">
         <div class="dp__header__left">
-          <div class="dp__date">Tháng 5, 2019</div>
-          <div class="dp__expandic mi mi-14 mi-arrowdown"></div>
+          <div class="dp__date">{{ boxText }}</div>
+          <div
+            class="dp__expandic mi mi-14"
+            :class="boxStatus == 0 ? 'mi-arrowdown' : 'mi-arrowup'"
+            @click="expandIcOnClick"
+          ></div>
         </div>
         <div class="dp__header__right">
-          <div class="dp__prev mi mi-24 mi-arrowleft"></div>
-          <div class="dp__next mi mi-24 mi-arrowright"></div>
+          <div
+            class="dp__prev mi mi-24 mi-arrowleft"
+            @click="prevOnClick"
+          ></div>
+          <div
+            class="dp__next mi mi-24 mi-arrowright"
+            @click="nextOnClick"
+          ></div>
         </div>
       </div>
       <div class="dpicker__body">
-        <div class="dpicker__yearlist display--none">
+        <div v-if="boxStatus == 2" class="dpicker__yearlist">
           <div class="yearlist__tablebox">
             <table>
               <tbody>
-                <tr>
-                  <td>
-                    <div class="year-item"></div>
-                    2023
-                  </td>
-                  <td>
-                    <div class="year-item"></div>
-                    2022
-                  </td>
-                  <td>
-                    <div class="year-item"></div>
-                    2021
-                  </td>
-                  <td>
-                    <div class="year-item"></div>
-                    2020
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="year-item"></div>
-                    2019
-                  </td>
-                  <td>
-                    <div class="year-item"></div>
-                    2018
-                  </td>
-                  <td>
-                    <div class="year-item"></div>
-                    2017
-                  </td>
-                  <td>
-                    <div class="year-item"></div>
-                    2016
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="year-item"></div>
-                    2015
-                  </td>
-                  <td>
-                    <div class="year-item"></div>
-                    2014
-                  </td>
-                  <td>
-                    <div class="year-item"></div>
-                    2013
-                  </td>
-                  <td>
-                    <div class="year-item"></div>
-                    2012
+                <tr v-for="i in 3" :key="i">
+                  <td
+                    v-for="j in 4"
+                    :key="j"
+                    @click="
+                      yearItemOnClick(
+                        $event,
+                        yearRangeNow + 4 * (i - 1) + j - 1
+                      )
+                    "
+                  >
+                    <div class="year-item">
+                      {{ yearRangeNow + 4 * (i - 1) + j - 1 }}
+                    </div>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div class="dpicker__cancelbox">
-            <button class="dp__cancel">Hủy bỏ</button>
+            <button class="dp__cancel" @click="cancelBtnOnClick">Hủy bỏ</button>
           </div>
         </div>
-        <div class="dpicker__daylist">
+        <div v-if="boxStatus == 1" class="dpicker__yearlist">
+          <div class="yearlist__tablebox">
+            <table>
+              <tbody>
+                <tr v-for="i in 3" :key="i">
+                  <td
+                    v-for="j in 4"
+                    :key="j"
+                    @click="monthItemOnClick($event, 4 * (i - 1) + j)"
+                  >
+                    <div class="month-item">Thg {{ 4 * (i - 1) + j }}</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="dpicker__cancelbox">
+            <button class="dp__cancel" @click="cancelBtnOnClick">Hủy bỏ</button>
+          </div>
+        </div>
+        <div v-if="boxStatus == 0" class="dpicker__daylist">
           <div class="daylist__table">
             <table>
               <thead>
@@ -99,149 +94,33 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td><div class="date__item"></div></td>
-                  <td><div class="date__item"></div></td>
-                  <td>
-                    <div class="date__item"></div>
-                    1
+                <tr v-for="i in 5" :key="i">
+                  <td
+                    v-for="j in 7"
+                    :key="j"
+                    :class="{
+                      chooseable: cell[7 * (i - 1) + j - 1] > 0,
+                      selected:
+                        cell[7 * (i - 1) + j - 1] == curDay &&
+                        curMonth == realMonth &&
+                        curYear == realYear,
+                    }"
+                    @click="dateItemOnClick($event, 7 * (i - 1) + j - 1)"
+                  >
+                    <div class="date__item">
+                      {{
+                        cell[7 * (i - 1) + j - 1] > 0
+                          ? cell[7 * (i - 1) + j - 1]
+                          : ""
+                      }}
+                    </div>
                   </td>
-                  <td>
-                    <div class="date__item"></div>
-                    2
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    3
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    4
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    5
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="date__item"></div>
-                    6
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    7
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    8
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    9
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    10
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    11
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    12
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="date__item"></div>
-                    13
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    14
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    15
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    16
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    17
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    18
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    19
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="date__item"></div>
-                    20
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    21
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    22
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    23
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    24
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    25
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    26
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="date__item"></div>
-                    27
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    28
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    29
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    30
-                  </td>
-                  <td>
-                    <div class="date__item"></div>
-                    31
-                  </td>
-                  <td><div class="date__item"></div></td>
-                  <td><div class="date__item"></div></td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div class="dpicker__curdate">
-            <button class="dp__now">Hôm nay</button>
+            <button class="dp__now" @click="todayBtnOnClick">Hôm nay</button>
           </div>
         </div>
       </div>
@@ -251,7 +130,211 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
+import moment from "../../js/common/moment";
+import common from "../../js/common/value.js";
 const props = defineProps(["label"]);
+const isBoxOpen = ref(false);
+
+// 0 -> Day 1-> Month 2 -> Year
+const boxStatus = ref(0);
+const date = new Date();
+const yearRangeNow = ref(date.getFullYear());
+const boxText = ref("");
+const curYear = ref(0);
+const curMonth = ref(0);
+const curDay = ref(-1);
+const realYear = ref(-1);
+const realMonth = ref(-1);
+const realDay = ref(-1);
+const cell = ref([]);
+const selectedIdx = ref(-1);
+
+const inputText = ref("");
+defineExpose({ realDay });
+function isValid(date) {
+  return moment(
+    date,
+    common.dateFormat[common.defaultDateFormat],
+    true
+  ).isValid();
+}
+function todayBtnOnClick() {
+  curYear.value = date.getFullYear();
+  curMonth.value = date.getMonth() + 1;
+  curDay.value = date.getDate();
+  realYear.value = date.getFullYear();
+  realMonth.value = date.getMonth() + 1;
+  realDay.value = date.getDate();
+  // Update ngày
+  updateCell(realYear.value, realMonth.value);
+  yearRangeNow.value = date.getFullYear();
+  boxText.value = `Tháng ${realMonth.value}, ${realYear.value}`;
+  inputText.value = `${realDay.value}/${realMonth.value}/${realYear.value}`;
+}
+
+function cancelBtnOnClick() {
+  curYear.value = realYear.value;
+  curMonth.value = realMonth.value;
+  curDay.value = realDay.value;
+  boxStatus.value = 0;
+  boxText.value = `Tháng ${realMonth.value}, ${realYear.value}`;
+}
+
+function dateItemOnClick(e, dateChoosedIdx) {
+  if (cell[dateChoosedIdx] == 0) {
+    return;
+  }
+  curDay.value = cell.value[dateChoosedIdx];
+  realDay.value = curDay.value;
+  realMonth.value = curMonth.value;
+  realYear.value = curYear.value;
+  inputText.value = `${cell.value[dateChoosedIdx]}/${curMonth.value}/${curYear.value}`;
+}
+
+function monthItemOnClick(e, monthChoosed) {
+  curMonth.value = parseInt(monthChoosed);
+  boxText.value = `Tháng ${curMonth.value}, ${curYear.value}`;
+  updateCell(curYear.value, curMonth.value);
+  boxStatus.value = 0;
+}
+
+function yearItemOnClick(e, yearChoosed) {
+  curYear.value = parseInt(yearChoosed);
+  boxText.value = `Năm ${yearChoosed}`;
+  boxStatus.value = 1;
+}
+
+function updateCell(year, month) {
+  const fd = new Date(year, month - 1, 1);
+
+  //0-7
+  const firstDay = fd.getDay();
+
+  const dc = new Date(year, month, 0);
+  const dateCount = dc.getDate();
+  cell.value = [];
+  let day = 0;
+  for (let i = 0; i < 35; ++i) {
+    if (i >= firstDay - 1) {
+      ++day;
+    }
+    cell.value[i] = day;
+    if (day == dateCount) {
+      break;
+    }
+  }
+}
+function miCalendarOnClick() {
+  // Init
+  if (!isBoxOpen.value) {
+    if (isValid(inputText.value)) {
+      // Nếu ngày tháng nhập vào hợp lệ
+      // Reset ngày tháng năm về ngày tháng đã nhập
+      const dateParsed = inputText.value.split("/");
+
+      curYear.value = parseInt(dateParsed[2]);
+      curMonth.value = parseInt(dateParsed[1]);
+      curDay.value = parseInt(dateParsed[0]);
+
+      realYear.value = parseInt(dateParsed[2]);
+      realMonth.value = parseInt(dateParsed[1]);
+      realDay.value = parseInt(dateParsed[0]);
+      // Update ngày
+      yearRangeNow.value = curYear.value;
+      boxText.value = `Tháng ${realMonth.value}, ${realYear.value}`;
+      boxStatus.value = 0;
+      updateCell(realYear.value, realMonth.value);
+    } else {
+      // Nếu ngày tháng nhập vào không hợp lệ hoặc để trống
+      // Reset input text
+      inputText.value = "";
+      // Reset ngày tháng năm về hiện tại
+      curYear.value = date.getFullYear();
+      curMonth.value = date.getMonth() + 1;
+      curDay.value = date.getDate();
+      realYear.value = date.getFullYear();
+      realMonth.value = date.getMonth() + 1;
+      realDay.value = date.getDate();
+      // Update ngày
+      updateCell(realYear.value, realMonth.value);
+      yearRangeNow.value = date.getFullYear();
+      boxText.value = `Tháng ${realMonth.value}, ${realYear.value}`;
+      boxStatus.value = 0;
+    }
+  }
+  isBoxOpen.value = !isBoxOpen.value;
+}
+
+function expandIcOnClick() {
+  // Lịch -> Năm
+  if (boxStatus.value == 0) {
+    boxText.value = `${yearRangeNow.value} - ${yearRangeNow.value + 11}`;
+    boxStatus.value = 2;
+  } else {
+    // Năm, Tháng -> Lịch
+    curYear.value = realYear.value;
+    curMonth.value = realMonth.value;
+    curDay.value = realDay.value;
+    boxText.value = `Tháng ${realMonth.value}, ${realYear.value}`;
+    boxStatus.value = 0;
+  }
+}
+
+function prevOnClick() {
+  // Back Năm
+  if (boxStatus.value == 2) {
+    if (yearRangeNow.value > 1850) {
+      yearRangeNow.value -= 12;
+      boxText.value = `${yearRangeNow.value} - ${yearRangeNow.value + 11}`;
+    }
+  }
+  if (boxStatus.value == 0) {
+    // Back Lịch
+    if (curMonth.value == 1) {
+      curMonth.value = 12;
+      curYear.value -= 1;
+    } else {
+      curMonth.value -= 1;
+    }
+    boxText.value = `Tháng ${curMonth.value}, ${curYear.value}`;
+    selectedIdx.value = -1;
+    updateCell(curYear.value, curMonth.value);
+  }
+  if (boxStatus.value == 1) {
+    if (curYear.value > 1850) {
+      curYear.value -= 1;
+      boxText.value = `Năm ${curYear.value}`;
+    }
+  }
+}
+
+function nextOnClick() {
+  if (boxStatus.value == 2) {
+    if (yearRangeNow.value < date.getFullYear()) {
+      yearRangeNow.value += 12;
+      boxText.value = `${yearRangeNow.value} - ${yearRangeNow.value + 11}`;
+    }
+  }
+  if (boxStatus.value == 0) {
+    // Next lịch
+    if (curMonth.value == 12) {
+      curMonth.value = 1;
+      curYear.value += 1;
+    } else {
+      curMonth.value += 1;
+    }
+    boxText.value = `Tháng ${curMonth.value}, ${curYear.value}`;
+    selectedIdx.value = -1;
+    updateCell(curYear.value, curMonth.value);
+  }
+  if (boxStatus.value == 1) {
+    if (curYear.value < date.getFullYear() + 11) {
+      curYear.value += 1;
+      boxText.value = `Năm ${curYear.value}`;
+    }
+  }
+}
 </script>
 
 <style scoped>
@@ -292,7 +375,7 @@ const props = defineProps(["label"]);
 
 .dpicker__box {
   width: 320px;
-  height: 350px;
+  /* height: 350px; */
   margin-top: 2px;
   background-color: #fff;
   border: 1px solid var(--clr-t-border);
@@ -332,6 +415,7 @@ const props = defineProps(["label"]);
 .dp__date {
   font-size: 16px;
   font-weight: 600;
+  width: 120px;
 }
 
 .dp__header__right {
@@ -353,16 +437,23 @@ const props = defineProps(["label"]);
 
 .daylist__table table td {
   text-align: center;
-  width: 40px;
-  height: 30px;
+  width: 42px;
   border-radius: 50%;
   /* border: 1px solid black; */
   color: var(--clr-t-disable);
-  cursor: pointer;
 }
 
-.daylist__table table td:hover {
+.daylist__table table td.chooseable:hover {
   background-color: var(--clr-lg500);
+  cursor: pointer;
+  color: #fff;
+}
+.daylist__table table td:not(.chooseable) {
+  pointer-events: none;
+}
+.daylist__table table td.selected {
+  background-color: var(--clr-lg500);
+  cursor: pointer;
   color: #fff;
 }
 

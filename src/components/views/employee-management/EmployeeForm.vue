@@ -135,6 +135,7 @@ import BaseRadiogroup from "@/components/base/BaseRadiogroup.vue";
   max-height: 100vh;
   max-width: 100vw;
   overflow: auto;
+  user-select: none;
 }
 
 .form::-webkit-scrollbar {
