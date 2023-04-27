@@ -130,10 +130,12 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import moment from "../../js/common/moment";
 import common from "../../js/common/value.js";
-const props = defineProps(["label"]);
+const props = defineProps({
+  label: String,
+});
 const isBoxOpen = ref(false);
 
 // 0 -> Day 1-> Month 2 -> Year
@@ -159,6 +161,11 @@ function isValid(date) {
     true
   ).isValid();
 }
+const emit = defineEmits(["sampleevent"]);
+watch(inputText, (newVal) => {
+  emit("sampleevent", newVal);
+});
+
 function todayBtnOnClick() {
   curYear.value = date.getFullYear();
   curMonth.value = date.getMonth() + 1;
@@ -181,7 +188,7 @@ function cancelBtnOnClick() {
   boxText.value = `Tháng ${realMonth.value}, ${realYear.value}`;
 }
 
-function dateItemOnClick(e, dateChoosedIdx) {
+function dateItemOnClick(_e, dateChoosedIdx) {
   if (cell[dateChoosedIdx] == 0) {
     return;
   }
@@ -192,14 +199,14 @@ function dateItemOnClick(e, dateChoosedIdx) {
   inputText.value = `${cell.value[dateChoosedIdx]}/${curMonth.value}/${curYear.value}`;
 }
 
-function monthItemOnClick(e, monthChoosed) {
+function monthItemOnClick(_e, monthChoosed) {
   curMonth.value = parseInt(monthChoosed);
   boxText.value = `Tháng ${curMonth.value}, ${curYear.value}`;
   updateCell(curYear.value, curMonth.value);
   boxStatus.value = 0;
 }
 
-function yearItemOnClick(e, yearChoosed) {
+function yearItemOnClick(_e, yearChoosed) {
   curYear.value = parseInt(yearChoosed);
   boxText.value = `Năm ${yearChoosed}`;
   boxStatus.value = 1;
