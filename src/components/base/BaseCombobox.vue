@@ -6,9 +6,13 @@
         <div class="select__input">
           <input type="text" value="" />
         </div>
-        <button class="select__button" tabindex="-1"></button>
+        <button
+          class="select__button"
+          tabindex="-1"
+          @click="selectButtonOnClick"
+        ></button>
       </div>
-      <div class="select__optionbox display--none">
+      <div v-show="isOptionboxOpen" class="select__optionbox">
         <div class="loaderbox display--none">
           <div class="loader"></div>
         </div>
@@ -20,7 +24,12 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
 const props = defineProps(["label"]);
+const isOptionboxOpen = ref(false);
+function selectButtonOnClick() {
+  isOptionboxOpen.value = !isOptionboxOpen.value;
+}
 </script>
 
 <style scoped>

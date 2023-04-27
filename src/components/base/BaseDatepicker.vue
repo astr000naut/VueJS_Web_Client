@@ -10,7 +10,7 @@
         ></div>
       </div>
     </div>
-    <div v-if="isBoxOpen" class="dpicker__box">
+    <div v-show="isBoxOpen" class="dpicker__box">
       <div class="dpicker__header">
         <div class="dp__header__left">
           <div class="dp__date">{{ boxText }}</div>
@@ -32,7 +32,7 @@
         </div>
       </div>
       <div class="dpicker__body">
-        <div v-if="boxStatus == 2" class="dpicker__yearlist">
+        <div v-show="boxStatus == 2" class="dpicker__yearlist">
           <div class="yearlist__tablebox">
             <table>
               <tbody>
@@ -59,7 +59,7 @@
             <button class="dp__cancel" @click="cancelBtnOnClick">Hủy bỏ</button>
           </div>
         </div>
-        <div v-if="boxStatus == 1" class="dpicker__yearlist">
+        <div v-show="boxStatus == 1" class="dpicker__yearlist">
           <div class="yearlist__tablebox">
             <table>
               <tbody>
@@ -79,7 +79,7 @@
             <button class="dp__cancel" @click="cancelBtnOnClick">Hủy bỏ</button>
           </div>
         </div>
-        <div v-if="boxStatus == 0" class="dpicker__daylist">
+        <div v-show="boxStatus == 0" class="dpicker__daylist">
           <div class="daylist__table">
             <table>
               <thead>
