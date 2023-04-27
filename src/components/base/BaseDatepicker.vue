@@ -3,7 +3,7 @@
     <div class="dpicker__label">{{ props.label }}</div>
     <div class="dpicker__selector">
       <div class="dpicker__input">
-        <input type="text" placeholder="DD/MM/YYYY" v-model="inputText" />
+        <input type="text" :placeholder="dateFormat" v-model="inputText" />
         <div
           class="dpicker__icon mi mi-24 mi-calendar"
           @click="miCalendarOnClick"
@@ -153,12 +153,12 @@ const cell = ref([]);
 const selectedIdx = ref(-1);
 const maxYearLimit = date.getFullYear() + 12;
 const minYearLimit = date.getFullYear() - 150;
-
+const dateFormat = ref(common.dateFormat[common.defaultDateFormat][0]);
 const inputText = ref("");
 
 function getDateFormated(dd, mm, yyyy) {
   let d = new Date(`${yyyy}/${mm}/${dd}`);
-  return moment(d).format(common.dateFormat[common.defaultDateFormat][0]);
+  return moment(d).format(dateFormat.value);
 }
 
 function checkDateValid(inputDate) {
@@ -257,14 +257,33 @@ function miCalendarOnClick() {
       // Nếu ngày tháng nhập vào hợp lệ
       // Reset ngày tháng năm về ngày tháng đã nhập
       const dateParsed = inputText.value.split("/");
-      realYear.value = parseInt(dateParsed[2]);
-      realMonth.value = parseInt(dateParsed[1]);
-      realDay.value = parseInt(dateParsed[0]);
+      switch (common.defaultDateFormat) {
+        case "dmy":
+          realDay.value = parseInt(dateParsed[0]);
+          realMonth.value = parseInt(dateParsed[1]);
+          realYear.value = parseInt(dateParsed[2]);
+          break;
+        case "mdy":
+          realDay.value = parseInt(dateParsed[1]);
+          realMonth.value = parseInt(dateParsed[0]);
+          realYear.value = parseInt(dateParsed[2]);
+          break;
+        case "ymd":
+          realDay.value = parseInt(dateParsed[2]);
+          realMonth.value = parseInt(dateParsed[1]);
+          realYear.value = parseInt(dateParsed[0]);
+          break;
+      }
       assignRealtoCur();
       // Update ngày
       yearRangeNow.value = curYear.value;
       boxText.value = `Tháng ${realMonth.value}, ${realYear.value}`;
       boxStatus.value = 0;
+      inputText.value = getDateFormated(
+        realDay.value,
+        realMonth.value,
+        realYear.value
+      );
       updateCell(realYear.value, realMonth.value);
     } else {
       // Nếu ngày tháng nhập vào không hợp lệ hoặc để trống
