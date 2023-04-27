@@ -12,7 +12,10 @@
           @click="selectButtonOnClick"
         ></button>
       </div>
-      <div v-show="isOptionboxOpen" class="select__optionbox">
+      <div
+        :class="{ 'display--none': !isOptionboxOpen }"
+        class="select__optionbox"
+      >
         <div class="loaderbox display--none">
           <div class="loader"></div>
         </div>
