@@ -151,6 +151,8 @@ const realMonth = ref(-1);
 const realDay = ref(-1);
 const cell = ref([]);
 const selectedIdx = ref(-1);
+const maxYearLimit = date.getFullYear() + 12;
+const minYearLimit = date.getFullYear() - 150;
 
 const inputText = ref("");
 defineExpose({ realDay });
@@ -291,7 +293,7 @@ function expandIcOnClick() {
 function prevOnClick() {
   // Back Năm
   if (boxStatus.value == 2) {
-    if (yearRangeNow.value > 1850) {
+    if (yearRangeNow.value > minYearLimit) {
       yearRangeNow.value -= 12;
       boxText.value = `${yearRangeNow.value} - ${yearRangeNow.value + 11}`;
     }
@@ -309,7 +311,7 @@ function prevOnClick() {
     updateCell(curYear.value, curMonth.value);
   }
   if (boxStatus.value == 1) {
-    if (curYear.value > 1850) {
+    if (curYear.value > minYearLimit) {
       curYear.value -= 1;
       boxText.value = `Năm ${curYear.value}`;
     }
@@ -318,7 +320,7 @@ function prevOnClick() {
 
 function nextOnClick() {
   if (boxStatus.value == 2) {
-    if (yearRangeNow.value < date.getFullYear()) {
+    if (yearRangeNow.value < maxYearLimit) {
       yearRangeNow.value += 12;
       boxText.value = `${yearRangeNow.value} - ${yearRangeNow.value + 11}`;
     }
@@ -326,8 +328,10 @@ function nextOnClick() {
   if (boxStatus.value == 0) {
     // Next lịch
     if (curMonth.value == 12) {
-      curMonth.value = 1;
-      curYear.value += 1;
+      if (curYear.value < maxYearLimit) {
+        curMonth.value = 1;
+        curYear.value += 1;
+      }
     } else {
       curMonth.value += 1;
     }
@@ -336,7 +340,7 @@ function nextOnClick() {
     updateCell(curYear.value, curMonth.value);
   }
   if (boxStatus.value == 1) {
-    if (curYear.value < date.getFullYear() + 11) {
+    if (curYear.value < maxYearLimit) {
       curYear.value += 1;
       boxText.value = `Năm ${curYear.value}`;
     }
@@ -445,6 +449,7 @@ function nextOnClick() {
 .daylist__table table td {
   text-align: center;
   width: 42px;
+  height: 42px;
   border-radius: 50%;
   /* border: 1px solid black; */
   color: var(--clr-t-disable);
