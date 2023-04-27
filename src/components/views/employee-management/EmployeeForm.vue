@@ -47,11 +47,7 @@
           <div class="fu__right">
             <div class="fu__right__top">
               <div class="fu__dob">
-                <BaseDatepicker
-                  label="Ngày sinh"
-                  @sampleevent="(val) => (dob = this.$daxious)"
-                />
-                <p>{{ dob }}</p>
+                <BaseDatepicker label="Ngày sinh" />
               </div>
               <div class="fu__gender">
                 <BaseRadiogroup
@@ -124,8 +120,6 @@
 import BaseCombobox from "@/components/base/BaseCombobox.vue";
 import BaseDatepicker from "@/components/base/BaseDatepicker.vue";
 import BaseRadiogroup from "@/components/base/BaseRadiogroup.vue";
-import { ref } from "vue";
-const dob = ref("");
 </script>
 
 <style scoped>

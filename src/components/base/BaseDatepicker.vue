@@ -130,8 +130,8 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
-import moment from "../../js/common/moment";
+import { ref } from "vue";
+import moment from "moment";
 import common from "../../js/common/value.js";
 const props = defineProps({
   label: String,
@@ -140,7 +140,7 @@ const isBoxOpen = ref(false);
 
 // 0 -> Day 1-> Month 2 -> Year
 const boxStatus = ref(0);
-const date = new Date();
+var date = new Date();
 const yearRangeNow = ref(date.getFullYear());
 const boxText = ref("");
 const curYear = ref(0);
@@ -155,37 +155,51 @@ const maxYearLimit = date.getFullYear() + 12;
 const minYearLimit = date.getFullYear() - 150;
 
 const inputText = ref("");
-defineExpose({ realDay });
-function isValid(date) {
+
+function getDateFormated(dd, mm, yyyy) {
+  let d = new Date(`${yyyy}/${mm}/${dd}`);
+  return moment(d).format(common.dateFormat[common.defaultDateFormat][0]);
+}
+
+function checkDateValid(inputDate) {
   return moment(
-    date,
+    inputDate,
     common.dateFormat[common.defaultDateFormat],
     true
   ).isValid();
 }
-const emit = defineEmits(["sampleevent"]);
-watch(inputText, (newVal) => {
-  emit("sampleevent", newVal);
-});
+
+function assignRealtoCur() {
+  curDay.value = realDay.value;
+  curMonth.value = realMonth.value;
+  curYear.value = realYear.value;
+}
+
+function assignCurToReal() {
+  realDay.value = curDay.value;
+  realMonth.value = curMonth.value;
+  realYear.value = curYear.value;
+}
 
 function todayBtnOnClick() {
-  curYear.value = date.getFullYear();
-  curMonth.value = date.getMonth() + 1;
-  curDay.value = date.getDate();
+  date = new Date();
   realYear.value = date.getFullYear();
   realMonth.value = date.getMonth() + 1;
   realDay.value = date.getDate();
+  assignRealtoCur();
   // Update ngày
   updateCell(realYear.value, realMonth.value);
   yearRangeNow.value = date.getFullYear();
   boxText.value = `Tháng ${realMonth.value}, ${realYear.value}`;
-  inputText.value = `${realDay.value}/${realMonth.value}/${realYear.value}`;
+  inputText.value = getDateFormated(
+    realDay.value,
+    realMonth.value,
+    realYear.value
+  );
 }
 
 function cancelBtnOnClick() {
-  curYear.value = realYear.value;
-  curMonth.value = realMonth.value;
-  curDay.value = realDay.value;
+  assignRealtoCur();
   boxStatus.value = 0;
   boxText.value = `Tháng ${realMonth.value}, ${realYear.value}`;
 }
@@ -195,21 +209,23 @@ function dateItemOnClick(_e, dateChoosedIdx) {
     return;
   }
   curDay.value = cell.value[dateChoosedIdx];
-  realDay.value = curDay.value;
-  realMonth.value = curMonth.value;
-  realYear.value = curYear.value;
-  inputText.value = `${cell.value[dateChoosedIdx]}/${curMonth.value}/${curYear.value}`;
+  assignCurToReal();
+  inputText.value = getDateFormated(
+    realDay.value,
+    realMonth.value,
+    realYear.value
+  );
 }
 
 function monthItemOnClick(_e, monthChoosed) {
-  curMonth.value = parseInt(monthChoosed);
+  curMonth.value = monthChoosed;
   boxText.value = `Tháng ${curMonth.value}, ${curYear.value}`;
   updateCell(curYear.value, curMonth.value);
   boxStatus.value = 0;
 }
 
 function yearItemOnClick(_e, yearChoosed) {
-  curYear.value = parseInt(yearChoosed);
+  curYear.value = yearChoosed;
   boxText.value = `Năm ${yearChoosed}`;
   boxStatus.value = 1;
 }
@@ -237,18 +253,14 @@ function updateCell(year, month) {
 function miCalendarOnClick() {
   // Init
   if (!isBoxOpen.value) {
-    if (isValid(inputText.value)) {
+    if (checkDateValid(inputText.value)) {
       // Nếu ngày tháng nhập vào hợp lệ
       // Reset ngày tháng năm về ngày tháng đã nhập
       const dateParsed = inputText.value.split("/");
-
-      curYear.value = parseInt(dateParsed[2]);
-      curMonth.value = parseInt(dateParsed[1]);
-      curDay.value = parseInt(dateParsed[0]);
-
       realYear.value = parseInt(dateParsed[2]);
       realMonth.value = parseInt(dateParsed[1]);
       realDay.value = parseInt(dateParsed[0]);
+      assignRealtoCur();
       // Update ngày
       yearRangeNow.value = curYear.value;
       boxText.value = `Tháng ${realMonth.value}, ${realYear.value}`;
@@ -259,12 +271,10 @@ function miCalendarOnClick() {
       // Reset input text
       inputText.value = "";
       // Reset ngày tháng năm về hiện tại
-      curYear.value = date.getFullYear();
-      curMonth.value = date.getMonth() + 1;
-      curDay.value = date.getDate();
       realYear.value = date.getFullYear();
       realMonth.value = date.getMonth() + 1;
       realDay.value = date.getDate();
+      assignRealtoCur();
       // Update ngày
       updateCell(realYear.value, realMonth.value);
       yearRangeNow.value = date.getFullYear();
@@ -282,9 +292,7 @@ function expandIcOnClick() {
     boxStatus.value = 2;
   } else {
     // Năm, Tháng -> Lịch
-    curYear.value = realYear.value;
-    curMonth.value = realMonth.value;
-    curDay.value = realDay.value;
+    assignRealtoCur();
     boxText.value = `Tháng ${realMonth.value}, ${realYear.value}`;
     boxStatus.value = 0;
   }
