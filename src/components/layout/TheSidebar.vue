@@ -1,14 +1,16 @@
 <template>
   <div class="sidebar">
     <div class="sidebar__main">
-      <div class="sidebar__item">
-        <div class="item__icon mi mi-24 mi-sidebar-dashboard"></div>
-        <div class="item__text" data-text="Tổng quan">Tổng quan</div>
-        <div class="item__hoverbox display--none">
-          <div class="hover__arrow"></div>
-          <div class="hover__text">Tổng quan</div>
+      <router-link to="/general">
+        <div class="sidebar__item" @click="generalItemOnClick">
+          <div class="item__icon mi mi-24 mi-sidebar-dashboard"></div>
+          <div class="item__text" data-text="Tổng quan">Tổng quan</div>
+          <div class="item__hoverbox display--none">
+            <div class="hover__arrow"></div>
+            <div class="hover__text">Tổng quan</div>
+          </div>
         </div>
-      </div>
+      </router-link>
       <div class="sidebar__item item--profile">
         <div class="item__icon mi mi-24 mi-sidebar-cash"></div>
         <div class="item__text" data-text="Tiền mặt">Tiền mặt</div>
@@ -99,18 +101,18 @@
       </div>
       <div class="sidebar__item item--contract">
         <div class="item__icon mi mi-24 mi-sidebar-general"></div>
-        <div class="item__text" data-text="Tổng hợp">Báo cáo</div>
+        <div class="item__text" data-text="Tổng hợp">Tổng hợp</div>
         <div class="item__hoverbox display--none">
           <div class="hover__arrow"></div>
-          <div class="hover__text">Báo cáo</div>
+          <div class="hover__text">Tổng hợp</div>
         </div>
       </div>
       <div class="sidebar__item item--contract">
         <div class="item__icon mi mi-24 mi-sidebar-budget"></div>
-        <div class="item__text" data-text="Ngân sách">Báo cáo</div>
+        <div class="item__text" data-text="Ngân sách">Ngân sách</div>
         <div class="item__hoverbox display--none">
           <div class="hover__arrow"></div>
-          <div class="hover__text">Báo cáo</div>
+          <div class="hover__text">Ngân sách</div>
         </div>
       </div>
       <div class="sidebar__item item--contract">
@@ -139,7 +141,17 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { useRouter } from "vue-router";
+const router = useRouter();
+// const route = useRoute();
+
+function generalItemOnClick() {
+  router.push({
+    path: "general",
+  });
+}
+</script>
 
 <style scoped>
 .sidebar {
