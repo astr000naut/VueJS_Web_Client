@@ -1,10 +1,10 @@
-import GeneralPage from "../../components/views/general/GeneralPage";
 import EmployeeList from "../../components/views/employee-management/EmployeeList";
+import UnderDevelopment from "../../components/views/under-development/UnderDevelopment";
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
-  { path: "/", component: EmployeeList },
-  { path: "/general", component: GeneralPage },
+  { path: "/employee", component: EmployeeList },
+  { path: "/under-development", component: UnderDevelopment },
 ];
 
 const router = createRouter({

@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <EmployeeForm v-show="!isFormOpened" @close-form="toggleEmployeeForm" />
+    <EmployeeForm v-show="isFormOpened" @close-form="toggleEmployeeForm" />
   </Teleport>
   <div class="pcontent">
     <div class="pcontent__heading">

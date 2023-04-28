@@ -1,8 +1,11 @@
 <template>
   <div class="header">
-    <div class="header__sidearea">
+    <div
+      class="header__sidearea"
+      :style="{ 'flex-basis': isHeaderBig ? '200px' : '78px' }"
+    >
       <div class="header__navicon mi mi-24 mi-header-nav"></div>
-      <div class="header__applogo"></div>
+      <div class="header__applogo" v-show="isHeaderBig"></div>
     </div>
     <div class="header__mainarea">
       <div class="header__leftarea">
@@ -26,7 +29,16 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref, inject } from "vue";
+
+const $emitter = inject("$emitter");
+const isHeaderBig = ref(true);
+$emitter.on("resizeSizebar", (isSidebarBig) => {
+  isHeaderBig.value = isSidebarBig;
+  console.log("hi");
+});
+</script>
 
 <style scoped>
 .header {
@@ -49,7 +61,7 @@
   align-items: center;
   justify-content: center;
   column-gap: 16px;
-  padding-left: 16px;
+  /* padding-left: 16px; */
 }
 
 .header__applogo {

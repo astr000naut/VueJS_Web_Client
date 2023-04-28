@@ -1,161 +1,74 @@
 <template>
-  <div class="sidebar">
+  <div
+    class="sidebar"
+    :style="{ 'flex-basis': isSidebarBig ? '200px' : '78px' }"
+  >
     <div class="sidebar__main">
-      <router-link to="/general">
-        <div class="sidebar__item" @click="generalItemOnClick">
-          <div class="item__icon mi mi-24 mi-sidebar-dashboard"></div>
-          <div class="item__text" data-text="Tổng quan">Tổng quan</div>
-          <div class="item__hoverbox display--none">
+      <router-link
+        v-for="item in sidebarItems"
+        :key="item.name"
+        :to="item.link"
+      >
+        <div
+          class="sidebar__item"
+          @mouseover="sideBarItemOnMouseOver($event, item)"
+          @mouseleave="item.displayLabel = !isSidebarBig & false"
+        >
+          <div class="item__icon mi mi-24" :class="item.icon"></div>
+          <div v-show="isSidebarBig" class="item__text">
+            {{ item.name }}
+          </div>
+          <div
+            v-show="item.displayLabel"
+            :style="{ top: item.labelPos + 'px' }"
+            class="item__hoverbox"
+          >
             <div class="hover__arrow"></div>
-            <div class="hover__text">Tổng quan</div>
+            <div class="hover__text">{{ item.name }}</div>
           </div>
         </div>
       </router-link>
-      <div class="sidebar__item item--profile">
-        <div class="item__icon mi mi-24 mi-sidebar-cash"></div>
-        <div class="item__text" data-text="Tiền mặt">Tiền mặt</div>
-        <div class="item__hoverbox display--none">
-          <div class="hover__arrow"></div>
-          <div class="hover__text">Tiền mặt</div>
-        </div>
-      </div>
-
-      <div class="sidebar__item item--contract">
-        <div class="item__icon mi mi-24 mi-sidebar-bank"></div>
-        <div class="item__text" data-text="Tiền gửi">Tiền gửi</div>
-        <div class="item__hoverbox display--none">
-          <div class="hover__arrow"></div>
-          <div class="hover__text">Tiền gửi</div>
-        </div>
-      </div>
-      <div class="sidebar__item item--overview">
-        <div class="item__icon mi mi-24 mi-sidebar-pu"></div>
-        <div class="item__text" data-text="Mua hàng">Mua hàng</div>
-        <div class="item__hoverbox display--none">
-          <div class="hover__arrow"></div>
-          <div class="hover__text">Mua hàng</div>
-        </div>
-      </div>
-      <div class="sidebar__item item--profile">
-        <div class="item__icon mi mi-24 mi-sidebar-sale"></div>
-        <div class="item__text" data-text="Bán hàng">Bán hàng</div>
-        <div class="item__hoverbox display--none">
-          <div class="hover__arrow"></div>
-          <div class="hover__text">Bán hàng</div>
-        </div>
-      </div>
-
-      <div class="sidebar__item item--contract">
-        <div class="item__icon mi mi-24 mi-sidebar-invoice"></div>
-        <div class="item__text" data-text="Quản lý hóa đơn">
-          Quản lý hóa đơn
-        </div>
-        <div class="item__hoverbox display--none">
-          <div class="hover__arrow"></div>
-          <div class="hover__text">Quản lý hóa đơn</div>
-        </div>
-      </div>
-      <div class="sidebar__item item--contract">
-        <div class="item__icon mi mi-24 mi-sidebar-stock"></div>
-        <div class="item__text" data-text="Kho">Kho</div>
-        <div class="item__hoverbox display--none">
-          <div class="hover__arrow"></div>
-          <div class="hover__text">Kho</div>
-        </div>
-      </div>
-      <div class="sidebar__item item--contract">
-        <div class="item__icon mi mi-24 mi-sidebar-tools"></div>
-        <div class="item__text" data-text="Công cụ dụng cụ">
-          Công cụ dụng cụ
-        </div>
-        <div class="item__hoverbox display--none">
-          <div class="hover__arrow"></div>
-          <div class="hover__text">Công cụ dụng cụ</div>
-        </div>
-      </div>
-      <div class="sidebar__item item--contract">
-        <div class="item__icon mi mi-24 mi-sidebar-fixed-assets"></div>
-        <div class="item__text" data-text="Tài sản cố định">
-          Tài sản cố định
-        </div>
-        <div class="item__hoverbox display--none">
-          <div class="hover__arrow"></div>
-          <div class="hover__text">Tài sản cố định</div>
-        </div>
-      </div>
-      <div class="sidebar__item item--contract">
-        <div class="item__icon mi mi-24 mi-sidebar-tax"></div>
-        <div class="item__text" data-text="Thuế">Thuế</div>
-        <div class="item__hoverbox display--none">
-          <div class="hover__arrow"></div>
-          <div class="hover__text">Thuế</div>
-        </div>
-      </div>
-      <div class="sidebar__item item--contract">
-        <div class="item__icon mi mi-24 mi-sidebar-price"></div>
-        <div class="item__text" data-text="Giá thành">Giá thành</div>
-        <div class="item__hoverbox display--none">
-          <div class="hover__arrow"></div>
-          <div class="hover__text">Giá thành</div>
-        </div>
-      </div>
-      <div class="sidebar__item item--contract">
-        <div class="item__icon mi mi-24 mi-sidebar-general"></div>
-        <div class="item__text" data-text="Tổng hợp">Tổng hợp</div>
-        <div class="item__hoverbox display--none">
-          <div class="hover__arrow"></div>
-          <div class="hover__text">Tổng hợp</div>
-        </div>
-      </div>
-      <div class="sidebar__item item--contract">
-        <div class="item__icon mi mi-24 mi-sidebar-budget"></div>
-        <div class="item__text" data-text="Ngân sách">Ngân sách</div>
-        <div class="item__hoverbox display--none">
-          <div class="hover__arrow"></div>
-          <div class="hover__text">Ngân sách</div>
-        </div>
-      </div>
-      <div class="sidebar__item item--contract">
-        <div class="item__icon mi mi-24 mi-sidebar-report"></div>
-        <div class="item__text" data-text="Báo cáo">Báo cáo</div>
-        <div class="item__hoverbox display--none">
-          <div class="hover__arrow"></div>
-          <div class="hover__text">Báo cáo</div>
-        </div>
-      </div>
-      <div class="sidebar__item item--contract">
-        <div class="item__icon mi mi-24 mi-sidebar-finance"></div>
-        <div class="item__text" data-text="Phân tích tài chính">
-          Phân tích tài chính
-        </div>
-        <div class="item__hoverbox display--none">
-          <div class="hover__arrow"></div>
-          <div class="hover__text">Phân tích tài chính</div>
-        </div>
-      </div>
     </div>
-    <div class="sidebar__footer">
-      <div class="item__icon mi mi-24 mi-sidebar-left-arrow"></div>
-      <div class="item__text" data-text="Thu gọn">Thu gọn</div>
+    <div class="sidebar__footer" @click="resizeSidebar">
+      <div
+        class="item__icon mi mi-24"
+        :class="
+          isSidebarBig ? 'mi-sidebar-left-arrow' : 'mi-sidebar-right-arrow'
+        "
+      ></div>
+      <div v-show="isSidebarBig" class="item__text" data-text="Thu gọn">
+        Thu gọn
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { useRouter } from "vue-router";
-const router = useRouter();
-// const route = useRoute();
+import { ref, inject } from "vue";
 
-function generalItemOnClick() {
-  router.push({
-    path: "general",
-  });
+const $common = inject("$common");
+const $emitter = inject("$emitter");
+const sidebarItems = ref($common.sidebarItems);
+const isSidebarBig = ref(true);
+sidebarItems.value.forEach((item) => {
+  item.displayLabel = false;
+  item.labelPos = 0;
+});
+
+function sideBarItemOnMouseOver($event, item) {
+  item.labelPos = $event.currentTarget.getBoundingClientRect().y - 56;
+  item.displayLabel = !isSidebarBig.value & true;
+}
+
+function resizeSidebar() {
+  isSidebarBig.value = !isSidebarBig.value;
+  $emitter.emit("resizeSizebar", isSidebarBig.value);
 }
 </script>
 
 <style scoped>
 .sidebar {
-  flex-basis: 200px;
+  /* flex-basis: 200px; */
   flex-shrink: 0;
   height: calc(100vh - 56px);
   font-weight: 400;
