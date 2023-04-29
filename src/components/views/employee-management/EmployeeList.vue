@@ -82,5 +82,6 @@ function btnAddOnClick() {
   justify-content: flex-end;
   column-gap: 24px;
   overflow: hidden;
+  align-items: center;
 }
 </style>
