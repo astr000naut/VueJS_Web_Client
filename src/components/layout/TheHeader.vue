@@ -30,13 +30,16 @@
 </template>
 
 <script setup>
-import { ref, inject } from "vue";
+import { ref, inject, onBeforeUnmount } from "vue";
 
 const $emitter = inject("$emitter");
 const isHeaderBig = ref(true);
-$emitter.on("resizeSizebar", (isSidebarBig) => {
+$emitter.on("resizeSidebar", (isSidebarBig) => {
   isHeaderBig.value = isSidebarBig;
   console.log("hi");
+});
+onBeforeUnmount(() => {
+  $emitter.off("resizeSidebar");
 });
 </script>
 

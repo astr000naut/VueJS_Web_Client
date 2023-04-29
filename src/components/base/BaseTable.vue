@@ -34,7 +34,7 @@
               </div>
             </td>
             <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Việt</div></td>
+            <td><div class="tb-item text-left">Nguyễn Trí Khải</div></td>
             <td><div class="tb-item text-left">Nam</div></td>
             <td><div class="tb-item text-left">31/12/1999</div></td>
             <td><div class="tb-item text-left">0239482842</div></td>
@@ -64,15 +64,15 @@
               </div>
             </td>
             <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Việt</div></td>
+            <td><div class="tb-item text-left">Nguyễn Văn Bưởi</div></td>
             <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">31/12/1999</div></td>
+            <td><div class="tb-item text-left">29/4/2023</div></td>
             <td><div class="tb-item text-left">0239482842</div></td>
             <td><div class="tb-item text-left">Trưởng nhóm</div></td>
             <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
             <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">BIDV</div></td>
-            <td><div class="tb-item text-left">Cầu Giấy</div></td>
+            <td><div class="tb-item text-left">MMB</div></td>
+            <td><div class="tb-item text-left">Sao hỏa</div></td>
             <td>
               <div class="t__optionbox">
                 <button class="option__edit">Sửa</button>
