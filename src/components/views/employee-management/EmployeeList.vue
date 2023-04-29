@@ -1,14 +1,12 @@
 <template>
-  <Teleport to="body">
-    <EmployeeForm v-show="isFormOpened" @close-form="toggleEmployeeForm" />
-  </Teleport>
+  <router-view name="EmployeeForm"></router-view>
   <div class="pcontent">
     <div class="pcontent__heading">
       <div class="pcontent__title">Nhân viên</div>
       <BaseButton
         bname="Thêm mới nhân viên"
         class="btn--primary"
-        @click="toggleEmployeeForm"
+        @click="btnAddOnClick"
       />
     </div>
     <div class="pcontent__container">
@@ -25,13 +23,14 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
 import BaseTable from "@/components/base/BaseTable.vue";
-import EmployeeForm from "./EmployeeForm.vue";
-const isFormOpened = ref(false);
 
-function toggleEmployeeForm() {
-  isFormOpened.value = !isFormOpened.value;
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+function btnAddOnClick() {
+  router.replace("/employee/create");
 }
 </script>
 

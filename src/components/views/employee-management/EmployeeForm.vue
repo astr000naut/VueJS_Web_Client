@@ -18,7 +18,7 @@
           <BaseButton
             bname=""
             class="mi-36 btn--close"
-            @click="$emit('closeForm')"
+            @click="btnCloseOnClick"
           />
         </div>
       </div>
@@ -120,6 +120,16 @@
 import BaseCombobox from "@/components/base/BaseCombobox.vue";
 import BaseDatepicker from "@/components/base/BaseDatepicker.vue";
 import BaseRadiogroup from "@/components/base/BaseRadiogroup.vue";
+
+import { useRouter, useRoute } from "vue-router";
+
+const router = useRouter();
+const route = useRoute();
+
+function btnCloseOnClick() {
+  router.replace("/employee");
+}
+console.log(route.fullPath);
 </script>
 
 <style scoped>
