@@ -1,6 +1,9 @@
 <template>
   <div class="tablebox">
-    <div class="table__wrapper">
+    <div class="loader__container" v-show="isLoadingData">
+      <BaseLoader />
+    </div>
+    <div class="table__wrapper" v-show="!isLoadingData">
       <table class="m-table">
         <thead>
           <tr>
@@ -25,621 +28,48 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
+          <tr
+            v-for="emp in empList"
+            :key="emp.EmployeeId"
+            :class="{
+              active: emp.active,
+            }"
+            @click="trOnClick(emp.EmployeeId)"
+          >
             <td>
               <div class="tb-item align-center">
-                <div class="t__checkbox mi-24">
+                <div
+                  class="t__checkbox mi-24"
+                  :class="{
+                    selected: emp.selected,
+                  }"
+                  @click="checkBoxOnClick(emp.EmployeeId)"
+                >
                   <i class="fas fa-check"></i>
                 </div>
               </div>
             </td>
-            <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Trí Khải</div></td>
-            <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">31/12/1999</div></td>
-            <td><div class="tb-item text-left">0239482842</div></td>
-            <td><div class="tb-item text-left">Trưởng nhóm</div></td>
-            <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
-            <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">BIDV</div></td>
-            <td><div class="tb-item text-left">Cầu Giấy</div></td>
             <td>
-              <div class="t__optionbox">
-                <button class="option__edit">Sửa</button>
-                <button class="btn__expand mi mi-16 mi-expand-down"></button>
-                <ul class="actions-list btn__expand">
-                  <li><div class="li-data">Nhân bản</div></li>
-                  <li><div class="li-data">Xóa</div></li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
-                </ul>
-              </div>
+              <div class="tb-item text-left">{{ emp.EmployeeCode }}</div>
             </td>
-          </tr>
-          <tr>
             <td>
-              <div class="tb-item align-center">
-                <div class="t__checkbox mi-24">
-                  <i class="fas fa-check"></i>
-                </div>
-              </div>
+              <div class="tb-item text-left">{{ emp.FullName }}</div>
             </td>
-            <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Bưởi</div></td>
-            <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">29/4/2023</div></td>
-            <td><div class="tb-item text-left">0239482842</div></td>
-            <td><div class="tb-item text-left">Trưởng nhóm</div></td>
-            <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
-            <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">MMB</div></td>
-            <td><div class="tb-item text-left">Sao hỏa</div></td>
             <td>
-              <div class="t__optionbox">
-                <button class="option__edit">Sửa</button>
-                <button class="btn__expand mi mi-16 mi-expand-down"></button>
-                <ul class="actions-list btn__expand">
-                  <li><div class="li-data">Nhân bản</div></li>
-                  <li><div class="li-data">Xóa</div></li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
-                </ul>
-              </div>
+              <div class="tb-item text-left">{{ emp.GenderName }}</div>
             </td>
-          </tr>
-          <tr>
             <td>
-              <div class="tb-item align-center">
-                <div class="t__checkbox mi-24">
-                  <i class="fas fa-check"></i>
-                </div>
-              </div>
+              <div class="tb-item text-left">{{ emp.DateOfBirth }}</div>
             </td>
-            <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Việt</div></td>
-            <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">31/12/1999</div></td>
-            <td><div class="tb-item text-left">0239482842</div></td>
-            <td><div class="tb-item text-left">Trưởng nhóm</div></td>
-            <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
-            <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">BIDV</div></td>
-            <td><div class="tb-item text-left">Cầu Giấy</div></td>
             <td>
-              <div class="t__optionbox">
-                <button class="option__edit">Sửa</button>
-                <button class="btn__expand mi mi-16 mi-expand-down"></button>
-                <ul class="actions-list btn__expand">
-                  <li><div class="li-data">Nhân bản</div></li>
-                  <li><div class="li-data">Xóa</div></li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
-                </ul>
-              </div>
+              <div class="tb-item text-left">{{ emp.IdentityNumber }}</div>
             </td>
-          </tr>
-          <tr>
             <td>
-              <div class="tb-item align-center">
-                <div class="t__checkbox mi-24">
-                  <i class="fas fa-check"></i>
-                </div>
-              </div>
+              <div class="tb-item text-left">{{ emp.PositionName }}</div>
             </td>
-            <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Việt</div></td>
-            <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">31/12/1999</div></td>
-            <td><div class="tb-item text-left">0239482842</div></td>
-            <td><div class="tb-item text-left">Trưởng nhóm</div></td>
-            <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
-            <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">BIDV</div></td>
-            <td><div class="tb-item text-left">Cầu Giấy</div></td>
             <td>
-              <div class="t__optionbox">
-                <button class="option__edit">Sửa</button>
-                <button class="btn__expand mi mi-16 mi-expand-down"></button>
-                <ul class="actions-list btn__expand">
-                  <li><div class="li-data">Nhân bản</div></li>
-                  <li><div class="li-data">Xóa</div></li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
-                </ul>
-              </div>
+              <div class="tb-item text-left">{{ emp.DepartmentName }}</div>
             </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="tb-item align-center">
-                <div class="t__checkbox mi-24">
-                  <i class="fas fa-check"></i>
-                </div>
-              </div>
-            </td>
-            <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Việt</div></td>
-            <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">31/12/1999</div></td>
-            <td><div class="tb-item text-left">0239482842</div></td>
-            <td><div class="tb-item text-left">Trưởng nhóm</div></td>
-            <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
-            <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">BIDV</div></td>
-            <td><div class="tb-item text-left">Cầu Giấy</div></td>
-            <td>
-              <div class="t__optionbox">
-                <button class="option__edit">Sửa</button>
-                <button class="btn__expand mi mi-16 mi-expand-down"></button>
-                <ul class="actions-list btn__expand">
-                  <li><div class="li-data">Nhân bản</div></li>
-                  <li><div class="li-data">Xóa</div></li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="tb-item align-center">
-                <div class="t__checkbox mi-24">
-                  <i class="fas fa-check"></i>
-                </div>
-              </div>
-            </td>
-            <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Việt</div></td>
-            <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">31/12/1999</div></td>
-            <td><div class="tb-item text-left">0239482842</div></td>
-            <td><div class="tb-item text-left">Trưởng nhóm</div></td>
-            <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
-            <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">BIDV</div></td>
-            <td><div class="tb-item text-left">Cầu Giấy</div></td>
-            <td>
-              <div class="t__optionbox">
-                <button class="option__edit">Sửa</button>
-                <button class="btn__expand mi mi-16 mi-expand-down"></button>
-                <ul class="actions-list btn__expand">
-                  <li><div class="li-data">Nhân bản</div></li>
-                  <li><div class="li-data">Xóa</div></li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="tb-item align-center">
-                <div class="t__checkbox mi-24">
-                  <i class="fas fa-check"></i>
-                </div>
-              </div>
-            </td>
-            <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Việt</div></td>
-            <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">31/12/1999</div></td>
-            <td><div class="tb-item text-left">0239482842</div></td>
-            <td><div class="tb-item text-left">Trưởng nhóm</div></td>
-            <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
-            <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">BIDV</div></td>
-            <td><div class="tb-item text-left">Cầu Giấy</div></td>
-            <td>
-              <div class="t__optionbox">
-                <button class="option__edit">Sửa</button>
-                <button class="btn__expand mi mi-16 mi-expand-down"></button>
-                <ul class="actions-list btn__expand">
-                  <li><div class="li-data">Nhân bản</div></li>
-                  <li><div class="li-data">Xóa</div></li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="tb-item align-center">
-                <div class="t__checkbox mi-24">
-                  <i class="fas fa-check"></i>
-                </div>
-              </div>
-            </td>
-            <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Việt</div></td>
-            <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">31/12/1999</div></td>
-            <td><div class="tb-item text-left">0239482842</div></td>
-            <td><div class="tb-item text-left">Trưởng nhóm</div></td>
-            <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
-            <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">BIDV</div></td>
-            <td><div class="tb-item text-left">Cầu Giấy</div></td>
-            <td>
-              <div class="t__optionbox">
-                <button class="option__edit">Sửa</button>
-                <button class="btn__expand mi mi-16 mi-expand-down"></button>
-                <ul class="actions-list btn__expand">
-                  <li><div class="li-data">Nhân bản</div></li>
-                  <li><div class="li-data">Xóa</div></li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="tb-item align-center">
-                <div class="t__checkbox mi-24">
-                  <i class="fas fa-check"></i>
-                </div>
-              </div>
-            </td>
-            <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Việt</div></td>
-            <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">31/12/1999</div></td>
-            <td><div class="tb-item text-left">0239482842</div></td>
-            <td><div class="tb-item text-left">Trưởng nhóm</div></td>
-            <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
-            <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">BIDV</div></td>
-            <td><div class="tb-item text-left">Cầu Giấy</div></td>
-            <td>
-              <div class="t__optionbox">
-                <button class="option__edit">Sửa</button>
-                <button class="btn__expand mi mi-16 mi-expand-down"></button>
-                <ul class="actions-list btn__expand">
-                  <li><div class="li-data">Nhân bản</div></li>
-                  <li><div class="li-data">Xóa</div></li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="tb-item align-center">
-                <div class="t__checkbox mi-24">
-                  <i class="fas fa-check"></i>
-                </div>
-              </div>
-            </td>
-            <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Việt</div></td>
-            <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">31/12/1999</div></td>
-            <td><div class="tb-item text-left">0239482842</div></td>
-            <td><div class="tb-item text-left">Trưởng nhóm</div></td>
-            <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
-            <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">BIDV</div></td>
-            <td><div class="tb-item text-left">Cầu Giấy</div></td>
-            <td>
-              <div class="t__optionbox">
-                <button class="option__edit">Sửa</button>
-                <button class="btn__expand mi mi-16 mi-expand-down"></button>
-                <ul class="actions-list btn__expand">
-                  <li><div class="li-data">Nhân bản</div></li>
-                  <li><div class="li-data">Xóa</div></li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="tb-item align-center">
-                <div class="t__checkbox mi-24">
-                  <i class="fas fa-check"></i>
-                </div>
-              </div>
-            </td>
-            <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Việt</div></td>
-            <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">31/12/1999</div></td>
-            <td><div class="tb-item text-left">0239482842</div></td>
-            <td><div class="tb-item text-left">Trưởng nhóm</div></td>
-            <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
-            <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">BIDV</div></td>
-            <td><div class="tb-item text-left">Cầu Giấy</div></td>
-            <td>
-              <div class="t__optionbox">
-                <button class="option__edit">Sửa</button>
-                <button class="btn__expand mi mi-16 mi-expand-down"></button>
-                <ul class="actions-list btn__expand">
-                  <li><div class="li-data">Nhân bản</div></li>
-                  <li><div class="li-data">Xóa</div></li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="tb-item align-center">
-                <div class="t__checkbox mi-24">
-                  <i class="fas fa-check"></i>
-                </div>
-              </div>
-            </td>
-            <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Việt</div></td>
-            <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">31/12/1999</div></td>
-            <td><div class="tb-item text-left">0239482842</div></td>
-            <td><div class="tb-item text-left">Trưởng nhóm</div></td>
-            <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
-            <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">BIDV</div></td>
-            <td><div class="tb-item text-left">Cầu Giấy</div></td>
-            <td>
-              <div class="t__optionbox">
-                <button class="option__edit">Sửa</button>
-                <button class="btn__expand mi mi-16 mi-expand-down"></button>
-                <ul class="actions-list btn__expand">
-                  <li><div class="li-data">Nhân bản</div></li>
-                  <li><div class="li-data">Xóa</div></li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="tb-item align-center">
-                <div class="t__checkbox mi-24">
-                  <i class="fas fa-check"></i>
-                </div>
-              </div>
-            </td>
-            <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Việt</div></td>
-            <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">31/12/1999</div></td>
-            <td><div class="tb-item text-left">0239482842</div></td>
-            <td><div class="tb-item text-left">Trưởng nhóm</div></td>
-            <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
-            <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">BIDV</div></td>
-            <td><div class="tb-item text-left">Cầu Giấy</div></td>
-            <td>
-              <div class="t__optionbox">
-                <button class="option__edit">Sửa</button>
-                <button class="btn__expand mi mi-16 mi-expand-down"></button>
-                <ul class="actions-list btn__expand">
-                  <li><div class="li-data">Nhân bản</div></li>
-                  <li><div class="li-data">Xóa</div></li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="tb-item align-center">
-                <div class="t__checkbox mi-24">
-                  <i class="fas fa-check"></i>
-                </div>
-              </div>
-            </td>
-            <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Việt</div></td>
-            <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">31/12/1999</div></td>
-            <td><div class="tb-item text-left">0239482842</div></td>
-            <td><div class="tb-item text-left">Trưởng nhóm</div></td>
-            <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
-            <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">BIDV</div></td>
-            <td><div class="tb-item text-left">Cầu Giấy</div></td>
-            <td>
-              <div class="t__optionbox">
-                <button class="option__edit">Sửa</button>
-                <button class="btn__expand mi mi-16 mi-expand-down"></button>
-                <ul class="actions-list btn__expand">
-                  <li><div class="li-data">Nhân bản</div></li>
-                  <li><div class="li-data">Xóa</div></li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="tb-item align-center">
-                <div class="t__checkbox mi-24">
-                  <i class="fas fa-check"></i>
-                </div>
-              </div>
-            </td>
-            <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Việt</div></td>
-            <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">31/12/1999</div></td>
-            <td><div class="tb-item text-left">0239482842</div></td>
-            <td><div class="tb-item text-left">Trưởng nhóm</div></td>
-            <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
-            <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">BIDV</div></td>
-            <td><div class="tb-item text-left">Cầu Giấy</div></td>
-            <td>
-              <div class="t__optionbox">
-                <button class="option__edit">Sửa</button>
-                <button class="btn__expand mi mi-16 mi-expand-down"></button>
-                <ul class="actions-list btn__expand">
-                  <li><div class="li-data">Nhân bản</div></li>
-                  <li><div class="li-data">Xóa</div></li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="tb-item align-center">
-                <div class="t__checkbox mi-24">
-                  <i class="fas fa-check"></i>
-                </div>
-              </div>
-            </td>
-            <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Việt</div></td>
-            <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">31/12/1999</div></td>
-            <td><div class="tb-item text-left">0239482842</div></td>
-            <td><div class="tb-item text-left">Trưởng nhóm</div></td>
-            <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
-            <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">BIDV</div></td>
-            <td><div class="tb-item text-left">Cầu Giấy</div></td>
-            <td>
-              <div class="t__optionbox">
-                <button class="option__edit">Sửa</button>
-                <button class="btn__expand mi mi-16 mi-expand-down"></button>
-                <ul class="actions-list btn__expand">
-                  <li><div class="li-data">Nhân bản</div></li>
-                  <li><div class="li-data">Xóa</div></li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="tb-item align-center">
-                <div class="t__checkbox mi-24">
-                  <i class="fas fa-check"></i>
-                </div>
-              </div>
-            </td>
-            <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Việt</div></td>
-            <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">31/12/1999</div></td>
-            <td><div class="tb-item text-left">0239482842</div></td>
-            <td><div class="tb-item text-left">Trưởng nhóm</div></td>
-            <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
-            <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">BIDV</div></td>
-            <td><div class="tb-item text-left">Cầu Giấy</div></td>
-            <td>
-              <div class="t__optionbox">
-                <button class="option__edit">Sửa</button>
-                <button class="btn__expand mi mi-16 mi-expand-down"></button>
-                <ul class="actions-list btn__expand">
-                  <li><div class="li-data">Nhân bản</div></li>
-                  <li><div class="li-data">Xóa</div></li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="tb-item align-center">
-                <div class="t__checkbox mi-24">
-                  <i class="fas fa-check"></i>
-                </div>
-              </div>
-            </td>
-            <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Việt</div></td>
-            <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">31/12/1999</div></td>
-            <td><div class="tb-item text-left">0239482842</div></td>
-            <td><div class="tb-item text-left">Trưởng nhóm</div></td>
-            <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
-            <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">BIDV</div></td>
-            <td><div class="tb-item text-left">Cầu Giấy</div></td>
-            <td>
-              <div class="t__optionbox">
-                <button class="option__edit">Sửa</button>
-                <button class="btn__expand mi mi-16 mi-expand-down"></button>
-                <ul class="actions-list btn__expand">
-                  <li><div class="li-data">Nhân bản</div></li>
-                  <li><div class="li-data">Xóa</div></li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="tb-item align-center">
-                <div class="t__checkbox mi-24">
-                  <i class="fas fa-check"></i>
-                </div>
-              </div>
-            </td>
-            <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Việt</div></td>
-            <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">31/12/1999</div></td>
-            <td><div class="tb-item text-left">0239482842</div></td>
-            <td><div class="tb-item text-left">Trưởng nhóm</div></td>
-            <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
-            <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">BIDV</div></td>
-            <td><div class="tb-item text-left">Cầu Giấy</div></td>
-            <td>
-              <div class="t__optionbox">
-                <button class="option__edit">Sửa</button>
-                <button class="btn__expand mi mi-16 mi-expand-down"></button>
-                <ul class="actions-list btn__expand">
-                  <li><div class="li-data">Nhân bản</div></li>
-                  <li><div class="li-data">Xóa</div></li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="tb-item align-center">
-                <div class="t__checkbox mi-24">
-                  <i class="fas fa-check"></i>
-                </div>
-              </div>
-            </td>
-            <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Việt</div></td>
-            <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">31/12/1999</div></td>
-            <td><div class="tb-item text-left">0239482842</div></td>
-            <td><div class="tb-item text-left">Trưởng nhóm</div></td>
-            <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
-            <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">BIDV</div></td>
-            <td><div class="tb-item text-left">Cầu Giấy</div></td>
-            <td>
-              <div class="t__optionbox">
-                <button class="option__edit">Sửa</button>
-                <button class="btn__expand mi mi-16 mi-expand-down"></button>
-                <ul class="actions-list btn__expand">
-                  <li><div class="li-data">Nhân bản</div></li>
-                  <li><div class="li-data">Xóa</div></li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div class="tb-item align-center">
-                <div class="t__checkbox mi-24">
-                  <i class="fas fa-check"></i>
-                </div>
-              </div>
-            </td>
-            <td><div class="tb-item text-left">M-238123</div></td>
-            <td><div class="tb-item text-left">Nguyễn Văn Việt</div></td>
-            <td><div class="tb-item text-left">Nam</div></td>
-            <td><div class="tb-item text-left">31/12/1999</div></td>
-            <td><div class="tb-item text-left">0239482842</div></td>
-            <td><div class="tb-item text-left">Trưởng nhóm</div></td>
-            <td><div class="tb-item text-left">Xay keo - Phối trộn</div></td>
             <td><div class="tb-item text-left">231239485923</div></td>
             <td><div class="tb-item text-left">BIDV</div></td>
             <td><div class="tb-item text-left">Cầu Giấy</div></td>
@@ -658,7 +88,7 @@
         </tbody>
       </table>
     </div>
-    <div class="table__pag">
+    <div class="table__pag" v-show="!isLoadingData">
       <div class="pag__leftside">
         <span>Tổng số: <strong>20</strong> bản ghi</span>
       </div>
@@ -706,9 +136,62 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { inject, ref } from "vue";
+import BaseLoader from "./BaseLoader.vue";
+
+const $axios = inject("$axios");
+const empList = ref([]);
+const isLoadingData = ref(false);
+defineExpose({
+  loadData,
+});
+
+function checkBoxOnClick(empId) {
+  for (const emp of empList.value) {
+    if (emp.EmployeeId == empId) {
+      emp.selected = !emp.selected;
+      if (emp.selected == false) {
+        emp.active = false;
+      }
+    }
+  }
+}
+
+function trOnClick(empId) {
+  for (const emp of empList.value) {
+    if (emp.EmployeeId == empId || emp.selected) {
+      emp.active = true;
+    } else {
+      emp.active = false;
+    }
+  }
+}
+
+function loadData() {
+  isLoadingData.value = true;
+  $axios
+    .get("https://cukcuk.manhnv.net/api/v1/Employees")
+    .then(function (response) {
+      // handle success
+      isLoadingData.value = false;
+      empList.value = response.data;
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+    });
+}
+loadData();
+</script>
 
 <style scoped>
+/* Loader container */
+
+.loader__container {
+  height: 100%;
+}
+
 .tablebox {
   width: 100%;
   min-height: 200px;
@@ -920,7 +403,7 @@
   color: #fff;
 }
 
-.t__checkbox--checked {
+.t__checkbox.selected {
   border: none;
   background-color: var(--clr-lg400);
 }
@@ -936,5 +419,8 @@
 
 .record__amount__option:not(.amount--selected):hover {
   background-color: var(--clr-lg200);
+}
+.m-table tbody tr.active {
+  background-color: #e5f3ff;
 }
 </style>

@@ -15,22 +15,27 @@
           pholder="Tìm kiếm theo mã, tên nhân viên"
           class="txtfield--search mw-300"
         />
-        <BaseButton class="mi mi-36 mi-refresh" />
+        <BaseButton class="mi mi-36 mi-refresh" @click="btnRefreshOnClick" />
       </div>
-      <BaseTable />
+      <BaseTable ref="table" />
     </div>
   </div>
 </template>
 
 <script setup>
 import BaseTable from "@/components/base/BaseTable.vue";
-
 import { useRouter } from "vue-router";
+import { ref } from "vue";
 
 const router = useRouter();
+const table = ref(null);
 
 function btnAddOnClick() {
   router.replace("/employee/create");
+}
+
+function btnRefreshOnClick() {
+  table.value.loadData();
 }
 </script>
 

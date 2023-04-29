@@ -16,8 +16,8 @@
         :class="{ 'display--none': !isOptionboxOpen }"
         class="select__optionbox"
       >
-        <div class="loaderbox display--none">
-          <div class="loader"></div>
+        <div class="loader__container">
+          <BaseLoader />
         </div>
         <div class="optionlist"></div>
       </div>
@@ -28,6 +28,7 @@
 
 <script setup>
 import { ref } from "vue";
+import BaseLoader from "./BaseLoader.vue";
 const props = defineProps(["label"]);
 const isOptionboxOpen = ref(false);
 function selectButtonOnClick() {
@@ -185,35 +186,7 @@ function selectButtonOnClick() {
 }
 
 /* Loader */
-
-.loaderbox {
-  width: 100%;
-  /* background-color: gray; */
+.loader__container {
   height: 300px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.loader {
-  border: 5px solid var(--clr-lg500);
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  border-top: 5px solid #fff;
-  animation-name: spin;
-  animation-duration: 0.8s;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
 }
 </style>

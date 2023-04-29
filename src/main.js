@@ -5,6 +5,8 @@ import BaseButton from "./components/base/BaseButton.vue";
 import BaseTextfield from "./components/base/BaseTextfield.vue";
 import router from "./js/router/router";
 import commonVal from "./js/common/value";
+import axios from "axios";
+
 var Emitter = require("tiny-emitter");
 const emitter = new Emitter();
 
@@ -15,5 +17,6 @@ app.component("BaseTextfield", BaseTextfield);
 
 app.provide("$emitter", emitter);
 app.provide("$common", commonVal);
+app.provide("$axios", axios);
 app.use(router);
 app.mount("#app");
