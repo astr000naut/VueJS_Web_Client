@@ -17,7 +17,7 @@
         />
         <BaseButton class="mi mi-36 mi-refresh" @click="btnRefreshOnClick" />
       </div>
-      <BaseTable ref="table" />
+      <BaseTable ref="basetable" />
     </div>
   </div>
 </template>
@@ -28,14 +28,14 @@ import { useRouter } from "vue-router";
 import { ref } from "vue";
 
 const router = useRouter();
-const table = ref(null);
+const basetable = ref(null);
 
 function btnAddOnClick() {
   router.replace("/employee/create");
 }
 
 function btnRefreshOnClick() {
-  table.value.loadData();
+  basetable.value.loadData();
 }
 </script>
 

@@ -1,9 +1,9 @@
 <template>
   <div class="tablebox">
-    <div class="loader__container" v-show="isLoadingData">
+    <div class="loader__container" v-show="false">
       <BaseLoader />
     </div>
-    <div class="table__wrapper" v-show="!isLoadingData">
+    <div class="table__wrapper">
       <table class="m-table">
         <thead>
           <tr>
@@ -28,103 +28,118 @@
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="emp in empList"
-            :key="emp.EmployeeId"
-            :class="{
-              active: emp.active,
-            }"
-            @click="trOnClick(emp.EmployeeId)"
-          >
-            <td>
-              <div class="tb-item align-center">
-                <div
-                  class="t__checkbox mi-24"
-                  :class="{
-                    selected: emp.selected,
-                  }"
-                  @click="checkBoxOnClick(emp.EmployeeId)"
-                >
-                  <i class="fas fa-check"></i>
+          <template v-if="table.isLoadingData">
+            <tr v-for="i in Math.min(20, table.recordPerPage)" :key="i">
+              <td v-for="j in 12" :key="j">
+                <div class="loading-item"></div>
+              </td>
+            </tr>
+          </template>
+          <template v-else>
+            <tr
+              v-for="emp in empList"
+              :key="emp.EmployeeId"
+              :class="{
+                active: emp.active,
+              }"
+              @click="trOnClick(emp.EmployeeId)"
+            >
+              <td>
+                <div class="align-center">
+                  <div
+                    class="t__checkbox mi-24"
+                    :class="{
+                      selected: emp.selected,
+                    }"
+                    @click="checkBoxOnClick(emp.EmployeeId)"
+                  >
+                    <i class="fas fa-check"></i>
+                  </div>
                 </div>
-              </div>
-            </td>
-            <td>
-              <div class="tb-item text-left">{{ emp.EmployeeCode }}</div>
-            </td>
-            <td>
-              <div class="tb-item text-left">{{ emp.FullName }}</div>
-            </td>
-            <td>
-              <div class="tb-item text-left">{{ emp.GenderName }}</div>
-            </td>
-            <td>
-              <div class="tb-item text-left">{{ emp.DateOfBirth }}</div>
-            </td>
-            <td>
-              <div class="tb-item text-left">{{ emp.IdentityNumber }}</div>
-            </td>
-            <td>
-              <div class="tb-item text-left">{{ emp.PositionName }}</div>
-            </td>
-            <td>
-              <div class="tb-item text-left">{{ emp.DepartmentName }}</div>
-            </td>
-            <td><div class="tb-item text-left">231239485923</div></td>
-            <td><div class="tb-item text-left">BIDV</div></td>
-            <td><div class="tb-item text-left">Cầu Giấy</div></td>
-            <td>
-              <div class="t__optionbox">
-                <button class="option__edit">Sửa</button>
-                <button class="btn__expand mi mi-16 mi-expand-down"></button>
-                <ul class="actions-list btn__expand">
-                  <li><div class="li-data">Nhân bản</div></li>
-                  <li><div class="li-data">Xóa</div></li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
-                </ul>
-              </div>
-            </td>
-          </tr>
+              </td>
+              <td>
+                <div class="text-left">{{ emp.EmployeeCode }}</div>
+              </td>
+              <td>
+                <div class="text-left">{{ emp.FullName }}</div>
+              </td>
+              <td>
+                <div class="text-left">{{ emp.GenderName }}</div>
+              </td>
+              <td>
+                <div class="text-left">{{ emp.DateOfBirth }}</div>
+              </td>
+              <td>
+                <div class="text-left">{{ emp.IdentityNumber }}</div>
+              </td>
+              <td>
+                <div class="text-left">{{ emp.PositionName }}</div>
+              </td>
+              <td>
+                <div class="text-left">{{ emp.DepartmentName }}</div>
+              </td>
+              <td><div class="text-left">231239485923</div></td>
+              <td><div class="text-left">BIDV</div></td>
+              <td><div class="text-left">Cầu Giấy</div></td>
+              <td :class="[table.expandEmpId == emp.EmployeeId ? 'above' : '']">
+                <div class="t__optionbox">
+                  <button class="option__edit">Sửa</button>
+                  <button
+                    class="btn__expand mi mi-16 mi-expand-down"
+                    @click="btnExpandOnClick(emp.EmployeeId)"
+                  ></button>
+                  <ul
+                    class="actions-list btn__expand"
+                    v-show="table.expandEmpId == emp.EmployeeId"
+                    @mouseleave="table.expandEmpId = ''"
+                  >
+                    <li><div class="li-data">Nhân bản</div></li>
+                    <li><div class="li-data">Xóa</div></li>
+                    <li><div class="li-data">Ngừng sử dụng</div></li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </template>
         </tbody>
       </table>
     </div>
-    <div class="table__pag" v-show="!isLoadingData">
+    <div class="table__pag">
       <div class="pag__leftside">
         <span>Tổng số: <strong>20</strong> bản ghi</span>
       </div>
       <div class="pag__rightside">
         <div class="pag__recordcount">
-          <div class="record__amount__select display--none">
+          <div class="record__amount__select" v-show="table.recordAmountOpen">
             <ul>
-              <li>
-                <div class="record__amount__option">
-                  10 bản ghi trên 1 trang
-                </div>
-              </li>
-              <li>
-                <div class="record__amount__option amount--selected">
-                  20 bản ghi trên 1 trang
-                </div>
-              </li>
-              <li>
-                <div class="record__amount__option">
-                  30 bản ghi trên 1 trang
-                </div>
-              </li>
-              <li>
-                <div class="record__amount__option">
-                  50 bản ghi trên 1 trang
-                </div>
-              </li>
-              <li>
-                <div class="record__amount__option">
-                  100 bản ghi trên 1 trang
+              <li
+                v-for="recordAmount in table.recordAmountList"
+                :key="recordAmount"
+              >
+                <div
+                  class="record__amount__option"
+                  :class="[
+                    recordAmount == table.recordPerPage
+                      ? 'amount--selected'
+                      : '',
+                  ]"
+                  @click="recordAmountOptionOnClick(recordAmount)"
+                >
+                  {{ recordAmount }} bản ghi trên 1 trang
                 </div>
               </li>
             </ul>
           </div>
-          <span>Số bản ghi / trang: 20</span>
-          <div class="pag__arrowdown mi mi-24 mi-arrowdown-small"></div>
+          <span>Số bản ghi / trang: {{ table.recordPerPage }}</span>
+          <div
+            class="pag__arrowdown mi mi-24 mi-arrowdown-small"
+            :class="[
+              table.recordAmountOpen
+                ? 'mi-arrowup-small'
+                : 'mi-arrowdown-small',
+            ]"
+            @click="pagArrowdownOnClick"
+          ></div>
         </div>
         <div class="pag__info">
           <span>1 - <strong>20</strong> bản ghi</span>
@@ -142,11 +157,33 @@ import BaseLoader from "./BaseLoader.vue";
 
 const $axios = inject("$axios");
 const empList = ref([]);
-const isLoadingData = ref(false);
+const table = ref({
+  isLoadingData: false,
+  recordPerPage: 20,
+  recordAmountOpen: false,
+  recordAmountList: [10, 20, 30, 50, 100],
+  expandEmpId: "",
+});
 defineExpose({
   loadData,
 });
 
+function btnExpandOnClick(empId) {
+  if (table.value.expandEmpId == empId) {
+    table.value.expandEmpId = "";
+  } else {
+    table.value.expandEmpId = empId;
+  }
+}
+
+function recordAmountOptionOnClick(recordAmount) {
+  table.value.recordPerPage = recordAmount;
+  table.value.recordAmountOpen = false;
+}
+
+function pagArrowdownOnClick() {
+  table.value.recordAmountOpen = !table.value.recordAmountOpen;
+}
 function checkBoxOnClick(empId) {
   for (const emp of empList.value) {
     if (emp.EmployeeId == empId) {
@@ -169,12 +206,12 @@ function trOnClick(empId) {
 }
 
 function loadData() {
-  isLoadingData.value = true;
+  table.value.isLoadingData = true;
   $axios
     .get("https://cukcuk.manhnv.net/api/v1/Employees")
     .then(function (response) {
       // handle success
-      isLoadingData.value = false;
+      table.value.isLoadingData = false;
       empList.value = response.data;
     })
     .catch(function (error) {
@@ -286,7 +323,6 @@ loadData();
 .actions-list {
   position: absolute;
   border: 1px solid var(--clr-t-border);
-  display: none;
   list-style-type: none;
   top: 36px;
   width: 130px;
@@ -305,7 +341,7 @@ loadData();
 }
 
 .above {
-  z-index: 1;
+  z-index: 8;
 }
 
 .btn__expand {
@@ -354,6 +390,10 @@ loadData();
   column-gap: 10px;
   padding: 0 12px;
   position: relative;
+}
+
+.pag__recordcount span {
+  width: 150px;
 }
 
 .record__amount__select {
@@ -422,5 +462,29 @@ loadData();
 }
 .m-table tbody tr.active {
   background-color: #e5f3ff;
+}
+
+td:has(.loading-item) {
+  padding: 12px 20px;
+}
+.loading-item {
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(to right, white, #bebebe70, white);
+  animation: loading;
+  animation-duration: 1.5s;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+@keyframes loading {
+  0% {
+    background-position-x: 0px;
+  }
+
+  100% {
+    background-position-x: 100px;
+  }
 }
 </style>

@@ -57,6 +57,11 @@ background-position: -787px -30px;
 background-position: -940px -356px;
 }
 
+.mi-arrowup-small {
+    background-position: -940px -356px;
+    transform: rotate(180deg);
+}
+
 .mi-arrowdown-small:active {
 background-position: -940px -355px;
 }
