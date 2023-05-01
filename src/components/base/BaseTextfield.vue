@@ -4,7 +4,13 @@
       {{ props.label }}
     </div>
     <div class="txtfield__textbox">
-      <input class="txtfield__input" type="text" :placeholder="props.pholder" />
+      <input
+        class="txtfield__input"
+        type="text"
+        :placeholder="props.pholder"
+        :value="text"
+        @input="$emit('update:text', $event.target.value)"
+      />
       <div class="txtfield__icon"></div>
     </div>
     <div class="txtfield__noti noti"></div>
@@ -12,7 +18,8 @@
 </template>
 
 <script setup>
-const props = defineProps(["pholder", "label"]);
+const props = defineProps(["pholder", "label", "text"]);
+defineEmits(["update:text"]);
 </script>
 
 <style scoped>

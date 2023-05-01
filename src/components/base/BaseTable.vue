@@ -7,7 +7,7 @@
       <table class="m-table">
         <thead>
           <tr>
-            <th>
+            <th class="th1--sticky">
               <div class="align-center mw-40">
                 <div class="t__checkbox mi-24">
                   <i class="fas fa-minus"></i>
@@ -24,7 +24,9 @@
             <th><div class="text-left mw-150">Số tài khoản</div></th>
             <th><div class="text-left mw-150">Tên ngân hàng</div></th>
             <th><div class="text-left mw-200">Chi nhánh TK ngân hàng</div></th>
-            <th><div class="text-left mw-80">Chức năng</div></th>
+            <th class="thn--sticky">
+              <div class="text-left mw-80">Chức năng</div>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -43,8 +45,9 @@
                 active: emp.active,
               }"
               @click="trOnClick(emp.EmployeeId)"
+              @dblclick="trOnDblclick(emp.EmployeeId)"
             >
-              <td>
+              <td class="td1--sticky">
                 <div class="align-center">
                   <div
                     class="t__checkbox mi-24"
@@ -81,9 +84,17 @@
               <td><div class="text-left">231239485923</div></td>
               <td><div class="text-left">BIDV</div></td>
               <td><div class="text-left">Cầu Giấy</div></td>
-              <td :class="[table.expandEmpId == emp.EmployeeId ? 'above' : '']">
-                <div class="t__optionbox">
-                  <button class="option__edit">Sửa</button>
+              <td
+                :class="[table.expandEmpId == emp.EmployeeId ? 'above' : '']"
+                class="tdn--sticky"
+              >
+                <div class="t__optionbox align-center">
+                  <button
+                    class="option__edit"
+                    @click="btnEditOnClick(emp.EmployeeId)"
+                  >
+                    Sửa
+                  </button>
                   <button
                     class="btn__expand mi mi-16 mi-expand-down"
                     @click="btnExpandOnClick(emp.EmployeeId)"
@@ -154,6 +165,9 @@
 <script setup>
 import { inject, ref } from "vue";
 import BaseLoader from "./BaseLoader.vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const $axios = inject("$axios");
 const empList = ref([]);
@@ -167,6 +181,10 @@ const table = ref({
 defineExpose({
   loadData,
 });
+
+function btnEditOnClick(empId) {
+  router.push(`/employee/${empId}`);
+}
 
 function btnExpandOnClick(empId) {
   if (table.value.expandEmpId == empId) {
@@ -203,6 +221,10 @@ function trOnClick(empId) {
       emp.active = false;
     }
   }
+}
+
+function trOnDblclick(empId) {
+  router.push(`/employee/${empId}`);
 }
 
 function loadData() {
@@ -259,10 +281,11 @@ loadData();
   border-spacing: 0;
   border-collapse: separate;
   transform: translate3d(0, 0, 0);
+  user-select: none;
 }
 
-.m-table th,
-.m-table td {
+th,
+td {
   border-style: solid;
   border-width: 1px;
   border-left: none;
@@ -273,40 +296,41 @@ loadData();
   padding: 0 12px;
 }
 
-.m-table thead th {
+thead th {
   background-color: #e5e8ec;
   position: sticky;
   top: -1px;
   z-index: 2;
 }
 
-.m-table tbody tr {
+tbody tr {
   background-color: #fff;
 }
 
-.m-table tbody td:first-child {
-  position: sticky;
-  left: -1px;
-  background-color: inherit;
-  border-left: 1px solid var(--clr-t-border);
-}
-
-.m-table thead th:first-child {
+.th1--sticky {
   position: sticky;
   left: -1px;
   z-index: 4;
 }
 
-.m-table tbody td:last-child {
+.thn--sticky {
   position: sticky;
   right: -1px;
-  background-color: inherit;
+  z-index: 4;
   border-left: 1px solid #c7c7c7;
 }
-.m-table thead th:last-child {
+
+.td1--sticky {
+  position: sticky;
+  left: -1px;
+  background-color: inherit;
+  border-left: 1px solid #e0e0e0;
+}
+
+.tdn--sticky {
   position: sticky;
   right: -1px;
-  z-index: 4;
+  background-color: inherit;
   border-left: 1px solid #c7c7c7;
 }
 
@@ -328,10 +352,6 @@ loadData();
   width: 130px;
   right: 5px;
   background-color: #fff;
-}
-
-.activee {
-  display: block;
 }
 
 .actions-list > li:hover {
@@ -449,18 +469,14 @@ loadData();
 }
 
 /* Animation */
-.m-table tbody tr:hover {
+tbody tr:hover {
   background-color: #f2f9ff;
-}
-
-.tr--selected {
-  background-color: #b7d9f8 !important;
 }
 
 .record__amount__option:not(.amount--selected):hover {
   background-color: var(--clr-lg200);
 }
-.m-table tbody tr.active {
+tr.active {
   background-color: #e5f3ff;
 }
 

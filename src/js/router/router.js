@@ -21,7 +21,7 @@ const routes = [
         path: ":id",
         components: {
           default: EmployeeList,
-          EmployeeForm: UnderDevelopment,
+          EmployeeForm: EmployeeForm,
         },
       },
     ],

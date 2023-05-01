@@ -1,9 +1,16 @@
 <template>
   <div class="wrapper wrapper--dark1 wrapper--form">
+    <div class="form__loader" v-show="form.isLoading">
+      <BaseLoader />
+    </div>
     <div class="form">
       <div class="form__header">
         <div class="header__left">
-          <div class="header__title">Thông tin nhân viên</div>
+          <div class="header__title">
+            {{
+              form.type == "info" ? "Thông tin nhân viên" : "Thêm mới nhân viên"
+            }}
+          </div>
           <div class="header__option1">
             <div class="checkbox mi mi-18"></div>
             <div class="checkbox__label">Là khách hàng</div>
@@ -27,20 +34,38 @@
           <div class="fu__left">
             <div class="fu__left__top">
               <div class="fu__index">
-                <BaseTextfield pholder="" label="Mã" class="field--required" />
+                <BaseTextfield
+                  pholder=""
+                  label="Mã"
+                  class="field--required"
+                  v-model:text="form.empCode"
+                />
               </div>
               <div class="fu__name">
-                <BaseTextfield pholder="" label="Tên" class="field--required" />
+                <BaseTextfield
+                  pholder=""
+                  label="Tên"
+                  class="field--required"
+                  v-model:text="form.empFullName"
+                />
               </div>
             </div>
             <div class="fu__left__mid">
               <div class="fu__unit">
-                <BaseCombobox label="Đơn vị" class="field--required" />
+                <BaseCombobox
+                  label="Đơn vị"
+                  class="field--required"
+                  v-model:text="form.empDepartmentName"
+                />
               </div>
             </div>
             <div class="fu__left__bot">
               <div class="fu__position">
-                <BaseTextfield pholder="" label="Chức danh" />
+                <BaseTextfield
+                  pholder=""
+                  label="Chức danh"
+                  v-model:text="form.empPositionName"
+                />
               </div>
             </div>
           </div>
@@ -58,15 +83,26 @@
             </div>
             <div class="fu__right__mid">
               <div class="fu__cmnd">
-                <BaseTextfield pholder="" label="Số CMND" />
+                <BaseTextfield
+                  pholder=""
+                  label="Số CMND"
+                  v-model:text="form.empIdentityNumber"
+                />
               </div>
               <div class="fu__cmnddate">
-                <BaseDatepicker label="Ngày cấp" />
+                <BaseDatepicker
+                  label="Ngày cấp"
+                  v-model:text="form.empIdentityDate"
+                />
               </div>
             </div>
             <div class="fu__right__bot">
               <div class="fu__cmndpos">
-                <BaseTextfield pholder="" label="Nơi cấp" />
+                <BaseTextfield
+                  pholder=""
+                  label="Nơi cấp"
+                  v-model:text="form.empIdentityPlace"
+                />
               </div>
             </div>
           </div>
@@ -75,29 +111,57 @@
         <div class="form__lower">
           <div class="fl__top">
             <div class="fl__address">
-              <BaseTextfield pholder="" label="Địa chỉ" />
+              <BaseTextfield
+                pholder=""
+                label="Địa chỉ"
+                v-model:text="form.empAddress"
+              />
             </div>
           </div>
           <div class="fl__mid">
             <div class="fl__phone">
-              <BaseTextfield pholder="" label="ĐT di động" />
+              <BaseTextfield
+                pholder=""
+                label="ĐT di động"
+                v-model:text="form.empPhoneNumber"
+              />
             </div>
             <div class="fl__homephone">
-              <BaseTextfield pholder="" label="ĐT cố định" />
+              <BaseTextfield
+                pholder=""
+                label="ĐT cố định"
+                v-model:text="form.empLandlineNumber"
+              />
             </div>
             <div class="fl__email">
-              <BaseTextfield pholder="" label="Email" />
+              <BaseTextfield
+                pholder=""
+                label="Email"
+                v-model:text="form.empEmail"
+              />
             </div>
           </div>
           <div class="fl__bot">
             <div class="fl__bankacc">
-              <BaseTextfield pholder="" label="Tài khoản ngân hàng" />
+              <BaseTextfield
+                pholder=""
+                label="Tài khoản ngân hàng"
+                v-model:text="form.empBankAcc"
+              />
             </div>
             <div class="fl__bankname">
-              <BaseTextfield pholder="" label="Tên ngân hàng" />
+              <BaseTextfield
+                pholder=""
+                label="Tên ngân hàng"
+                v-model:text="form.empBankName"
+              />
             </div>
             <div class="fl__bankarea">
-              <BaseTextfield pholder="" label="Chi nhánh" />
+              <BaseTextfield
+                pholder=""
+                label="Chi nhánh"
+                v-model:text="form.empBankPlace"
+              />
             </div>
           </div>
         </div>
@@ -120,16 +184,85 @@
 import BaseCombobox from "@/components/base/BaseCombobox.vue";
 import BaseDatepicker from "@/components/base/BaseDatepicker.vue";
 import BaseRadiogroup from "@/components/base/BaseRadiogroup.vue";
-
+import BaseLoader from "@/components/base/BaseLoader.vue";
+import { ref, inject } from "vue";
 import { useRouter, useRoute } from "vue-router";
+const $axios = inject("$axios");
 
 const router = useRouter();
 const route = useRoute();
+const form = ref({
+  type: "",
+  isLoading: false,
+  empId: "",
+  empCode: "",
+  empFullName: "",
+  empDepartmentCode: "",
+  empDepartmentName: "",
+  empPositionId: "",
+  empPositionName: "",
+  empDateOfBirth: "",
+  empGender: 0,
+  empGenderName: "",
+  empIdentityNumber: "",
+  empIdentityDate: "",
+  empIdentityPlace: "",
+  empAddress: "",
+  empPhoneNumber: "",
+  empLandlineNumber: "",
+  empEmail: "",
+  empBankAcc: "",
+  empBankName: "",
+  empBankPlace: "",
+});
+
+if (route.params.id) {
+  form.value.type = "info";
+  form.value.empId = route.params.id;
+  getEmployee(form.value.empId);
+} else {
+  form.value.type = "create";
+}
+
+function getEmployee(empId) {
+  form.value.isLoading = true;
+  $axios
+    .get(`https://cukcuk.manhnv.net/api/v1/Employees/${empId}`)
+    .then(function (response) {
+      // handle success
+      const data = response.data;
+      form.value.empCode = data.EmployeeCode;
+      form.value.empFullName = data.FullName;
+      form.value.empDepartmentName = data.DepartmentName;
+      console.log(data);
+      console.log(form.value.empDepartmentName);
+      form.value.empDepartmentCode = data.DepartmentCode;
+      form.value.empPositionId = data.PositionId;
+      form.value.empPositionName = data.empPositionName;
+      form.value.empDateOfBirth = data.DateOfBirth;
+      form.value.empGender = data.Gender;
+      form.value.empGenderName = data.GenderName;
+      form.value.empIdentityNumber = data.IdentityNumber;
+      form.value.empIdentityDate = data.IdentityDate;
+      form.value.empIdentityPlace = data.IdentityPlace;
+      form.value.empAddress = data.Address;
+      form.value.empPhoneNumber = data.PhoneNumber;
+      form.value.empLandlineNumber = "sample";
+      form.value.empEmail = data.Email;
+      form.value.empBankAcc = "sample";
+      form.value.empBankName = "sample";
+      form.value.empBankPlace = "sample";
+      form.value.isLoading = false;
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+    });
+}
 
 function btnCloseOnClick() {
   router.replace("/employee");
 }
-console.log(route.fullPath);
 </script>
 
 <style scoped>
@@ -206,6 +339,7 @@ console.log(route.fullPath);
 
 .form__body {
   /* background-color: lightcoral; */
+  position: relative;
   margin-top: 32px;
   width: 100%;
 }
@@ -312,5 +446,15 @@ console.log(route.fullPath);
 hr {
   margin-top: 32px;
   border: 1px solid var(--clr-t-border);
+}
+
+.form__loader {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  /* background-color: #8a8a8a8a; */
+  z-index: 10;
 }
 </style>

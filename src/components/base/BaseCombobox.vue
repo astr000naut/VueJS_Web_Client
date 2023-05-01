@@ -4,7 +4,11 @@
     <div class="cbox__select">
       <div class="select__box">
         <div class="select__input">
-          <input type="text" value="" />
+          <input
+            type="text"
+            :value="props.text"
+            @input="$emit('update:text', $event.target.value)"
+          />
         </div>
         <button
           class="select__button"
@@ -29,7 +33,7 @@
 <script setup>
 import { ref } from "vue";
 import BaseLoader from "./BaseLoader.vue";
-const props = defineProps(["label"]);
+const props = defineProps(["label", "text"]);
 const isOptionboxOpen = ref(false);
 function selectButtonOnClick() {
   isOptionboxOpen.value = !isOptionboxOpen.value;
