@@ -136,12 +136,11 @@ defineEmits(["update:text"]);
   background-position: -1035px -82px;
 }
 
-.txtfield--search .txtfield__icon:hover {
-  /* background-color: var(--clr-t-border); */
+/* .txtfield--search .txtfield__icon:hover {
   cursor: pointer;
 }
 
 .txtfield--search .txtfield__icon:active {
   background-color: var(--clr-t-border);
-}
+} */
 </style>

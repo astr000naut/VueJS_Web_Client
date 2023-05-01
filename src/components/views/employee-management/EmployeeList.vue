@@ -16,6 +16,10 @@
           class="txtfield--search mw-300"
         />
         <BaseButton class="mi mi-36 mi-refresh" @click="btnRefreshOnClick" />
+        <div class="button__hoverbox">
+          <div class="hover__arrow"></div>
+          <div class="hover__text">Tải lại dữ liệu</div>
+        </div>
       </div>
       <BaseTable ref="basetable" />
     </div>
@@ -68,6 +72,7 @@ function btnRefreshOnClick() {
 /* Container */
 
 .pcontent__container {
+  position: relative;
   width: 100%;
   flex: 1;
   min-height: 200px;
@@ -88,5 +93,33 @@ function btnRefreshOnClick() {
   column-gap: 24px;
   overflow: hidden;
   align-items: center;
+}
+.button__hoverbox {
+  display: none;
+  z-index: 20;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}
+
+.hover__text {
+  padding: 4px 8px;
+  background-color: #393a3d;
+  font-size: 12px;
+  color: #fff;
+  border-radius: 4px;
+}
+.hover__arrow {
+  width: 10px;
+  height: 10px;
+  background-color: #393a3d;
+  position: absolute;
+  bottom: -9px;
+  right: 42%;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.mi-refresh:hover + .button__hoverbox {
+  display: block;
 }
 </style>
