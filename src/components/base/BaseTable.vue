@@ -17,7 +17,7 @@
             <th><div class="text-left mw-100">Mã nhân viên</div></th>
             <th><div class="text-left mw-200">Tên nhân viên</div></th>
             <th><div class="text-left mw-70">Giới tính</div></th>
-            <th><div class="text-left mw-70">Ngày sinh</div></th>
+            <th><div class="text-left mw-80">Ngày sinh</div></th>
             <th><div class="text-left mw-100">Số CMND</div></th>
             <th><div class="text-left mw-150">Chức danh</div></th>
             <th><div class="text-left mw-200">Tên đơn vị</div></th>
