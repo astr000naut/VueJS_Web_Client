@@ -36,7 +36,7 @@ const $emitter = inject("$emitter");
 const isHeaderBig = ref(true);
 $emitter.on("resizeSidebar", (isSidebarBig) => {
   isHeaderBig.value = isSidebarBig;
-  console.log("hi");
+  // console.log("hi");
 });
 onBeforeUnmount(() => {
   $emitter.off("resizeSidebar");
