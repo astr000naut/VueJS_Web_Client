@@ -21,13 +21,13 @@
           <div class="hover__text">Tải lại dữ liệu</div>
         </div>
       </div>
-      <BaseTable ref="basetable" />
+      <EmployeeTable ref="basetable" />
     </div>
   </div>
 </template>
 
 <script setup>
-import BaseTable from "@/components/base/BaseTable.vue";
+import EmployeeTable from "@/components/views/employee-management/EmployeeTable.vue";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 

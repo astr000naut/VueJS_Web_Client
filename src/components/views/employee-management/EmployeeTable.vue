@@ -167,7 +167,7 @@
 
 <script setup>
 import { inject, ref } from "vue";
-import BaseLoader from "./BaseLoader.vue";
+import BaseLoader from "../../base/BaseLoader.vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
