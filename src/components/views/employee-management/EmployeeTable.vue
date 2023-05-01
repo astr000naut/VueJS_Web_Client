@@ -327,7 +327,6 @@ tbody tr {
   position: sticky;
   left: -1px;
   background-color: inherit;
-  border-left: 1px solid #e0e0e0;
 }
 
 .tdn--sticky {
@@ -390,6 +389,7 @@ tbody tr {
   padding: 12px 16px;
   background-color: #fff;
   border: 1px solid var(--clr-t-border);
+  border-left: unset;
   position: sticky;
   left: 0;
   bottom: -1px;
