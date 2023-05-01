@@ -63,6 +63,7 @@ function sideBarItemOnMouseOver($event, item) {
 function resizeSidebar() {
   isSidebarBig.value = !isSidebarBig.value;
   $emitter.emit("resizeSidebar", isSidebarBig.value);
+  $emitter.emit("rerenderTable");
 }
 </script>
 

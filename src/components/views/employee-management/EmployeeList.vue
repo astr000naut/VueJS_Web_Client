@@ -21,7 +21,7 @@
           <div class="hover__text">Tải lại dữ liệu</div>
         </div>
       </div>
-      <EmployeeTable ref="basetable" />
+      <EmployeeTable ref="basetable" :key="tableKey" />
     </div>
   </div>
 </template>
@@ -29,10 +29,25 @@
 <script setup>
 import EmployeeTable from "@/components/views/employee-management/EmployeeTable.vue";
 import { useRouter } from "vue-router";
-import { ref } from "vue";
+import { ref, onMounted, onBeforeUnmount, inject } from "vue";
 
 const router = useRouter();
 const basetable = ref(null);
+const tableKey = ref(0);
+const $emitter = inject("$emitter");
+
+onMounted(() => {
+  $emitter.on("rerenderTable", () => {
+    tableKey.value += 1;
+    if (tableKey.value > 100) {
+      tableKey.value = 0;
+    }
+  });
+});
+
+onBeforeUnmount(() => {
+  $emitter.off("rerenderTable");
+});
 
 function btnAddOnClick() {
   router.replace("/employee/create");
