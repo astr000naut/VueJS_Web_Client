@@ -296,7 +296,7 @@ td {
   padding: 0 12px;
 }
 
-thead th {
+th {
   border-bottom: 1px solid #c7c7c7;
   border-right: 1px solid #c7c7c7;
   height: 48px;
