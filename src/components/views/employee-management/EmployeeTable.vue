@@ -287,19 +287,20 @@ loadData();
   user-select: none;
 }
 
-th,
 td {
-  border-style: solid;
-  border-width: 1px;
   border-left: none;
   border-top: none;
-  border-bottom-color: #c7c7c7;
-  border-right-color: #c7c7c7;
+  border-bottom: 1px solid #c7c7c7;
+  border-right: 1px solid #c7c7c7;
   height: 48px;
   padding: 0 12px;
 }
 
 thead th {
+  border-bottom: 1px solid #c7c7c7;
+  border-right: 1px solid #c7c7c7;
+  height: 48px;
+  padding: 0 12px;
   background-color: #e5e8ec;
   position: sticky;
   top: -1px;
