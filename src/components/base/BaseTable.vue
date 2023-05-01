@@ -32,7 +32,10 @@
         <tbody>
           <template v-if="table.isLoadingData">
             <tr v-for="i in Math.min(20, table.recordPerPage)" :key="i">
-              <td v-for="j in 12" :key="j">
+              <td v-for="j in 11" :key="j">
+                <div class="loading-item"></div>
+              </td>
+              <td class="tdn--sticky">
                 <div class="loading-item"></div>
               </td>
             </tr>
