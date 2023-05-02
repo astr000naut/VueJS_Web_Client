@@ -506,7 +506,7 @@ hr {
   bottom: 0;
   left: 0;
   right: 0;
-  /* background-color: #8a8a8a8a; */
+  background-color: #c7c7c71a;
   z-index: 10;
 }
 </style>
