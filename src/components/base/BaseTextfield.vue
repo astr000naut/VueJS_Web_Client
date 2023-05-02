@@ -1,5 +1,11 @@
 <template>
-  <div class="txtfield" :class="props.isrequired ? 'field--required' : ''">
+  <div
+    class="txtfield"
+    :class="[
+      props.isrequired ? 'field--required' : '',
+      noti.length > 0 ? 'error-noti' : '',
+    ]"
+  >
     <div v-show="props.label" class="txtfield__label label">
       {{ props.label }}
     </div>
@@ -11,10 +17,11 @@
         :value="text"
         ref="refInput"
         @input="$emit('update:text', $event.target.value)"
+        @keyup="inputKeyupHandler"
       />
       <div class="txtfield__icon"></div>
     </div>
-    <div class="txtfield__noti noti"></div>
+    <div class="txtfield__noti noti">{{ noti }}</div>
   </div>
 </template>
 
@@ -26,9 +33,19 @@ const props = defineProps({
   text: String,
   isrequired: Boolean,
 });
-defineEmits(["update:text"]);
 const refInput = ref(null);
+const noti = ref("");
+defineEmits(["update:text"]);
 defineExpose({ refInput });
+function inputKeyupHandler() {
+  if (props.isrequired) {
+    if (props.text.length == 0) {
+      noti.value = `${props.label} không được để trống`;
+    } else {
+      noti.value = "";
+    }
+  }
+}
 </script>
 
 <style scoped>

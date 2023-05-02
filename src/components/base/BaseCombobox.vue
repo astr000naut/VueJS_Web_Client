@@ -1,5 +1,11 @@
 <template>
-  <div class="cbox" :class="props.isrequired ? 'field--required' : ''">
+  <div
+    class="cbox"
+    :class="[
+      props.isrequired ? 'field--required' : '',
+      noti.length > 0 ? 'error-noti' : '',
+    ]"
+  >
     <div class="cbox__label label">{{ props.label }}</div>
     <div class="cbox__select">
       <div class="select__box">
@@ -8,6 +14,7 @@
             type="text"
             :value="props.text"
             @input="$emit('update:text', $event.target.value)"
+            @keyup="inputKeyupHandler"
           />
         </div>
         <button
@@ -26,7 +33,7 @@
         <div class="optionlist"></div>
       </div>
     </div>
-    <div class="cbox__noti noti"></div>
+    <div class="cbox__noti noti">{{ noti }}</div>
   </div>
 </template>
 
@@ -38,9 +45,20 @@ const props = defineProps({
   text: String,
   isrequired: Boolean,
 });
+const noti = ref("");
 const isOptionboxOpen = ref(false);
 function selectButtonOnClick() {
   isOptionboxOpen.value = !isOptionboxOpen.value;
+}
+
+function inputKeyupHandler() {
+  if (props.isrequired) {
+    if (props.text.length == 0) {
+      noti.value = `${props.label} không được để trống`;
+    } else {
+      noti.value = "";
+    }
+  }
 }
 </script>
 
