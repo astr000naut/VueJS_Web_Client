@@ -9,6 +9,7 @@
         type="text"
         :placeholder="props.pholder"
         :value="text"
+        ref="refInput"
         @input="$emit('update:text', $event.target.value)"
       />
       <div class="txtfield__icon"></div>
@@ -18,8 +19,11 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
 const props = defineProps(["pholder", "label", "text"]);
 defineEmits(["update:text"]);
+const refInput = ref(null);
+defineExpose({ refInput });
 </script>
 
 <style scoped>

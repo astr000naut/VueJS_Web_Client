@@ -1,9 +1,12 @@
 <template>
-  <button>{{ props.bname }}</button>
+  <button ref="refBtn">{{ props.bname }}</button>
 </template>
 
 <script setup>
+import { ref } from "vue";
 const props = defineProps(["bname"]);
+const refBtn = ref(null);
+defineExpose({ refBtn });
 </script>
 
 <style scoped>

@@ -12,11 +12,19 @@
             }}
           </div>
           <div class="header__option1">
-            <div class="checkbox mi mi-18"></div>
+            <div
+              class="checkbox mi mi-18"
+              :class="[form.checkbox1 ? 'mi-checkbox-checked' : '']"
+              @click="form.checkbox1 = !form.checkbox1"
+            ></div>
             <div class="checkbox__label">Là khách hàng</div>
           </div>
           <div class="header__option2">
-            <div class="checkbox mi mi-18"></div>
+            <div
+              class="checkbox mi mi-18"
+              :class="[form.checkbox2 ? 'mi-checkbox-checked' : '']"
+              @click="form.checkbox2 = !form.checkbox2"
+            ></div>
             <div class="checkbox__label">Là nhà cung cấp</div>
           </div>
         </div>
@@ -39,6 +47,7 @@
                   label="Mã"
                   class="field--required"
                   v-model:text="form.empCode"
+                  ref="empCodeRef"
                 />
               </div>
               <div class="fu__name">
@@ -161,6 +170,8 @@
                 pholder=""
                 label="Chi nhánh"
                 v-model:text="form.empBankPlace"
+                ref="bankAreaInputRef"
+                @keydown.tab.prevent="bankAreaInputOnTabKeyDown"
               />
             </div>
           </div>
@@ -169,11 +180,20 @@
       <hr />
       <div class="form__footer">
         <div class="footer__left">
-          <BaseButton bname="Hủy" class="btn--secondary" />
+          <BaseButton
+            ref="cancelBtnRef"
+            bname="Hủy"
+            class="btn--secondary"
+            @keydown.tab.prevent="cancelBtnOnTabKeydown"
+          />
         </div>
         <div class="footer__right">
-          <BaseButton bname="Cất" class="btn--secondary" />
-          <BaseButton bname="Cất và Thêm" class="btn--primary" />
+          <BaseButton bname="Cất" class="btn--secondary" ref="saveBtnRef" />
+          <BaseButton
+            bname="Cất và Thêm"
+            class="btn--primary"
+            @keydown.tab.prevent="saveAndAddBtnOnTabKeydown"
+          />
         </div>
       </div>
     </div>
@@ -185,7 +205,7 @@ import BaseCombobox from "@/components/base/BaseCombobox.vue";
 import BaseDatepicker from "@/components/base/BaseDatepicker.vue";
 import BaseRadiogroup from "@/components/base/BaseRadiogroup.vue";
 import BaseLoader from "@/components/base/BaseLoader.vue";
-import { ref, inject } from "vue";
+import { ref, inject, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 const $axios = inject("$axios");
 
@@ -194,6 +214,8 @@ const route = useRoute();
 const form = ref({
   type: "",
   isLoading: false,
+  checkbox1: false,
+  checkbox2: false,
   empId: "",
   empCode: "",
   empFullName: "",
@@ -215,49 +237,79 @@ const form = ref({
   empBankName: "",
   empBankPlace: "",
 });
+const empCodeRef = ref(null);
+const cancelBtnRef = ref(null);
+const saveBtnRef = ref(null);
+const bankAreaInputRef = ref(null);
 
-if (route.params.id) {
-  form.value.type = "info";
-  form.value.empId = route.params.id;
-  getEmployee(form.value.empId);
-} else {
-  form.value.type = "create";
+onMounted(async () => {
+  if (route.params.id) {
+    form.value.type = "info";
+    form.value.empId = route.params.id;
+    await getEmployee(form.value.empId);
+  } else {
+    form.value.type = "create";
+    await getNewEmployeeCode();
+  }
+  empCodeRef.value.refInput.focus();
+});
+
+function cancelBtnOnTabKeydown() {
+  empCodeRef.value.refInput.focus();
 }
 
-function getEmployee(empId) {
-  form.value.isLoading = true;
-  $axios
-    .get(`https://cukcuk.manhnv.net/api/v1/Employees/${empId}`)
-    .then(function (response) {
-      // handle success
-      const data = response.data;
-      form.value.empCode = data.EmployeeCode;
-      form.value.empFullName = data.FullName;
-      form.value.empDepartmentName = data.DepartmentName;
-      console.log(data);
-      console.log(form.value.empDepartmentName);
-      form.value.empDepartmentCode = data.DepartmentCode;
-      form.value.empPositionId = data.PositionId;
-      form.value.empPositionName = data.empPositionName;
-      form.value.empDateOfBirth = data.DateOfBirth;
-      form.value.empGender = data.Gender;
-      form.value.empGenderName = data.GenderName;
-      form.value.empIdentityNumber = data.IdentityNumber;
-      form.value.empIdentityDate = data.IdentityDate;
-      form.value.empIdentityPlace = data.IdentityPlace;
-      form.value.empAddress = data.Address;
-      form.value.empPhoneNumber = data.PhoneNumber;
-      form.value.empLandlineNumber = "sample";
-      form.value.empEmail = data.Email;
-      form.value.empBankAcc = "sample";
-      form.value.empBankName = "sample";
-      form.value.empBankPlace = "sample";
-      form.value.isLoading = false;
-    })
-    .catch(function (error) {
-      // handle error
-      console.log(error);
-    });
+function bankAreaInputOnTabKeyDown() {
+  saveBtnRef.value.refBtn.focus();
+}
+
+function saveAndAddBtnOnTabKeydown() {
+  cancelBtnRef.value.refBtn.focus();
+}
+
+async function getNewEmployeeCode() {
+  try {
+    form.value.isLoading = true;
+    const response = await $axios.get(
+      `https://cukcuk.manhnv.net/api/v1/Employees/NewEmployeeCode`
+    );
+    const data = response.data;
+    form.value.empCode = data;
+    form.value.isLoading = false;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getEmployee(empId) {
+  try {
+    form.value.isLoading = true;
+    const response = await $axios.get(
+      `https://cukcuk.manhnv.net/api/v1/Employees/${empId}`
+    );
+    const data = response.data;
+    form.value.empCode = data.EmployeeCode;
+    form.value.empFullName = data.FullName;
+    form.value.empDepartmentName = data.DepartmentName;
+    form.value.empDepartmentCode = data.DepartmentCode;
+    form.value.empPositionId = data.PositionId;
+    form.value.empPositionName = data.empPositionName;
+    form.value.empDateOfBirth = data.DateOfBirth;
+    form.value.empGender = data.Gender;
+    form.value.empGenderName = data.GenderName;
+    form.value.empIdentityNumber = data.IdentityNumber;
+    form.value.empIdentityDate = data.IdentityDate;
+    form.value.empIdentityPlace = data.IdentityPlace;
+    form.value.empAddress = data.Address;
+    form.value.empPhoneNumber = data.PhoneNumber;
+    form.value.empLandlineNumber = "sample";
+    form.value.empEmail = data.Email;
+    form.value.empBankAcc = "sample";
+    form.value.empBankName = "sample";
+    form.value.empBankPlace = "sample";
+    form.value.isLoading = false;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function btnCloseOnClick() {
