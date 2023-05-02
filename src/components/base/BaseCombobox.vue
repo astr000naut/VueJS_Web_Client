@@ -1,5 +1,5 @@
 <template>
-  <div class="cbox">
+  <div class="cbox" :class="props.isrequired ? 'field--required' : ''">
     <div class="cbox__label label">{{ props.label }}</div>
     <div class="cbox__select">
       <div class="select__box">
@@ -33,7 +33,11 @@
 <script setup>
 import { ref } from "vue";
 import BaseLoader from "./BaseLoader.vue";
-const props = defineProps(["label", "text"]);
+const props = defineProps({
+  label: String,
+  text: String,
+  isrequired: Boolean,
+});
 const isOptionboxOpen = ref(false);
 function selectButtonOnClick() {
   isOptionboxOpen.value = !isOptionboxOpen.value;

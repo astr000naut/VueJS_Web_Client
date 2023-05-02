@@ -48,7 +48,7 @@
                 <BaseTextfield
                   pholder=""
                   label="Mã"
-                  class="field--required"
+                  :isrequired="true"
                   v-model:text="form.empCode"
                   ref="empCodeRef"
                 />
@@ -57,7 +57,7 @@
                 <BaseTextfield
                   pholder=""
                   label="Tên"
-                  class="field--required"
+                  :isrequired="true"
                   v-model:text="form.empFullName"
                 />
               </div>
@@ -66,7 +66,7 @@
               <div class="fu__unit">
                 <BaseCombobox
                   label="Đơn vị"
-                  class="field--required"
+                  :isrequired="true"
                   v-model:text="form.empDepartmentName"
                 />
               </div>

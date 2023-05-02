@@ -1,5 +1,5 @@
 <template>
-  <div class="txtfield">
+  <div class="txtfield" :class="props.isrequired ? 'field--required' : ''">
     <div v-show="props.label" class="txtfield__label label">
       {{ props.label }}
     </div>
@@ -20,7 +20,12 @@
 
 <script setup>
 import { ref } from "vue";
-const props = defineProps(["pholder", "label", "text"]);
+const props = defineProps({
+  pholder: String,
+  label: String,
+  text: String,
+  isrequired: Boolean,
+});
 defineEmits(["update:text"]);
 const refInput = ref(null);
 defineExpose({ refInput });
