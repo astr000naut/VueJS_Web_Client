@@ -1,5 +1,8 @@
 <template>
   <div class="wrapper wrapper--dark1 wrapper--form">
+    <div class="form__dialog" v-show="form.showDialog">
+      <BaseDialog />
+    </div>
     <div class="form__loader" v-show="form.isLoading">
       <BaseLoader />
     </div>
@@ -205,6 +208,7 @@ import BaseCombobox from "@/components/base/BaseCombobox.vue";
 import BaseDatepicker from "@/components/base/BaseDatepicker.vue";
 import BaseRadiogroup from "@/components/base/BaseRadiogroup.vue";
 import BaseLoader from "@/components/base/BaseLoader.vue";
+import BaseDialog from "@/components/base/BaseDialog.vue";
 import { ref, inject, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 const $axios = inject("$axios");
@@ -508,5 +512,15 @@ hr {
   right: 0;
   background-color: #c7c7c71a;
   z-index: 10;
+}
+
+.form__dialog {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #88888893;
+  z-index: 12;
 }
 </style>
