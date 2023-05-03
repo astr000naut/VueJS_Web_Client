@@ -14,7 +14,7 @@
             type="text"
             :value="props.text"
             @input="$emit('update:text', $event.target.value)"
-            @keyup="inputKeyupHandler"
+            @keyup="inputKeyupHandler($event)"
           />
         </div>
         <button
@@ -51,9 +51,9 @@ function selectButtonOnClick() {
   isOptionboxOpen.value = !isOptionboxOpen.value;
 }
 
-function inputKeyupHandler() {
+function inputKeyupHandler($event) {
   if (props.isrequired) {
-    if (props.text.length == 0) {
+    if (props.text.length == 0 && $event.key == "Backspace") {
       noti.value = `${props.label} không được để trống`;
     } else {
       noti.value = "";

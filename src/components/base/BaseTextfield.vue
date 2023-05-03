@@ -17,7 +17,7 @@
         :value="text"
         ref="refInput"
         @input="$emit('update:text', $event.target.value)"
-        @keyup="inputKeyupHandler"
+        @keyup="inputKeyupHandler($event)"
       />
       <div class="txtfield__icon"></div>
     </div>
@@ -37,9 +37,9 @@ const refInput = ref(null);
 const noti = ref("");
 defineEmits(["update:text"]);
 defineExpose({ refInput });
-function inputKeyupHandler() {
+function inputKeyupHandler($event) {
   if (props.isrequired) {
-    if (props.text.length == 0) {
+    if (props.text.length == 0 && $event.key == "Backspace") {
       noti.value = `${props.label} không được để trống`;
     } else {
       noti.value = "";
