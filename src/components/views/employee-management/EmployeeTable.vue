@@ -73,7 +73,9 @@
                 <div class="text-left">{{ emp.GenderName }}</div>
               </td>
               <td>
-                <div class="text-left">{{ emp.DateOfBirth }}</div>
+                <div class="text-left">
+                  {{ $formatter.changeFormat(emp.DateOfBirth) }}
+                </div>
               </td>
               <td>
                 <div class="text-left">{{ emp.IdentityNumber }}</div>
@@ -169,6 +171,7 @@
 import { inject, ref } from "vue";
 import BaseLoader from "../../base/BaseLoader.vue";
 import { useRouter } from "vue-router";
+import $formatter from "@/js/common/formater";
 
 const router = useRouter();
 

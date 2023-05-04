@@ -3,7 +3,12 @@
     <div class="dpicker__label">{{ props.label }}</div>
     <div class="dpicker__selector">
       <div class="dpicker__input">
-        <input type="text" :placeholder="dateFormat" v-model="inputText" />
+        <input
+          type="text"
+          :placeholder="$formatter.dateFormat"
+          :value="inputText"
+          @input="$emit('update:inputText', $event.target.value)"
+        />
         <div
           class="dpicker__icon mi mi-24 mi-calendar"
           @click="miCalendarOnClick"
@@ -131,11 +136,12 @@
 
 <script setup>
 import { ref } from "vue";
-import moment from "moment";
-import common from "../../js/common/value.js";
+import $formatter from "@/js/common/formater";
 const props = defineProps({
   label: String,
+  inputText: String,
 });
+const emits = defineEmits(["update:inputText"]);
 const isBoxOpen = ref(false);
 
 // 0 -> Day 1-> Month 2 -> Year
@@ -153,21 +159,6 @@ const cell = ref([]);
 const selectedIdx = ref(-1);
 const maxYearLimit = date.getFullYear() + 12;
 const minYearLimit = date.getFullYear() - 150;
-const dateFormat = ref(common.dateFormat[common.defaultDateFormat][0]);
-const inputText = ref("");
-
-function getDateFormated(dd, mm, yyyy) {
-  let d = new Date(`${yyyy}/${mm}/${dd}`);
-  return moment(d).format(dateFormat.value);
-}
-
-function checkDateValid(inputDate) {
-  return moment(
-    inputDate,
-    common.dateFormat[common.defaultDateFormat],
-    true
-  ).isValid();
-}
 
 function assignRealtoCur() {
   curDay.value = realDay.value;
@@ -191,10 +182,9 @@ function todayBtnOnClick() {
   updateCell(realYear.value, realMonth.value);
   yearRangeNow.value = date.getFullYear();
   boxText.value = `Tháng ${realMonth.value}, ${realYear.value}`;
-  inputText.value = getDateFormated(
-    realDay.value,
-    realMonth.value,
-    realYear.value
+  emits(
+    "update:inputText",
+    $formatter.formatDate(realDay.value, realMonth.value, realYear.value)
   );
 }
 
@@ -210,10 +200,9 @@ function dateItemOnClick(_e, dateChoosedIdx) {
   }
   curDay.value = cell.value[dateChoosedIdx];
   assignCurToReal();
-  inputText.value = getDateFormated(
-    realDay.value,
-    realMonth.value,
-    realYear.value
+  emits(
+    "update:inputText",
+    $formatter.formatDate(realDay.value, realMonth.value, realYear.value)
   );
 }
 
@@ -253,42 +242,27 @@ function updateCell(year, month) {
 function miCalendarOnClick() {
   // Init
   if (!isBoxOpen.value) {
-    if (checkDateValid(inputText.value)) {
+    if ($formatter.isValidDate(props.inputText)) {
       // Nếu ngày tháng nhập vào hợp lệ
       // Reset ngày tháng năm về ngày tháng đã nhập
-      const dateParsed = inputText.value.split("/");
-      switch (common.defaultDateFormat) {
-        case "dmy":
-          realDay.value = parseInt(dateParsed[0]);
-          realMonth.value = parseInt(dateParsed[1]);
-          realYear.value = parseInt(dateParsed[2]);
-          break;
-        case "mdy":
-          realDay.value = parseInt(dateParsed[1]);
-          realMonth.value = parseInt(dateParsed[0]);
-          realYear.value = parseInt(dateParsed[2]);
-          break;
-        case "ymd":
-          realDay.value = parseInt(dateParsed[2]);
-          realMonth.value = parseInt(dateParsed[1]);
-          realYear.value = parseInt(dateParsed[0]);
-          break;
-      }
+      const { day, month, year } = $formatter.stringToDmy(props.inputText);
+      realDay.value = day;
+      realMonth.value = month;
+      realYear.value = year;
       assignRealtoCur();
       // Update ngày
       yearRangeNow.value = curYear.value;
       boxText.value = `Tháng ${realMonth.value}, ${realYear.value}`;
       boxStatus.value = 0;
-      inputText.value = getDateFormated(
-        realDay.value,
-        realMonth.value,
-        realYear.value
+      emits(
+        "update:inputText",
+        $formatter.formatDate(realDay.value, realMonth.value, realYear.value)
       );
       updateCell(realYear.value, realMonth.value);
     } else {
       // Nếu ngày tháng nhập vào không hợp lệ hoặc để trống
       // Reset input text
-      inputText.value = "";
+      emits("update:inputText", "");
       // Reset ngày tháng năm về hiện tại
       realYear.value = date.getFullYear();
       realMonth.value = date.getMonth() + 1;

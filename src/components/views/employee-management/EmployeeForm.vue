@@ -1,7 +1,11 @@
 <template>
   <div class="wrapper wrapper--dark1 wrapper--form">
-    <div class="form__dialog" v-show="form.showDialog">
-      <BaseDialog />
+    <div class="form__dialog" v-show="formDialog.isShow">
+      <BaseDialog
+        title="Lưu lại thay đổi"
+        :close-on-click="formDialogCloseBtnOnClick"
+        :no-on-click="formDialogNoBtnOnClick"
+      />
     </div>
     <div class="form__loader" v-show="form.isLoading">
       <BaseLoader />
@@ -67,6 +71,7 @@
                 <BaseCombobox
                   label="Đơn vị"
                   :isrequired="true"
+                  api="https://cukcuk.manhnv.net/api/v1/Departments"
                   v-model:text="form.empDepartmentName"
                 />
               </div>
@@ -84,7 +89,10 @@
           <div class="fu__right">
             <div class="fu__right__top">
               <div class="fu__dob">
-                <BaseDatepicker label="Ngày sinh" />
+                <BaseDatepicker
+                  label="Ngày sinh"
+                  v-model:inputText="form.empDateOfBirth"
+                />
               </div>
               <div class="fu__gender">
                 <BaseRadiogroup
@@ -104,7 +112,7 @@
               <div class="fu__cmnddate">
                 <BaseDatepicker
                   label="Ngày cấp"
-                  v-model:text="form.empIdentityDate"
+                  @update-value="identityDateOnUpdate"
                 />
               </div>
             </div>
@@ -188,10 +196,16 @@
             bname="Hủy"
             class="btn--secondary"
             @keydown.tab.prevent="cancelBtnOnTabKeydown"
+            @click="cancelBtnOnClick"
           />
         </div>
         <div class="footer__right">
-          <BaseButton bname="Cất" class="btn--secondary" ref="saveBtnRef" />
+          <BaseButton
+            bname="Cất"
+            class="btn--secondary"
+            ref="saveBtnRef"
+            @click="btnSaveOnClick"
+          />
           <BaseButton
             bname="Cất và Thêm"
             class="btn--primary"
@@ -211,6 +225,7 @@ import BaseLoader from "@/components/base/BaseLoader.vue";
 import BaseDialog from "@/components/base/BaseDialog.vue";
 import { ref, inject, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import $formatter from "@/js/common/formater";
 const $axios = inject("$axios");
 
 const router = useRouter();
@@ -241,6 +256,9 @@ const form = ref({
   empBankName: "",
   empBankPlace: "",
 });
+const formDialog = ref({
+  isShow: false,
+});
 const empCodeRef = ref(null);
 const cancelBtnRef = ref(null);
 const saveBtnRef = ref(null);
@@ -257,6 +275,27 @@ onMounted(async () => {
   }
   empCodeRef.value.refInput.focus();
 });
+
+function identityDateOnUpdate(newVal) {
+  form.value.empIdentityDate = newVal;
+}
+
+function btnSaveOnClick() {
+  console.log(form.value);
+}
+
+function formDialogCloseBtnOnClick() {
+  formDialog.value.isShow = false;
+}
+
+function formDialogNoBtnOnClick() {
+  formDialog.value.isShow = false;
+  router.replace("/employee");
+}
+
+function cancelBtnOnClick() {
+  router.replace("/employee");
+}
 
 function cancelBtnOnTabKeydown() {
   empCodeRef.value.refInput.focus();
@@ -293,11 +332,11 @@ async function getEmployee(empId) {
     const data = response.data;
     form.value.empCode = data.EmployeeCode;
     form.value.empFullName = data.FullName;
-    form.value.empDepartmentName = data.DepartmentName;
+    form.value.empDepartmentName = data.DepartmentName ?? "";
     form.value.empDepartmentCode = data.DepartmentCode;
     form.value.empPositionId = data.PositionId;
     form.value.empPositionName = data.empPositionName;
-    form.value.empDateOfBirth = data.DateOfBirth;
+    form.value.empDateOfBirth = $formatter.changeFormat(data.DateOfBirth);
     form.value.empGender = data.Gender;
     form.value.empGenderName = data.GenderName;
     form.value.empIdentityNumber = data.IdentityNumber;
@@ -317,7 +356,7 @@ async function getEmployee(empId) {
 }
 
 function btnCloseOnClick() {
-  router.replace("/employee");
+  formDialog.value.isShow = true;
 }
 </script>
 

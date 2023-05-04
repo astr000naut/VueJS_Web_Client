@@ -14,7 +14,8 @@
             type="text"
             :value="props.text"
             @input="$emit('update:text', $event.target.value)"
-            @keyup="inputKeyupHandler($event)"
+            @keyup="inputKeyupHandler"
+            @keypress="inputKeyPressHandler"
           />
         </div>
         <button
@@ -24,13 +25,44 @@
         ></button>
       </div>
       <div
-        :class="{ 'display--none': !isOptionboxOpen }"
+        :class="[cbox.isOptionboxOpen ? '' : 'display--none']"
         class="select__optionbox"
       >
-        <div class="loader__container">
+        <div class="loader__container" v-show="cbox.isLoading">
           <BaseLoader />
         </div>
-        <div class="optionlist"></div>
+        <div class="optionlist" v-show="!cbox.isLoading">
+          <div
+            v-for="option in optionListDisplay"
+            class="option__item"
+            :key="option.DepartmentId"
+            @click="
+              optionOnClick($event, option.DepartmentId, option.DepartmentName)
+            "
+            :class="[
+              option.DepartmentId == cbox.selectedItemId
+                ? 'item--selected'
+                : '',
+              cbox.cusorItemId != null &&
+              option.DepartmentId ==
+                optionListDisplay[cbox.cusorItemId].DepartmentId
+                ? 'item--highlighted'
+                : '',
+            ]"
+          >
+            <div class="option__text">{{ option.DepartmentName }}</div>
+            <div class="option__icon"></div>
+          </div>
+          <div
+            v-show="cbox.suggestAddingItem.length > 0"
+            class="option__item"
+            @click="addingItemOnClick"
+          >
+            <div class="option__text">
+              Thêm mới <strong>{{ cbox.suggestAddingItem }}</strong>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="cbox__noti noti">{{ noti }}</div>
@@ -38,17 +70,80 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, inject } from "vue";
 import BaseLoader from "./BaseLoader.vue";
+const $axios = inject("$axios");
+const typingTimers = [];
+const timeoutVal = 500;
+
 const props = defineProps({
   label: String,
   text: String,
   isrequired: Boolean,
+  api: String,
+});
+
+const emits = defineEmits(["update:text"]);
+const cbox = ref({
+  isOptionboxOpen: false,
+  isLoading: false,
+  selectedItemId: "",
+  suggestAddingItem: "",
+  cusorItemId: null,
 });
 const noti = ref("");
-const isOptionboxOpen = ref(false);
+const optionList = ref([]);
+const optionListDisplay = ref([]);
+
+fetchOptionList();
+
+function optionOnClick(_$event, departmentId, departmentName) {
+  emits("update:text", departmentName);
+  noti.value = "";
+  cbox.value.isOptionboxOpen = false;
+  cbox.value.selectedItemId = departmentId;
+}
+
 function selectButtonOnClick() {
-  isOptionboxOpen.value = !isOptionboxOpen.value;
+  cbox.value.cusorItemId = null;
+  optionListDisplay.value = optionList.value;
+  cbox.value.isOptionboxOpen = !cbox.value.isOptionboxOpen;
+}
+
+function addingItemOnClick() {
+  $axios
+    .post(props.api, {
+      createdDate: new Date(),
+      createdBy: "string",
+      modifiedDate: new Date(),
+      modifiedBy: "string",
+      departmentCode: "string",
+      departmentName: cbox.value.suggestAddingItem,
+      description: "string",
+    })
+    .then((response) => {
+      console.log(response);
+      cbox.value.suggestAddingItem = "";
+      fetchOptionList();
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+function fetchOptionList() {
+  cbox.value.isLoading = true;
+  $axios
+    .get(props.api)
+    .then((response) => {
+      const data = response.data;
+      cbox.value.isLoading = false;
+      optionList.value = data;
+      optionListDisplay.value = data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }
 
 function inputKeyupHandler($event) {
@@ -59,6 +154,62 @@ function inputKeyupHandler($event) {
       noti.value = "";
     }
   }
+  if (cbox.value.isOptionboxOpen == false && $event.key != "Tab") {
+    setTimeout(() => {
+      cbox.value.isOptionboxOpen = true;
+    }, 500);
+  }
+
+  while (typingTimers.length > 0) {
+    clearTimeout(typingTimers[0]);
+    typingTimers.splice(0, 1);
+  }
+
+  typingTimers.push(
+    setTimeout(() => {
+      // Display loading
+      cbox.value.isLoading = true;
+      cbox.value.selectedItemId = "";
+      filterData(props.text).then((idList) => {
+        optionListDisplay.value = [];
+        if (idList.length > 0) {
+          cbox.value.suggestAddingItem = "";
+          for (let i = 0; i < idList.length; ++i) {
+            optionListDisplay.value.push(optionList.value[idList[i]]);
+          }
+        } else {
+          cbox.value.suggestAddingItem = props.text;
+        }
+        cbox.value.isLoading = false;
+      });
+    }, timeoutVal)
+  );
+}
+
+function inputKeyPressHandler() {
+  cbox.value.isLoading = true;
+  while (typingTimers.length > 0) {
+    clearTimeout(typingTimers[0]);
+    typingTimers.splice(0, 1);
+  }
+}
+
+function filterData(input) {
+  const idList = [];
+  for (let i = 0; i < optionList.value.length; ++i) {
+    if (
+      optionList.value[i].DepartmentName.toLowerCase().includes(
+        input.toLowerCase()
+      )
+    ) {
+      idList.push(i);
+    }
+  }
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(idList);
+    }, 200);
+  });
 }
 </script>
 
@@ -139,7 +290,7 @@ function inputKeyupHandler($event) {
 .option__icon {
   width: 16px;
   height: 16px;
-  background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -1225px -363px;
+  background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -1225px -360px;
 }
 
 .optionlist::-webkit-scrollbar {
@@ -201,10 +352,16 @@ function inputKeyupHandler($event) {
 .option__item:hover {
   cursor: pointer;
   background-color: var(--clr-lg100);
+  color: #000;
 }
 
 .item--selected {
   color: var(--clr-lg500);
+}
+
+.item--highlighted {
+  background-color: var(--clr-lg500);
+  color: #fff;
 }
 
 .option__item:not(.item--selected) .option__icon {
@@ -213,6 +370,6 @@ function inputKeyupHandler($event) {
 
 /* Loader */
 .loader__container {
-  height: 300px;
+  height: 200px;
 }
 </style>

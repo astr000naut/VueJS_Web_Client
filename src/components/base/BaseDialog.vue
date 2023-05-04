@@ -1,20 +1,35 @@
 <template>
   <div class="dialog">
     <div class="dialog__bar">
-      <div class="dialog__heading">Lưu lại thay đổi</div>
-      <BaseButton bname="" class="mi-36 btn--close" />
+      <div class="dialog__heading">{{ props.title }}</div>
+      <BaseButton
+        bname=""
+        class="mi-36 btn--close"
+        @click="props.closeOnClick"
+      />
     </div>
     <div class="dialog__content">
       Dữ liệu đã bị thay đổi. Bạn có muốn cất không ?
     </div>
     <div class="dialog__footer">
-      <BaseButton bname="Không" class="btn--secondary" />
+      <BaseButton
+        bname="Không"
+        class="btn--secondary"
+        @click="props.noOnClick"
+      />
       <BaseButton bname="Có" class="btn--primary" />
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+const props = defineProps({
+  title: String,
+  closeOnClick: Function,
+  yesOnClick: Function,
+  noOnClick: Function,
+});
+</script>
 
 <style scoped>
 .dialog {
