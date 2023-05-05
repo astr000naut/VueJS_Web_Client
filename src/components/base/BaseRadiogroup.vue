@@ -11,7 +11,11 @@
 </template>
 
 <script setup>
-const props = defineProps(["label", "options"]);
+const props = defineProps({
+  label: String,
+  options: Array,
+  value: Number,
+});
 </script>
 
 <style scoped>

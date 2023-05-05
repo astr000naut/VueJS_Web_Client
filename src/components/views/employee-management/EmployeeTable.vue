@@ -18,7 +18,7 @@
             <th><div class="text-left mw-200">Tên nhân viên</div></th>
             <th><div class="text-left mw-70">Giới tính</div></th>
             <th><div class="text-left mw-80">Ngày sinh</div></th>
-            <th><div class="text-left mw-100">Số CMND</div></th>
+            <th><div class="text-left mw-120">Số CMND</div></th>
             <th><div class="text-left mw-150">Chức danh</div></th>
             <th><div class="text-left mw-200">Tên đơn vị</div></th>
             <th><div class="text-left mw-150">Số tài khoản</div></th>
@@ -172,6 +172,7 @@ import { inject, ref } from "vue";
 import BaseLoader from "../../base/BaseLoader.vue";
 import { useRouter } from "vue-router";
 import $formatter from "@/js/common/formater";
+import $enum from "@/js/common/enum";
 
 const router = useRouter();
 
@@ -236,7 +237,7 @@ function trOnDblclick(empId) {
 function loadData() {
   table.value.isLoadingData = true;
   $axios
-    .get("https://cukcuk.manhnv.net/api/v1/Employees")
+    .get($enum.api.employees.index)
     .then(function (response) {
       // handle success
       table.value.isLoadingData = false;

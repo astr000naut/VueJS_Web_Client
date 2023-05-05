@@ -15,7 +15,9 @@
         <div class="header__left">
           <div class="header__title">
             {{
-              form.type == "info" ? "Thông tin nhân viên" : "Thêm mới nhân viên"
+              form.type == $enum.form.infoType
+                ? "Thông tin nhân viên"
+                : "Thêm mới nhân viên"
             }}
           </div>
           <div class="header__option1">
@@ -71,7 +73,7 @@
                 <BaseCombobox
                   label="Đơn vị"
                   :isrequired="true"
-                  api="https://cukcuk.manhnv.net/api/v1/Departments"
+                  :api="$enum.api.departments"
                   v-model:text="form.empDepartmentName"
                 />
               </div>
@@ -223,6 +225,7 @@ import BaseDatepicker from "@/components/base/BaseDatepicker.vue";
 import BaseRadiogroup from "@/components/base/BaseRadiogroup.vue";
 import BaseLoader from "@/components/base/BaseLoader.vue";
 import BaseDialog from "@/components/base/BaseDialog.vue";
+import $enum from "@/js/common/enum";
 import { ref, inject, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import $formatter from "@/js/common/formater";
@@ -266,11 +269,11 @@ const bankAreaInputRef = ref(null);
 
 onMounted(async () => {
   if (route.params.id) {
-    form.value.type = "info";
+    form.value.type = $enum.form.infoType;
     form.value.empId = route.params.id;
     await getEmployee(form.value.empId);
   } else {
-    form.value.type = "create";
+    form.value.type = $enum.form.createType;
     await getNewEmployeeCode();
   }
   empCodeRef.value.refInput.focus();
@@ -308,9 +311,7 @@ function saveAndAddBtnOnTabKeydown() {
 async function getNewEmployeeCode() {
   try {
     form.value.isLoading = true;
-    const response = await $axios.get(
-      `https://cukcuk.manhnv.net/api/v1/Employees/NewEmployeeCode`
-    );
+    const response = await $axios.get($enum.api.employees.newCode);
     const data = response.data;
     form.value.empCode = data;
     form.value.isLoading = false;
@@ -322,9 +323,7 @@ async function getNewEmployeeCode() {
 async function getEmployee(empId) {
   try {
     form.value.isLoading = true;
-    const response = await $axios.get(
-      `https://cukcuk.manhnv.net/api/v1/Employees/${empId}`
-    );
+    const response = await $axios.get($enum.api.employees.one(empId));
     const data = response.data;
     form.value.empCode = data.EmployeeCode;
     form.value.empFullName = data.FullName;
