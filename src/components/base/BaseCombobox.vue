@@ -199,7 +199,7 @@ function filterData(input) {
   for (let i = 0; i < optionList.value.length; ++i) {
     if (
       optionList.value[i].DepartmentName.toLowerCase().includes(
-        input.toLowerCase()
+        input.toLowerCase().trim()
       )
     ) {
       idList.push(i);
