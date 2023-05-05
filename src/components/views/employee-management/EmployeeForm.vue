@@ -112,7 +112,7 @@
               <div class="fu__cmnddate">
                 <BaseDatepicker
                   label="Ngày cấp"
-                  @update-value="identityDateOnUpdate"
+                  v-model:inputText="form.empIdentityDate"
                 />
               </div>
             </div>
@@ -275,10 +275,6 @@ onMounted(async () => {
   }
   empCodeRef.value.refInput.focus();
 });
-
-function identityDateOnUpdate(newVal) {
-  form.value.empIdentityDate = newVal;
-}
 
 function btnSaveOnClick() {
   console.log(form.value);
