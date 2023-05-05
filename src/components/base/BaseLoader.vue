@@ -7,7 +7,7 @@
 <style scoped>
 .loaderbox {
   width: 100%;
-  /* background-color: gray; */
+  background-color: rgba(0, 0, 0, 0.1);
   height: 100%;
   display: flex;
   justify-content: center;
