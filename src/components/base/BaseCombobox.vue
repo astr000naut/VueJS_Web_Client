@@ -19,7 +19,10 @@
           />
         </div>
         <button
-          class="select__button"
+          class="select__button mi"
+          :class="[
+            cbox.isOptionboxOpen ? 'mi-cbox-arrowup' : 'mi-cbox-arrowdown',
+          ]"
           tabindex="-1"
           @click="selectButtonOnClick"
         ></button>
@@ -222,8 +225,6 @@ function filterData(input) {
   outline: none;
   border-left: 1px solid var(--clr-t-border);
   border-radius: 0 3px 3px 0;
-  background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -1117px -352px;
-  cursor: pointer;
 }
 
 .select__optionbox {
