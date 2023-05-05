@@ -34,7 +34,11 @@
         <div class="loader__container" v-show="cbox.isLoading">
           <BaseLoader />
         </div>
-        <div class="optionlist" v-show="!cbox.isLoading">
+        <div
+          class="optionlist"
+          v-show="!cbox.isLoading"
+          :class="[cbox.hasScrollbar ? 'hascrollbar' : '']"
+        >
           <template
             v-for="(option, index) in props.optionList"
             :key="option.DepartmentId"
@@ -101,6 +105,7 @@ const cbox = ref({
   selectedItemId: "",
   suggestAddingItem: "",
   cusorItemId: null,
+  hasScrollbar: false,
 });
 const noti = ref("");
 
@@ -262,7 +267,12 @@ function filterData(input) {
   background: url(../../assets/img/Sprites.64af8f61.svg) no-repeat -1225px -360px;
 }
 
-.optionlist::-webkit-scrollbar {
+::-webkit-scrollbar {
+  width: 0px;
+  background-color: transparent;
+}
+
+.optionlist.hascrollbar::-webkit-scrollbar {
   width: 9px;
   background-color: transparent;
 }
