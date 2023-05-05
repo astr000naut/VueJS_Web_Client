@@ -335,7 +335,7 @@ async function getEmployee(empId) {
     form.value.empGender = data.Gender;
     form.value.empGenderName = data.GenderName;
     form.value.empIdentityNumber = data.IdentityNumber;
-    form.value.empIdentityDate = data.IdentityDate;
+    form.value.empIdentityDate = $formatter.changeFormat(data.IdentityDate);
     form.value.empIdentityPlace = data.IdentityPlace;
     form.value.empAddress = data.Address;
     form.value.empPhoneNumber = data.PhoneNumber;
