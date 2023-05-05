@@ -495,20 +495,25 @@ td:has(.loading-item) {
   width: 100%;
   height: 100%;
   border-radius: 4px;
-  background: linear-gradient(to right, white, #bebebe70, white);
+  background-color: #ededed;
+  background: linear-gradient(
+      to right,
+      rgba(100, 100, 100, 0.2) 10%,
+      rgba(255, 255, 255, 0) 40%,
+      rgba(100, 100, 100, 0.3) 80%
+    )
+    #ededed;
+  background-size: 200% 100%;
+  background-position-x: 0%;
   animation: loading;
-  animation-duration: 1.5s;
-  animation-direction: alternate;
+  animation-duration: 0.5s;
+  animation-direction: alternate-reverse;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
 }
 @keyframes loading {
-  0% {
-    background-position-x: 0px;
-  }
-
   100% {
-    background-position-x: 100px;
+    background-position-x: 80%;
   }
 }
 </style>
