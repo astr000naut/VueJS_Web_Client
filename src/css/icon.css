@@ -50,12 +50,22 @@ background-position: -843px -31px;
 }
 
 .mi-header-bell {
-background-position: -787px -30px;
+background-position: -257px -32px;
+}
+
+.mi-header-bell:hover {
+    background-position: -787px -30px;
 }
 
 .mi-arrowdown-small {
 background-position: -940px -356px;
 }
+
+.mi-arrowdown-small:hover {
+    background-position: -940px -355px;
+}
+
+
 
 .mi-arrowup-small {
     background-position: -940px -356px;
@@ -68,6 +78,10 @@ background-position: -940px -355px;
 
 .mi-arrowdown {
 background-position: -1129px -362px;
+}
+
+.mi-arrowdown:hover {
+    background-position: -1130px -361px;
 }
 
 .mi-arrowup {

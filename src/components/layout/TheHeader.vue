@@ -127,6 +127,7 @@ onBeforeUnmount(() => {
 
 .header__username {
   font-weight: 500;
+  cursor: pointer;
 }
 
 .header__avatar {
@@ -135,6 +136,7 @@ onBeforeUnmount(() => {
   border-radius: 50%;
   background: url(../../assets/img/avatar-default.png);
   background-size: cover;
+  cursor: pointer;
 }
 
 /* Animation */

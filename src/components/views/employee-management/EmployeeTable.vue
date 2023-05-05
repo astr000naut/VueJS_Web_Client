@@ -50,7 +50,7 @@
               @click="trOnClick(emp.EmployeeId)"
               @dblclick="trOnDblclick(emp.EmployeeId)"
             >
-              <td class="td1--sticky">
+              <td class="td1--sticky" @dblclick.stop>
                 <div class="align-center">
                   <div
                     class="t__checkbox mi-24"
@@ -92,6 +92,7 @@
               <td
                 :class="[table.expandEmpId == emp.EmployeeId ? 'above' : '']"
                 class="tdn--sticky"
+                @dblclick.stop
               >
                 <div class="t__optionbox align-center">
                   <button
