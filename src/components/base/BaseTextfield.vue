@@ -6,8 +6,19 @@
       noti.length > 0 ? 'error-noti' : '',
     ]"
   >
-    <div v-show="props.label" class="txtfield__label label">
+    <div
+      v-show="props.label"
+      class="txtfield__label label"
+      @mouseenter="labelOnMouseEnter"
+      @mouseleave="labelOnMouseOut"
+    >
       {{ props.label }}
+    </div>
+    <div
+      class="txtfield__tooltip"
+      v-show="props.tooltip != null && showTooltip"
+    >
+      {{ props.tooltip }}
     </div>
     <div class="txtfield__textbox">
       <input
@@ -32,9 +43,11 @@ const props = defineProps({
   label: String,
   text: String,
   isrequired: Boolean,
+  tooltip: String,
 });
 const refInput = ref(null);
 const noti = ref("");
+const showTooltip = ref(false);
 defineEmits(["update:text"]);
 defineExpose({ refInput });
 function inputKeyupHandler($event) {
@@ -45,6 +58,13 @@ function inputKeyupHandler($event) {
       noti.value = "";
     }
   }
+}
+
+function labelOnMouseEnter() {
+  showTooltip.value = true;
+}
+function labelOnMouseOut() {
+  showTooltip.value = false;
 }
 </script>
 
@@ -60,6 +80,7 @@ function inputKeyupHandler($event) {
 }
 
 .txtfield__label {
+  width: fit-content;
   margin-bottom: 8px;
   font-weight: 500;
 }
@@ -169,4 +190,16 @@ function inputKeyupHandler($event) {
 .txtfield--search .txtfield__icon:active {
   background-color: var(--clr-t-border);
 } */
+
+/* Tooltip */
+.txtfield__tooltip {
+  background-color: #393a3d;
+  position: absolute;
+  z-index: 1;
+  left: -10px;
+  border-radius: 4px;
+  color: #fff;
+  width: fit-content;
+  padding: 2px 4px;
+}
 </style>

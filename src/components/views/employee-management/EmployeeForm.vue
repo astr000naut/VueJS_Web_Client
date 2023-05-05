@@ -114,6 +114,7 @@
                   pholder=""
                   label="Số CMND"
                   v-model:text="form.empIdentityNumber"
+                  tooltip="Số chứng minh nhân dân"
                 />
               </div>
               <div class="fu__cmnddate">
@@ -150,6 +151,7 @@
               <BaseTextfield
                 pholder=""
                 label="ĐT di động"
+                tooltip="Số điện thoại di động"
                 v-model:text="form.empPhoneNumber"
               />
             </div>
@@ -157,6 +159,7 @@
               <BaseTextfield
                 pholder=""
                 label="ĐT cố định"
+                tooltip="Số điện thoại cố định"
                 v-model:text="form.empLandlineNumber"
               />
             </div>
