@@ -99,7 +99,12 @@
               <div class="fu__gender">
                 <BaseRadiogroup
                   label="Giới tính"
-                  :options="['Nam', 'Nữ', 'Khác']"
+                  :options="[
+                    { text: 'Nam', value: 0 },
+                    { text: 'Nữ', value: 1 },
+                    { text: 'Khác', value: 2 },
+                  ]"
+                  v-model:radioValue="form.empGender"
                 />
               </div>
             </div>
@@ -246,7 +251,7 @@ const form = ref({
   empPositionId: "",
   empPositionName: "",
   empDateOfBirth: "",
-  empGender: 0,
+  empGender: -1,
   empGenderName: "",
   empIdentityNumber: "",
   empIdentityDate: "",

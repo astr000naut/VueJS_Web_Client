@@ -11,6 +11,11 @@ const $enum = {
       one: (id) => `https://cukcuk.manhnv.net/api/v1/Employees/${id}`,
     },
   },
+  gender: {
+    male: 0,
+    female: 1,
+    other: 2,
+  },
 };
 
 export default $enum;

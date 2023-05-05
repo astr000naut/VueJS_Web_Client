@@ -2,9 +2,18 @@
   <div class="input--radio">
     <div class="radio__label">{{ props.label }}</div>
     <div class="radio__container">
-      <div v-for="option in props.options" :key="option" class="radio__item">
-        <input type="radio" name="gender" id="" />
-        <label for="">{{ option }}</label>
+      <div
+        v-for="option in props.options"
+        :key="option.value"
+        class="radio__item"
+      >
+        <input
+          type="radio"
+          name="gender"
+          id=""
+          :checked="option.value == props.radioValue"
+        />
+        <label for="">{{ option.text }}</label>
       </div>
     </div>
   </div>
@@ -14,7 +23,7 @@
 const props = defineProps({
   label: String,
   options: Array,
-  value: Number,
+  radioValue: Number,
 });
 </script>
 
