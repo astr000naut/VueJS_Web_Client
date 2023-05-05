@@ -73,7 +73,7 @@
                 <BaseCombobox
                   label="Đơn vị"
                   :isrequired="true"
-                  :api="$enum.api.departments"
+                  :option-list="departmentList"
                   v-model:text="form.empDepartmentName"
                 />
               </div>
@@ -271,18 +271,44 @@ const empCodeRef = ref(null);
 const cancelBtnRef = ref(null);
 const saveBtnRef = ref(null);
 const bankAreaInputRef = ref(null);
+const departmentList = ref([]);
+
+initState();
 
 onMounted(async () => {
+  form.value.isLoading = true;
+  await getDataFromApi();
+  form.value.isLoading = false;
+  empCodeRef.value.refInput.focus();
+});
+
+function initState() {
   if (route.params.id) {
     form.value.type = $enum.form.infoType;
     form.value.empId = route.params.id;
-    await getEmployee(form.value.empId);
   } else {
     form.value.type = $enum.form.createType;
-    await getNewEmployeeCode();
   }
-  empCodeRef.value.refInput.focus();
-});
+}
+
+async function getDataFromApi() {
+  try {
+    // Fetch Department List
+    const departmentApiResponse = await $axios.get($enum.api.departments);
+    departmentList.value = departmentApiResponse.data;
+
+    if (form.value.type == $enum.form.createType) {
+      // Fetch new employee code
+      const response = await $axios.get($enum.api.employees.newCode);
+      form.value.empCode = response.data;
+    } else {
+      // Fetch employee information
+      await getEmployee(form.value.empId);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 function btnSaveOnClick() {
   console.log(form.value);
@@ -313,21 +339,8 @@ function saveAndAddBtnOnTabKeydown() {
   cancelBtnRef.value.refBtn.focus();
 }
 
-async function getNewEmployeeCode() {
-  try {
-    form.value.isLoading = true;
-    const response = await $axios.get($enum.api.employees.newCode);
-    const data = response.data;
-    form.value.empCode = data;
-    form.value.isLoading = false;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 async function getEmployee(empId) {
   try {
-    form.value.isLoading = true;
     const response = await $axios.get($enum.api.employees.one(empId));
     const data = response.data;
     form.value.empCode = data.EmployeeCode;
@@ -349,7 +362,6 @@ async function getEmployee(empId) {
     form.value.empBankAcc = "sample";
     form.value.empBankName = "sample";
     form.value.empBankPlace = "sample";
-    form.value.isLoading = false;
   } catch (error) {
     console.log(error);
   }

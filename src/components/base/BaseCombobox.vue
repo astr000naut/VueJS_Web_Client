@@ -32,27 +32,35 @@
           <BaseLoader />
         </div>
         <div class="optionlist" v-show="!cbox.isLoading">
-          <div
-            v-for="option in optionListDisplay"
-            class="option__item"
+          <template
+            v-for="(option, index) in props.optionList"
             :key="option.DepartmentId"
-            @click="
-              optionOnClick($event, option.DepartmentId, option.DepartmentName)
-            "
-            :class="[
-              option.DepartmentId == cbox.selectedItemId
-                ? 'item--selected'
-                : '',
-              cbox.cusorItemId != null &&
-              option.DepartmentId ==
-                optionListDisplay[cbox.cusorItemId].DepartmentId
-                ? 'item--highlighted'
-                : '',
-            ]"
           >
-            <div class="option__text">{{ option.DepartmentName }}</div>
-            <div class="option__icon"></div>
-          </div>
+            <div
+              v-show="!optionIdHide.includes(index)"
+              class="option__item"
+              @click="
+                optionOnClick(
+                  $event,
+                  option.DepartmentId,
+                  option.DepartmentName
+                )
+              "
+              :class="[
+                option.DepartmentId == cbox.selectedItemId
+                  ? 'item--selected'
+                  : '',
+                cbox.cusorItemId != null &&
+                option.DepartmentId ==
+                  props.optionList[cbox.cusorItemId].DepartmentId
+                  ? 'item--highlighted'
+                  : '',
+              ]"
+            >
+              <div class="option__text">{{ option.DepartmentName }}</div>
+              <div class="option__icon"></div>
+            </div>
+          </template>
           <div
             v-show="cbox.suggestAddingItem.length > 0"
             class="option__item"
@@ -70,17 +78,17 @@
 </template>
 
 <script setup>
-import { ref, inject } from "vue";
+import { ref } from "vue";
 import BaseLoader from "./BaseLoader.vue";
-const $axios = inject("$axios");
 const typingTimers = [];
 const timeoutVal = 500;
+const optionIdHide = ref([]);
 
 const props = defineProps({
   label: String,
   text: String,
   isrequired: Boolean,
-  api: String,
+  optionList: Array,
 });
 
 const emits = defineEmits(["update:text"]);
@@ -92,10 +100,6 @@ const cbox = ref({
   cusorItemId: null,
 });
 const noti = ref("");
-const optionList = ref([]);
-const optionListDisplay = ref([]);
-
-fetchOptionList();
 
 function optionOnClick(_$event, departmentId, departmentName) {
   emits("update:text", departmentName);
@@ -106,44 +110,11 @@ function optionOnClick(_$event, departmentId, departmentName) {
 
 function selectButtonOnClick() {
   cbox.value.cusorItemId = null;
-  optionListDisplay.value = optionList.value;
   cbox.value.isOptionboxOpen = !cbox.value.isOptionboxOpen;
 }
 
 function addingItemOnClick() {
-  $axios
-    .post(props.api, {
-      createdDate: new Date(),
-      createdBy: "string",
-      modifiedDate: new Date(),
-      modifiedBy: "string",
-      departmentCode: "string",
-      departmentName: cbox.value.suggestAddingItem,
-      description: "string",
-    })
-    .then((response) => {
-      console.log(response);
-      cbox.value.suggestAddingItem = "";
-      fetchOptionList();
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-}
-
-function fetchOptionList() {
-  cbox.value.isLoading = true;
-  $axios
-    .get(props.api)
-    .then((response) => {
-      const data = response.data;
-      cbox.value.isLoading = false;
-      optionList.value = data;
-      optionListDisplay.value = data;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  console.log(1);
 }
 
 function inputKeyupHandler($event) {
@@ -170,13 +141,10 @@ function inputKeyupHandler($event) {
       // Display loading
       cbox.value.isLoading = true;
       cbox.value.selectedItemId = "";
-      filterData(props.text).then((idList) => {
-        optionListDisplay.value = [];
-        if (idList.length > 0) {
+      filterData(props.text).then((IdHideList) => {
+        optionIdHide.value = IdHideList;
+        if (IdHideList.length != props.optionList.length) {
           cbox.value.suggestAddingItem = "";
-          for (let i = 0; i < idList.length; ++i) {
-            optionListDisplay.value.push(optionList.value[idList[i]]);
-          }
         } else {
           cbox.value.suggestAddingItem = props.text;
         }
@@ -195,19 +163,19 @@ function inputKeyPressHandler() {
 }
 
 function filterData(input) {
-  const idList = [];
-  for (let i = 0; i < optionList.value.length; ++i) {
+  const IdHideList = [];
+  for (let i = 0; i < props.optionList.length; ++i) {
     if (
-      optionList.value[i].DepartmentName.toLowerCase().includes(
+      !props.optionList[i].DepartmentName.toLowerCase().includes(
         input.toLowerCase().trim()
       )
     ) {
-      idList.push(i);
+      IdHideList.push(i);
     }
   }
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(idList);
+      resolve(IdHideList);
     }, 200);
   });
 }
