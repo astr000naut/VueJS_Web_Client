@@ -51,11 +51,10 @@ const showTooltip = ref(false);
 const emits = defineEmits(["update:text", "update:noti"]);
 defineExpose({ refInput });
 function inputKeyupHandler($event) {
+  emits("update:noti", "");
   if (props.isrequired) {
     if (props.text.length == 0 && $event.key == "Backspace") {
       emits("update:noti", `${props.label} không được để trống`);
-    } else {
-      emits("update:noti", "");
     }
   }
 }

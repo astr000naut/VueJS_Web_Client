@@ -13,6 +13,7 @@
           <input
             type="text"
             :value="props.text"
+            ref="refInput"
             @input="$emit('update:text', $event.target.value)"
             @keyup="inputKeyupHandler"
             @keypress="inputKeyPressHandler"
@@ -90,6 +91,7 @@ import BaseLoader from "./BaseLoader.vue";
 const typingTimers = [];
 const timeoutVal = 500;
 const optionIdHide = ref([]);
+const refInput = ref(null);
 
 const props = defineProps({
   label: String,
@@ -100,6 +102,7 @@ const props = defineProps({
 });
 
 const emits = defineEmits(["update:text", "update:noti"]);
+defineExpose({ refInput });
 const cbox = ref({
   isOptionboxOpen: false,
   isLoading: false,

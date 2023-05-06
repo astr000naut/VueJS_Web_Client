@@ -74,6 +74,7 @@
                   :isrequired="true"
                   v-model:text="form.empFullName"
                   v-model:noti="formNoti.empFullName"
+                  ref="empFullNameRef"
                 />
               </div>
             </div>
@@ -85,6 +86,7 @@
                   :option-list="departmentList"
                   v-model:text="form.empDepartmentName"
                   v-model:noti="formNoti.empDepartmentName"
+                  ref="empDepartmentNameRef"
                 />
               </div>
             </div>
@@ -127,6 +129,7 @@
                   v-model:text="form.empIdentityNumber"
                   v-model:noti="formNoti.empIdentityNumber"
                   tooltip="Số chứng minh nhân dân"
+                  ref="empIdentitiNumberRef"
                 />
               </div>
               <div class="fu__cmnddate">
@@ -297,13 +300,16 @@ const formNoti = ref({
   empDepartmentName: "",
   empIdentityNumber: "",
 });
+const empCodeRef = ref(null);
 const formDialog = ref({
   isShow: false,
 });
-const empCodeRef = ref(null);
 const cancelBtnRef = ref(null);
 const saveBtnRef = ref(null);
 const bankAreaInputRef = ref(null);
+const empFullNameRef = ref(null);
+const empDepartmentNameRef = ref(null);
+const empIdentitiNumberRef = ref(null);
 const departmentList = ref([]);
 
 initState();
@@ -344,24 +350,76 @@ async function getDataFromApi() {
 }
 
 function validateForm() {
+  let firstMessage = "";
   // EmpCode
-  if (form.value.empCode == "")
+  if (form.value.empCode == "") {
     formNoti.value.empCode = "Mã không được để trống";
+    if (firstMessage == "") {
+      firstMessage = formNoti.value.empCode;
+    }
+  }
   // EmpFullName
-  if (form.value.empFullName == "")
+  if (form.value.empFullName == "") {
     formNoti.value.empFullName = "Tên không được để trống";
+    if (firstMessage == "") {
+      firstMessage = formNoti.value.empFullName;
+    }
+  }
   // EmpDepartmentName
-  if (form.value.empDepartmentName == "")
+  if (form.value.empDepartmentName == "") {
     formNoti.value.empDepartmentName = "Đơn vị không được để trống";
+    if (firstMessage == "") {
+      firstMessage = formNoti.value.empDepartmentName;
+    }
+  }
+  // EmpIdentityNumber
+  if (!/^$|^\d{9}$|^\d{12}$/.test(form.value.empIdentityNumber)) {
+    formNoti.value.empIdentityNumber = "Số CMND không đúng định dạng";
+    if (firstMessage == "") {
+      firstMessage = formNoti.value.empIdentityNumber;
+    }
+  }
+
+  if (firstMessage != "") {
+    // Update notibox value
+    formNoti.value.notiboxType = "alert";
+    formNoti.value.notiboxMessage = firstMessage;
+  }
 }
 
 function btnSaveOnClick() {
   validateForm();
-  console.log(form.value);
+  if (formNoti.value.notiboxMessage != "") {
+    // show notibox
+    formNoti.value.showNotibox = true;
+  } else {
+    // Call API to update
+    console.log(form);
+  }
+}
+
+function focusOnFirstErrorInput() {
+  if (formNoti.value.empCode != "") {
+    empCodeRef.value.refInput.focus();
+    return;
+  }
+  if (formNoti.value.empFullName != "") {
+    empFullNameRef.value.refInput.focus();
+    return;
+  }
+  if (formNoti.value.empDepartmentName != "") {
+    empDepartmentNameRef.value.refInput.focus();
+    return;
+  }
+  if (formNoti.value.empIdentityNumber != "") {
+    empIdentitiNumberRef.value.refInput.focus();
+    return;
+  }
 }
 
 function formNotiboxYesBtnOnClick() {
   formNoti.value.showNotibox = false;
+  focusOnFirstErrorInput();
 }
 
 function formDialogCloseBtnOnClick() {
