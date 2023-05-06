@@ -55,7 +55,7 @@
                 )
               "
               :class="[
-                option.DepartmentId == cbox.selectedItemId
+                option.DepartmentId == props.selectedItemId
                   ? 'item--selected'
                   : '',
                 cbox.cusorItemId != null &&
@@ -97,16 +97,21 @@ const props = defineProps({
   label: String,
   text: String,
   isrequired: Boolean,
+  selectedItemId: String,
+  addNewItem: Function,
   optionList: Array,
   noti: String,
 });
 
-const emits = defineEmits(["update:text", "update:noti"]);
+const emits = defineEmits([
+  "update:text",
+  "update:noti",
+  "update:selectedItemId",
+]);
 defineExpose({ refInput });
 const cbox = ref({
   isOptionboxOpen: false,
   isLoading: false,
-  selectedItemId: "",
   suggestAddingItem: "",
   cusorItemId: null,
   hasScrollbar: false,
@@ -116,14 +121,14 @@ function optionOnClick(_$event, departmentId, departmentName) {
   emits("update:text", departmentName);
   emits("update:noti", "");
   cbox.value.isOptionboxOpen = false;
-  cbox.value.selectedItemId = departmentId;
+  emits("update:selectedItemId", departmentId);
   cbox.value.suggestAddingItem = "";
 }
 
 function selectButtonOnClick() {
   cbox.value.cusorItemId = null;
   if (cbox.value.isOptionboxOpen == true) {
-    if (props.text.length != 0 && cbox.value.selectedItemId == "") {
+    if (props.text.length != 0 && props.selectedItemId == "") {
       emits("update:noti", `Vui lòng chọn <${props.label}> có trong danh mục`);
     }
   } else {
@@ -132,8 +137,10 @@ function selectButtonOnClick() {
   cbox.value.isOptionboxOpen = !cbox.value.isOptionboxOpen;
 }
 
-function addingItemOnClick() {
-  console.log(1);
+async function addingItemOnClick() {
+  await props.addNewItem(cbox.value.suggestAddingItem);
+  cbox.value.isOptionboxOpen = false;
+  cbox.value.suggestAddingItem = "";
 }
 
 function inputKeyupHandler($event) {
@@ -159,7 +166,7 @@ function inputKeyupHandler($event) {
     setTimeout(() => {
       // Display loading
       cbox.value.isLoading = true;
-      cbox.value.selectedItemId = "";
+      emits("update:selectedItemId", "");
       filterData(props.text).then((IdHideList) => {
         optionIdHide.value = IdHideList;
         if (IdHideList.length != props.optionList.length) {

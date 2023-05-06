@@ -84,8 +84,10 @@
                   label="Đơn vị"
                   :isrequired="true"
                   :option-list="departmentList"
+                  :add-new-item="addNewDepartment"
                   v-model:text="form.empDepartmentName"
                   v-model:noti="formNoti.empDepartmentName"
+                  v-model:selectedItemId="form.empDepartmentId"
                   ref="empDepartmentNameRef"
                 />
               </div>
@@ -275,6 +277,7 @@ const form = ref({
   empFullName: "",
   empDepartmentCode: "",
   empDepartmentName: "",
+  empDepartmentId: "",
   empPositionId: "",
   empPositionName: "",
   empDateOfBirth: "",
@@ -330,13 +333,16 @@ function initState() {
   }
 }
 
+async function getDepartmentList() {
+  const departmentApiResponse = await $axios.get($enum.api.departments);
+  departmentList.value = departmentApiResponse.data;
+  console.log(departmentApiResponse.data);
+}
+
 async function getDataFromApi() {
   try {
     // Fetch Department List
-    const departmentApiResponse = await $axios.get($enum.api.departments);
-    departmentList.value = departmentApiResponse.data;
-    console.log(departmentApiResponse.data);
-
+    await getDepartmentList();
     if (form.value.type == $enum.form.createType) {
       // Fetch new employee code
       const response = await $axios.get($enum.api.employees.newCode);
@@ -390,6 +396,24 @@ function validateForm() {
   }
 }
 
+async function addNewDepartment(name) {
+  form.value.isLoading = true;
+  try {
+    console.log(name);
+    const response = await $axios.post($enum.api.departments, {
+      departmentCode: "",
+      departmentName: name,
+      description: "",
+    });
+    console.log(response);
+    await getDepartmentList();
+  } catch (error) {
+    console.log(error);
+  } finally {
+    form.value.isLoading = false;
+  }
+}
+
 function standardizeFormData() {
   console.log(1);
 }
@@ -406,6 +430,7 @@ async function callCreateEmployeeApi() {
 }
 
 async function btnSaveOnClick() {
+  console.log(form.value);
   validateForm();
   if (formNoti.value.notiboxMessage != "") {
     // show notibox
