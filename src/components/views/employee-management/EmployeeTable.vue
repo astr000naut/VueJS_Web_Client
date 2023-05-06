@@ -30,7 +30,7 @@
           </tr>
         </thead>
         <tbody>
-          <template v-if="table.isLoadingData">
+          <template v-if="props.isLoadingData">
             <tr v-for="i in Math.min(20, table.recordPerPage)" :key="i">
               <td v-for="j in 11" :key="j">
                 <div class="loading-item"></div>
@@ -42,7 +42,7 @@
           </template>
           <template v-else>
             <tr
-              v-for="emp in empList"
+              v-for="emp in props.empList"
               :key="emp.EmployeeId"
               :class="{
                 active: emp.active,
@@ -169,25 +169,22 @@
 </template>
 
 <script setup>
-import { inject, ref } from "vue";
+import { ref } from "vue";
 import BaseLoader from "../../base/BaseLoader.vue";
 import { useRouter } from "vue-router";
 import $formatter from "@/js/common/formater";
-import $enum from "@/js/common/enum";
 
 const router = useRouter();
 
-const $axios = inject("$axios");
-const empList = ref([]);
 const table = ref({
-  isLoadingData: false,
   recordPerPage: 20,
   recordAmountOpen: false,
   recordAmountList: [10, 20, 30, 50, 100],
   expandEmpId: "",
 });
-defineExpose({
-  loadData,
+const props = defineProps({
+  isLoadingData: Boolean,
+  empList: Array,
 });
 
 function btnEditOnClick(empId) {
@@ -203,7 +200,7 @@ function btnExpandOnClick(empId) {
 }
 
 // function unShiftNewEmployee(emp) {
-//   empList.value.unshift({
+//   props.empList.value.unshift({
 //     EmployeeCode: emp.EmployeeCode,
 //     FullName: emp.FullName,
 //     GenderName: emp.GenderName,
@@ -223,7 +220,7 @@ function pagArrowdownOnClick() {
   table.value.recordAmountOpen = !table.value.recordAmountOpen;
 }
 function checkBoxOnClick(empId) {
-  for (const emp of empList.value) {
+  for (const emp of props.empList.value) {
     if (emp.EmployeeId == empId) {
       emp.selected = !emp.selected;
       if (emp.selected == false) {
@@ -234,7 +231,7 @@ function checkBoxOnClick(empId) {
 }
 
 function trOnClick(empId) {
-  for (const emp of empList.value) {
+  for (const emp of props.empList.value) {
     if (emp.EmployeeId == empId || emp.selected) {
       emp.active = true;
     } else {
@@ -246,22 +243,6 @@ function trOnClick(empId) {
 function trOnDblclick(empId) {
   router.push(`/employee/${empId}`);
 }
-
-function loadData() {
-  table.value.isLoadingData = true;
-  $axios
-    .get($enum.api.employees.index)
-    .then(function (response) {
-      // handle success
-      table.value.isLoadingData = false;
-      empList.value = response.data;
-    })
-    .catch(function (error) {
-      // handle error
-      console.log(error);
-    });
-}
-loadData();
 </script>
 
 <style scoped>

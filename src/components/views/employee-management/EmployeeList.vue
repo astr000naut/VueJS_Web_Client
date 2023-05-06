@@ -22,7 +22,11 @@
           <div class="hover__text">Tải lại dữ liệu</div>
         </div>
       </div>
-      <EmployeeTable ref="basetable" :key="tableKey" />
+      <EmployeeTable
+        :is-loading-data="isLoadingData"
+        :emp-list="empList"
+        :key="tableKey"
+      />
     </div>
   </div>
 </template>
@@ -31,13 +35,28 @@
 import EmployeeTable from "@/components/views/employee-management/EmployeeTable.vue";
 import { useRouter } from "vue-router";
 import { ref, onMounted, onBeforeUnmount, inject } from "vue";
+import $enum from "@/js/common/enum";
 
 const router = useRouter();
-const basetable = ref(null);
-const tableKey = ref(0);
 const $emitter = inject("$emitter");
+const empList = ref([]);
+const isLoadingData = ref(true);
+const $axios = inject("$axios");
+const tableKey = ref(0);
 
-onMounted(() => {
+async function loadData() {
+  try {
+    isLoadingData.value = true;
+    const response = await $axios.get($enum.api.employees.index);
+    empList.value = response.data;
+    isLoadingData.value = false;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+onMounted(async () => {
+  await loadData();
   $emitter.on("rerenderTable", () => {
     tableKey.value += 1;
     if (tableKey.value > 100) {
@@ -54,8 +73,8 @@ function btnAddOnClick() {
   router.replace("/employee/create");
 }
 
-function btnRefreshOnClick() {
-  basetable.value.loadData();
+async function btnRefreshOnClick() {
+  await loadData();
 }
 </script>
 
