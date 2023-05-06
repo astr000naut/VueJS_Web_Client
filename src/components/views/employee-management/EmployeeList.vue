@@ -14,6 +14,7 @@
         <BaseTextfield
           pholder="Tìm kiếm theo mã, tên nhân viên"
           class="txtfield--search mw-300"
+          noti=""
         />
         <BaseButton class="mi mi-36 mi-refresh" @click="btnRefreshOnClick" />
         <div class="button__hoverbox">

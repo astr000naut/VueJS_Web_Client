@@ -3,7 +3,7 @@
     class="cbox"
     :class="[
       props.isrequired ? 'field--required' : '',
-      noti.length > 0 ? 'error-noti' : '',
+      props.noti.length > 0 ? 'error-noti' : '',
     ]"
   >
     <div class="cbox__label label">{{ props.label }}</div>
@@ -80,7 +80,7 @@
         </div>
       </div>
     </div>
-    <div class="cbox__noti noti">{{ noti }}</div>
+    <div class="cbox__noti noti">{{ props.noti }}</div>
   </div>
 </template>
 
@@ -96,9 +96,10 @@ const props = defineProps({
   text: String,
   isrequired: Boolean,
   optionList: Array,
+  noti: String,
 });
 
-const emits = defineEmits(["update:text"]);
+const emits = defineEmits(["update:text", "update:noti"]);
 const cbox = ref({
   isOptionboxOpen: false,
   isLoading: false,
@@ -107,11 +108,10 @@ const cbox = ref({
   cusorItemId: null,
   hasScrollbar: false,
 });
-const noti = ref("");
 
 function optionOnClick(_$event, departmentId, departmentName) {
   emits("update:text", departmentName);
-  noti.value = "";
+  emits("update:noti", "");
   cbox.value.isOptionboxOpen = false;
   cbox.value.selectedItemId = departmentId;
 }
@@ -128,9 +128,9 @@ function addingItemOnClick() {
 function inputKeyupHandler($event) {
   if (props.isrequired) {
     if (props.text.length == 0 && $event.key == "Backspace") {
-      noti.value = `${props.label} không được để trống`;
+      emits("update:noti", `${props.label} không được để trống`);
     } else {
-      noti.value = "";
+      emits("update:noti", "");
     }
   }
   if (cbox.value.isOptionboxOpen == false && $event.key != "Tab") {

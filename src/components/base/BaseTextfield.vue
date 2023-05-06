@@ -3,7 +3,7 @@
     class="txtfield"
     :class="[
       props.isrequired ? 'field--required' : '',
-      noti.length > 0 ? 'error-noti' : '',
+      props.noti.length > 0 ? 'error-noti' : '',
     ]"
   >
     <div
@@ -32,7 +32,7 @@
       />
       <div class="txtfield__icon"></div>
     </div>
-    <div class="txtfield__noti noti">{{ noti }}</div>
+    <div class="txtfield__noti noti">{{ props.noti }}</div>
   </div>
 </template>
 
@@ -44,18 +44,18 @@ const props = defineProps({
   text: String,
   isrequired: Boolean,
   tooltip: String,
+  noti: String,
 });
 const refInput = ref(null);
-const noti = ref("");
 const showTooltip = ref(false);
-defineEmits(["update:text"]);
+const emits = defineEmits(["update:text", "update:noti"]);
 defineExpose({ refInput });
 function inputKeyupHandler($event) {
   if (props.isrequired) {
     if (props.text.length == 0 && $event.key == "Backspace") {
-      noti.value = `${props.label} không được để trống`;
+      emits("update:noti", `${props.label} không được để trống`);
     } else {
-      noti.value = "";
+      emits("update:noti", "");
     }
   }
 }

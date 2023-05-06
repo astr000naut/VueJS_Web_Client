@@ -1,9 +1,9 @@
 <template>
   <div class="wrapper wrapper--dark1 wrapper--form">
-    <div class="form__wrapper" v-show="formNotibox.isShow">
+    <div class="form__wrapper" v-show="formNoti.showNotibox">
       <BaseNotibox
-        type="alert"
-        message="Tên không được để trống"
+        :type="formNoti.notiboxType"
+        :message="formNoti.notiboxMessage"
         :yes-on-click="formNotiboxYesBtnOnClick"
       />
     </div>
@@ -63,6 +63,7 @@
                   label="Mã"
                   :isrequired="true"
                   v-model:text="form.empCode"
+                  v-model:noti="formNoti.empCode"
                   ref="empCodeRef"
                 />
               </div>
@@ -72,6 +73,7 @@
                   label="Tên"
                   :isrequired="true"
                   v-model:text="form.empFullName"
+                  v-model:noti="formNoti.empFullName"
                 />
               </div>
             </div>
@@ -82,6 +84,7 @@
                   :isrequired="true"
                   :option-list="departmentList"
                   v-model:text="form.empDepartmentName"
+                  v-model:noti="formNoti.empDepartmentName"
                 />
               </div>
             </div>
@@ -91,6 +94,7 @@
                   pholder=""
                   label="Chức danh"
                   v-model:text="form.empPositionName"
+                  noti=""
                 />
               </div>
             </div>
@@ -121,6 +125,7 @@
                   pholder=""
                   label="Số CMND"
                   v-model:text="form.empIdentityNumber"
+                  v-model:noti="formNoti.empIdentityNumber"
                   tooltip="Số chứng minh nhân dân"
                 />
               </div>
@@ -136,6 +141,7 @@
                 <BaseTextfield
                   pholder=""
                   label="Nơi cấp"
+                  noti=""
                   v-model:text="form.empIdentityPlace"
                 />
               </div>
@@ -149,6 +155,7 @@
               <BaseTextfield
                 pholder=""
                 label="Địa chỉ"
+                noti=""
                 v-model:text="form.empAddress"
               />
             </div>
@@ -159,6 +166,7 @@
                 pholder=""
                 label="ĐT di động"
                 tooltip="Số điện thoại di động"
+                noti=""
                 v-model:text="form.empPhoneNumber"
               />
             </div>
@@ -167,6 +175,7 @@
                 pholder=""
                 label="ĐT cố định"
                 tooltip="Số điện thoại cố định"
+                noti=""
                 v-model:text="form.empLandlineNumber"
               />
             </div>
@@ -174,6 +183,7 @@
               <BaseTextfield
                 pholder=""
                 label="Email"
+                noti=""
                 v-model:text="form.empEmail"
               />
             </div>
@@ -183,6 +193,7 @@
               <BaseTextfield
                 pholder=""
                 label="Tài khoản ngân hàng"
+                noti=""
                 v-model:text="form.empBankAcc"
               />
             </div>
@@ -190,6 +201,7 @@
               <BaseTextfield
                 pholder=""
                 label="Tên ngân hàng"
+                noti=""
                 v-model:text="form.empBankName"
               />
             </div>
@@ -199,6 +211,7 @@
                 label="Chi nhánh"
                 v-model:text="form.empBankPlace"
                 ref="bankAreaInputRef"
+                noti=""
                 @keydown.tab.prevent="bankAreaInputOnTabKeyDown"
               />
             </div>
@@ -275,11 +288,17 @@ const form = ref({
   empBankName: "",
   empBankPlace: "",
 });
+const formNoti = ref({
+  showNotibox: false,
+  notiboxType: "",
+  notiboxMessage: "",
+  empCode: "",
+  empFullName: "",
+  empDepartmentName: "",
+  empIdentityNumber: "",
+});
 const formDialog = ref({
   isShow: false,
-});
-const formNotibox = ref({
-  isShow: true,
 });
 const empCodeRef = ref(null);
 const cancelBtnRef = ref(null);
@@ -324,12 +343,25 @@ async function getDataFromApi() {
   }
 }
 
+function validateForm() {
+  // EmpCode
+  if (form.value.empCode == "")
+    formNoti.value.empCode = "Mã không được để trống";
+  // EmpFullName
+  if (form.value.empFullName == "")
+    formNoti.value.empFullName = "Tên không được để trống";
+  // EmpDepartmentName
+  if (form.value.empDepartmentName == "")
+    formNoti.value.empDepartmentName = "Đơn vị không được để trống";
+}
+
 function btnSaveOnClick() {
+  validateForm();
   console.log(form.value);
 }
 
 function formNotiboxYesBtnOnClick() {
-  formNotibox.value.isShow = false;
+  formNoti.value.showNotibox = false;
 }
 
 function formDialogCloseBtnOnClick() {

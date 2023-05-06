@@ -16,6 +16,9 @@ const $enum = {
     female: 1,
     other: 2,
   },
+  notibox: {
+    alertType: "alert",
+  },
 };
 
 export default $enum;
