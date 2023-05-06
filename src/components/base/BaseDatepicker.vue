@@ -182,6 +182,7 @@ function todayBtnOnClick() {
   updateCell(realYear.value, realMonth.value);
   yearRangeNow.value = date.getFullYear();
   boxText.value = `Tháng ${realMonth.value}, ${realYear.value}`;
+  isBoxOpen.value = false;
   emits(
     "update:inputText",
     $formatter.formatDate(realDay.value, realMonth.value, realYear.value)
@@ -200,6 +201,7 @@ function dateItemOnClick(_e, dateChoosedIdx) {
   }
   curDay.value = cell.value[dateChoosedIdx];
   assignCurToReal();
+  isBoxOpen.value = false;
   emits(
     "update:inputText",
     $formatter.formatDate(realDay.value, realMonth.value, realYear.value)
