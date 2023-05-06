@@ -12,6 +12,7 @@
           name="gender"
           id=""
           :checked="option.value == props.radioValue"
+          @click="$emit('update:radioValue', option.value)"
         />
         <label for="">{{ option.text }}</label>
       </div>
@@ -25,6 +26,7 @@ const props = defineProps({
   options: Array,
   radioValue: Number,
 });
+defineEmits(["update:radioValue"]);
 </script>
 
 <style scoped>

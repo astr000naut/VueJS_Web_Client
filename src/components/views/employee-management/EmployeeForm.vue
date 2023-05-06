@@ -414,17 +414,21 @@ async function addNewDepartment(name) {
   }
 }
 
-function standardizeFormData() {
-  console.log(1);
-}
-
 async function callCreateEmployeeApi() {
-  standardizeFormData();
   const response = await $axios.post($enum.api.employees.index, {
     employeeCode: form.value.empCode,
     fullName: form.value.empFullName,
-    gender: 0,
+    departmentId: form.value.empDepartmentId,
+    departmentName: form.value.empDepartmentName,
+    positionName: form.value.empPositionName,
     dateOfBirth: form.value.empDateOfBirth,
+    gender: form.value.empGender,
+    identityNumber: form.value.empIdentityNumber,
+    identityDate: form.value.empIdentityDate,
+    identityPlace: form.value.empIdentityPlace,
+    address: form.value.empAddress,
+    phoneNumber: form.value.empPhoneNumber,
+    email: form.value.empEmail,
   });
   console.log(response);
 }
@@ -441,6 +445,7 @@ async function btnSaveOnClick() {
         form.value.isLoading = true;
         await callCreateEmployeeApi();
         form.value.isLoading = false;
+        router.replace("/employee");
       } catch (error) {
         console.log(error);
       }

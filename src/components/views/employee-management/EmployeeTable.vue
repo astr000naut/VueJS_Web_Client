@@ -202,6 +202,18 @@ function btnExpandOnClick(empId) {
   }
 }
 
+// function unShiftNewEmployee(emp) {
+//   empList.value.unshift({
+//     EmployeeCode: emp.EmployeeCode,
+//     FullName: emp.FullName,
+//     GenderName: emp.GenderName,
+//     DateOfBirth: emp.DateOfBirth,
+//     IdentityNumber: emp.IdentityNumber,
+//     PositionName: emp.PositionName,
+//     DepartmentName: emp.DepartmentName,
+//   });
+// }
+
 function recordAmountOptionOnClick(recordAmount) {
   table.value.recordPerPage = recordAmount;
   table.value.recordAmountOpen = false;
