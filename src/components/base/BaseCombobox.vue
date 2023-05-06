@@ -121,6 +121,13 @@ function optionOnClick(_$event, departmentId, departmentName) {
 
 function selectButtonOnClick() {
   cbox.value.cusorItemId = null;
+  if (cbox.value.isOptionboxOpen == true) {
+    if (props.text.length != 0 && cbox.value.selectedItemId == "") {
+      emits("update:noti", `Vui lòng chọn <${props.label}> có trong danh mục`);
+    }
+  } else {
+    optionIdHide.value = [];
+  }
   cbox.value.isOptionboxOpen = !cbox.value.isOptionboxOpen;
 }
 
