@@ -117,6 +117,7 @@ function optionOnClick(_$event, departmentId, departmentName) {
   emits("update:noti", "");
   cbox.value.isOptionboxOpen = false;
   cbox.value.selectedItemId = departmentId;
+  cbox.value.suggestAddingItem = "";
 }
 
 function selectButtonOnClick() {
