@@ -456,10 +456,14 @@ function nextOnClick() {
   color: var(--clr-t-disable);
 }
 
-.daylist__table table td.chooseable:hover {
-  background-color: var(--clr-lg500);
+.daylist__table table td.chooseable:not(.selected):hover {
+  /* background-color: var(--clr-lg500);
   cursor: pointer;
-  color: #fff;
+  color: #fff; */
+  border: 2px solid var(--clr-lg500);
+  border-radius: 50%;
+  color: #000;
+  cursor: pointer;
 }
 .daylist__table table td:not(.chooseable) {
   pointer-events: none;
