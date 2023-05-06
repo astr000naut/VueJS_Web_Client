@@ -1,6 +1,13 @@
 <template>
   <div class="wrapper wrapper--dark1 wrapper--form">
-    <div class="form__dialog" v-show="formDialog.isShow">
+    <div class="form__wrapper" v-show="formNotibox.isShow">
+      <BaseNotibox
+        type="alert"
+        message="Tên không được để trống"
+        :yes-on-click="formNotiboxYesBtnOnClick"
+      />
+    </div>
+    <div class="form__wrapper" v-show="formDialog.isShow">
       <BaseDialog
         title="Lưu lại thay đổi"
         :close-on-click="formDialogCloseBtnOnClick"
@@ -62,7 +69,7 @@
               <div class="fu__name">
                 <BaseTextfield
                   pholder=""
-                  label="Họ và tên"
+                  label="Tên"
                   :isrequired="true"
                   v-model:text="form.empFullName"
                 />
@@ -233,6 +240,7 @@ import BaseDatepicker from "@/components/base/BaseDatepicker.vue";
 import BaseRadiogroup from "@/components/base/BaseRadiogroup.vue";
 import BaseLoader from "@/components/base/BaseLoader.vue";
 import BaseDialog from "@/components/base/BaseDialog.vue";
+import BaseNotibox from "@/components/base/BaseNotibox.vue";
 import $enum from "@/js/common/enum";
 import { ref, inject, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
@@ -269,6 +277,9 @@ const form = ref({
 });
 const formDialog = ref({
   isShow: false,
+});
+const formNotibox = ref({
+  isShow: true,
 });
 const empCodeRef = ref(null);
 const cancelBtnRef = ref(null);
@@ -315,6 +326,10 @@ async function getDataFromApi() {
 
 function btnSaveOnClick() {
   console.log(form.value);
+}
+
+function formNotiboxYesBtnOnClick() {
+  formNotibox.value.isShow = false;
 }
 
 function formDialogCloseBtnOnClick() {
@@ -568,7 +583,7 @@ hr {
   z-index: 10;
 }
 
-.form__dialog {
+.form__wrapper {
   position: absolute;
   top: 0;
   bottom: 0;
