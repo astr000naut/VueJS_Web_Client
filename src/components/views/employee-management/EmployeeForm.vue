@@ -62,7 +62,7 @@
               <div class="fu__name">
                 <BaseTextfield
                   pholder=""
-                  label="Tên"
+                  label="Họ và tên"
                   :isrequired="true"
                   v-model:text="form.empFullName"
                 />
