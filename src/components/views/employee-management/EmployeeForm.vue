@@ -384,17 +384,19 @@ function validateForm() {
     // Update notibox value
     formNoti.value.notiboxType = "alert";
     formNoti.value.notiboxMessage = firstMessage;
+  } else {
+    formNoti.value.notiboxMessage = "";
   }
 }
 
-function btnSaveOnClick() {
+async function btnSaveOnClick() {
   validateForm();
   if (formNoti.value.notiboxMessage != "") {
     // show notibox
     formNoti.value.showNotibox = true;
   } else {
     // Call API to update
-    console.log(form);
+    console.log(1);
   }
 }
 
@@ -451,20 +453,20 @@ async function getEmployee(empId) {
   try {
     const response = await $axios.get($enum.api.employees.one(empId));
     const data = response.data;
-    form.value.empCode = data.EmployeeCode;
-    form.value.empFullName = data.FullName;
+    form.value.empCode = data.EmployeeCode ?? "";
+    form.value.empFullName = data.FullName ?? "";
     form.value.empDepartmentName = data.DepartmentName ?? "";
-    form.value.empDepartmentCode = data.DepartmentCode;
-    form.value.empPositionId = data.PositionId;
-    form.value.empPositionName = data.empPositionName;
+    form.value.empDepartmentCode = data.DepartmentCode ?? "";
+    form.value.empPositionId = data.PositionId ?? "";
+    form.value.empPositionName = data.empPositionName ?? "";
     form.value.empDateOfBirth = $formatter.changeFormat(data.DateOfBirth);
-    form.value.empGender = data.Gender;
-    form.value.empGenderName = data.GenderName;
-    form.value.empIdentityNumber = data.IdentityNumber;
+    form.value.empGender = data.Gender ?? -1;
+    form.value.empGenderName = data.GenderName ?? "";
+    form.value.empIdentityNumber = data.IdentityNumber ?? "";
     form.value.empIdentityDate = $formatter.changeFormat(data.IdentityDate);
-    form.value.empIdentityPlace = data.IdentityPlace;
-    form.value.empAddress = data.Address;
-    form.value.empPhoneNumber = data.PhoneNumber;
+    form.value.empIdentityPlace = data.IdentityPlace ?? "";
+    form.value.empAddress = data.Address ?? "";
+    form.value.empPhoneNumber = data.PhoneNumber ?? "";
     form.value.empLandlineNumber = "sample";
     form.value.empEmail = data.Email;
     form.value.empBankAcc = "sample";
