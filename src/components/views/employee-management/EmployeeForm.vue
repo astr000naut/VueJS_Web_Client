@@ -335,6 +335,7 @@ async function getDataFromApi() {
     // Fetch Department List
     const departmentApiResponse = await $axios.get($enum.api.departments);
     departmentList.value = departmentApiResponse.data;
+    console.log(departmentApiResponse.data);
 
     if (form.value.type == $enum.form.createType) {
       // Fetch new employee code
@@ -389,14 +390,36 @@ function validateForm() {
   }
 }
 
+function standardizeFormData() {
+  console.log(1);
+}
+
+async function callCreateEmployeeApi() {
+  standardizeFormData();
+  const response = await $axios.post($enum.api.employees.index, {
+    employeeCode: form.value.empCode,
+    fullName: form.value.empFullName,
+    gender: 0,
+    dateOfBirth: form.value.empDateOfBirth,
+  });
+  console.log(response);
+}
+
 async function btnSaveOnClick() {
   validateForm();
   if (formNoti.value.notiboxMessage != "") {
     // show notibox
     formNoti.value.showNotibox = true;
   } else {
-    // Call API to update
-    console.log(1);
+    if (form.value.type == $enum.form.createType) {
+      try {
+        form.value.isLoading = true;
+        await callCreateEmployeeApi();
+        form.value.isLoading = false;
+      } catch (error) {
+        console.log(error);
+      }
+    }
   }
 }
 
