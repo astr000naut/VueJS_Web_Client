@@ -2,12 +2,17 @@ import moment from "moment";
 import common from "../../js/common/value.js";
 
 const dateFormat = common.dateFormat[common.defaultDateFormat][0];
-
 const $formatter = {
   dateFormat,
   formatDate: (dd, mm, yyyy) => {
     let d = new Date(`${yyyy}/${mm}/${dd}`);
     return moment(d).format(dateFormat);
+  },
+  formatDateToApiDate: (input) => {
+    let d = moment(input, dateFormat).toDate();
+    d.setTime(d.getTime() + 7 * 60 * 60 * 1000);
+    console.log(d.toISOString());
+    return d;
   },
   isValidDate: (inputDate) => {
     return moment(

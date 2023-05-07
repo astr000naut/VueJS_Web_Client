@@ -417,22 +417,24 @@ async function addNewDepartment(name) {
 }
 
 async function callCreateEmployeeApi() {
-  const response = await $axios.post($enum.api.employees.index, {
+  const requestBody = {
     // employeeId: "14c624fa-f731-4bba-9656-e73af03940bb",
     employeeCode: form.value.empCode,
     fullName: form.value.empFullName,
     departmentId: form.value.empDepartmentId,
     departmentName: form.value.empDepartmentName,
     positionName: form.value.empPositionName,
-    dateOfBirth: form.value.empDateOfBirth,
+    dateOfBirth: $formatter.formatDateToApiDate(form.value.empDateOfBirth),
     gender: form.value.empGender,
     identityNumber: form.value.empIdentityNumber,
-    identityDate: form.value.empIdentityDate,
+    identityDate: $formatter.formatDateToApiDate(form.value.empIdentityDate),
     identityPlace: form.value.empIdentityPlace,
     address: form.value.empAddress,
     phoneNumber: form.value.empPhoneNumber,
     email: form.value.empEmail,
-  });
+  };
+  // console.log(requestBody);
+  const response = await $axios.post($enum.api.employees.index, requestBody);
   console.log(response);
 }
 
