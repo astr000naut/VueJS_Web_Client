@@ -42,6 +42,10 @@
         :emp-list="empList"
         :key="tableKey"
         :delete-employee-function="deleteEmployeeOnClick"
+        v-model:pagingData="pagingData"
+        :paging-next-page="pagingNextPage"
+        :paging-prev-page="pagingPrevPage"
+        @update-paging-data="pagingDataOnUpdate"
       />
     </div>
   </div>
@@ -62,6 +66,12 @@ const isLoadingData = ref(true);
 const isLoadingPage = ref(false);
 const $axios = inject("$axios");
 const tableKey = ref(0);
+const pagingData = ref({
+  totalRecord: 0,
+  curAmount: 0,
+  pageSize: 20,
+  pageNumber: 1,
+});
 const dialog = ref({
   isDisplay: false,
   message: "",
@@ -86,6 +96,9 @@ async function deleteEmployee() {
     isLoadingPage.value = true;
     await $axios.delete($enum.api.employees.one(cache.value.empDeleteId));
     empList.value.splice(cache.value.empDeleteIndex, 1);
+    // Update pagingData
+    pagingData.value.curAmount -= 1;
+    pagingData.value.totalRecord -= 1;
     isLoadingPage.value = false;
   } catch (error) {
     console.log(error);
@@ -105,19 +118,65 @@ function deleteEmployeeOnClick(empId) {
   showDeleteConfirmDialog(empName);
 }
 
-async function loadData() {
+// async function loadData() {
+//   try {
+//     isLoadingData.value = true;
+//     const response = await $axios.get($enum.api.employees.index);
+//     empList.value = response.data;
+//     isLoadingData.value = false;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+
+async function pagingDataOnUpdate(newData) {
+  pagingData.value = newData;
+  await loadDataPaging(pagingData.value.pageSize, pagingData.value.pageNumber);
+}
+
+async function pagingNextPage() {
+  pagingData.value.pageNumber += 1;
+  await loadDataPaging(pagingData.value.pageSize, pagingData.value.pageNumber);
+  // console.log("n next");
+}
+
+async function pagingPrevPage() {
+  pagingData.value.pageNumber -= 1;
+  await loadDataPaging(pagingData.value.pageSize, pagingData.value.pageNumber);
+  // console.log("p prev");
+}
+
+async function getTotalAmountOfRecord() {
   try {
     isLoadingData.value = true;
     const response = await $axios.get($enum.api.employees.index);
-    empList.value = response.data;
+    pagingData.value.totalRecord = response.data.length;
     isLoadingData.value = false;
   } catch (error) {
     console.log(error);
   }
 }
 
+async function loadDataPaging(pageSize, pageNumber) {
+  try {
+    isLoadingData.value = true;
+    const response = await $axios.get($enum.api.employees.filter, {
+      params: { pageSize: pageSize, pageNumber: pageNumber },
+    });
+    empList.value = response.data.Data;
+    console.log(response);
+    pagingData.value.curAmount = response.data.Data.length;
+    isLoadingData.value = false;
+    // console.log(pagingData.value);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 onMounted(async () => {
-  await loadData();
+  await getTotalAmountOfRecord();
+  // await loadData();
+  await loadDataPaging(pagingData.value.pageSize, pagingData.value.pageNumber);
   $emitter.on("rerenderTable", () => {
     tableKey.value += 1;
     if (tableKey.value > 100) {
@@ -130,10 +189,15 @@ onBeforeUnmount(() => {
   $emitter.off("rerenderTable");
 });
 
-async function empListOnUpdate(data) {
+async function empListOnUpdate(type, data) {
+  console.log(type);
   console.log(data);
   // empList.value.unshift(data);
-  await loadData();
+  // await loadData();
+  if (type == "create") {
+    pagingData.value.totalRecord += 1;
+  }
+  await loadDataPaging(pagingData.value.pageSize, pagingData.value.pageNumber);
 }
 
 function btnAddOnClick() {
@@ -141,7 +205,8 @@ function btnAddOnClick() {
 }
 
 async function btnRefreshOnClick() {
-  await loadData();
+  // await loadData();
+  await loadDataPaging(pagingData.value.pageSize, pagingData.value.pageNumber);
 }
 </script>
 

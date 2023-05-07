@@ -475,7 +475,7 @@ async function btnSaveOnClick() {
         // create employee
         form.value.isLoading = true;
         await callCreateEmployeeApi();
-        emits("updateEmplist", {
+        emits("updateEmplist", "create", {
           EmployeeCode: form.value.empCode,
           FullName: form.value.empFullName,
           GenderName: form.value.empGenderName,
@@ -490,7 +490,7 @@ async function btnSaveOnClick() {
         // edit employee
         form.value.isLoading = true;
         await callEditEmployeeApi();
-        emits("updateEmplist", {
+        emits("updateEmplist", "edit", {
           EmployeeCode: form.value.empCode,
           FullName: form.value.empFullName,
           GenderName: form.value.empGenderName,

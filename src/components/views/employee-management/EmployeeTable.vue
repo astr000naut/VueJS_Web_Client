@@ -31,7 +31,7 @@
         </thead>
         <tbody>
           <template v-if="props.isLoadingData">
-            <tr v-for="i in Math.min(20, table.recordPerPage)" :key="i">
+            <tr v-for="i in Math.min(20, props.pagingData.pageSize)" :key="i">
               <td v-for="j in 11" :key="j">
                 <div class="loading-item"></div>
               </td>
@@ -130,11 +130,22 @@
     </div>
     <div class="table__pag">
       <div class="pag__leftside">
-        <span>Tổng số: <strong>20</strong> bản ghi</span>
+        <span
+          >Tổng số: <strong>{{ props.pagingData.totalRecord }}</strong> bản
+          ghi</span
+        >
       </div>
       <div class="pag__rightside">
         <div class="pag__recordcount">
-          <div class="record__amount__select" v-show="table.recordAmountOpen">
+          <div
+            class="record__amount__select"
+            v-show="table.recordAmountOpen"
+            :class="[
+              props.pagingData.curAmount > 3
+                ? 'record__amount__select--top'
+                : 'record__amount__select--bottom',
+            ]"
+          >
             <ul>
               <li
                 v-for="recordAmount in table.recordAmountList"
@@ -143,7 +154,7 @@
                 <div
                   class="record__amount__option"
                   :class="[
-                    recordAmount == table.recordPerPage
+                    recordAmount == props.pagingData.pageSize
                       ? 'amount--selected'
                       : '',
                   ]"
@@ -154,7 +165,7 @@
               </li>
             </ul>
           </div>
-          <span>Số bản ghi / trang: {{ table.recordPerPage }}</span>
+          <span>Số bản ghi / trang: {{ props.pagingData.pageSize }}</span>
           <div
             class="pag__arrowdown mi mi-24 mi-arrowdown-small"
             :class="[
@@ -166,10 +177,27 @@
           ></div>
         </div>
         <div class="pag__info">
-          <span>1 - <strong>20</strong> bản ghi</span>
+          {{
+            props.pagingData.pageSize * (props.pagingData.pageNumber - 1) + 1
+          }}
+          -
+          <span v-show="!props.isLoadingData">
+            <strong>{{
+              props.pagingData.pageSize * (props.pagingData.pageNumber - 1) +
+              props.pagingData.curAmount
+            }}</strong>
+          </span>
+          <span v-show="props.isLoadingData"><strong>xx</strong> </span>
+          bản ghi
         </div>
-        <div class="pag__prev mi mi-24 mi-arrowleft"></div>
-        <div class="pag__next mi mi-24 mi-arrowright"></div>
+        <div
+          class="pag__prev mi mi-24 mi-arrowleft"
+          @click="prevPageOnClick"
+        ></div>
+        <div
+          class="pag__next mi mi-24 mi-arrowright"
+          @click="nextPageOnClick"
+        ></div>
       </div>
     </div>
   </div>
@@ -184,16 +212,35 @@ import $formatter from "@/js/common/formater";
 const router = useRouter();
 
 const table = ref({
-  recordPerPage: 20,
   recordAmountOpen: false,
   recordAmountList: [10, 20, 30, 50, 100],
   expandEmpId: "",
 });
 const props = defineProps({
+  pagingData: Object,
   isLoadingData: Boolean,
   empList: Array,
   deleteEmployeeFunction: Function,
+  pagingNextPage: Function,
+  pagingPrevPage: Function,
 });
+const emits = defineEmits(["updatePagingData"]);
+async function nextPageOnClick() {
+  if (
+    (props.pagingData.pageNumber - 1) * props.pagingData.pageSize +
+      props.pagingData.curAmount >=
+    props.pagingData.totalRecord
+  )
+    return;
+  await props.pagingNextPage();
+  console.log("Next");
+}
+
+async function prevPageOnClick() {
+  if (props.pagingData.pageNumber <= 1) return;
+  await props.pagingPrevPage();
+  console.log("Prev");
+}
 
 function btnEditOnClick(empId) {
   router.push(`/employee/${empId}`);
@@ -208,7 +255,12 @@ function btnExpandOnClick(empId) {
 }
 
 function recordAmountOptionOnClick(recordAmount) {
-  table.value.recordPerPage = recordAmount;
+  emits("updatePagingData", {
+    totalRecord: props.pagingData.totalRecord,
+    curAmount: props.pagingData.curAmount,
+    pageSize: recordAmount,
+    pageNumber: 1,
+  });
   table.value.recordAmountOpen = false;
 }
 
@@ -420,8 +472,15 @@ tbody tr {
   border: 1px solid var(--clr-t-border);
   box-shadow: 2px 2px 4px gray;
   position: absolute;
-  bottom: calc(100% + 14px);
   left: 0;
+}
+
+.record__amount__select--top {
+  bottom: calc(100% + 14px);
+}
+
+.record__amount__select--bottom {
+  top: calc(100% + 14px);
 }
 
 .record__amount__select > ul {
