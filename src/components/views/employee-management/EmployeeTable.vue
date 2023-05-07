@@ -78,7 +78,7 @@
                 </div>
               </td>
               <td>
-                <div class="text-left">{{ emp.IdentityNumber }}</div>
+                <div class="text-right">{{ emp.IdentityNumber }}</div>
               </td>
               <td>
                 <div class="text-left">{{ emp.PositionName }}</div>
@@ -86,7 +86,7 @@
               <td>
                 <div class="text-left">{{ emp.DepartmentName }}</div>
               </td>
-              <td><div class="text-left">231239485923</div></td>
+              <td><div class="text-right">231239485923</div></td>
               <td><div class="text-left">BIDV</div></td>
               <td><div class="text-left">Cầu Giấy</div></td>
               <td
