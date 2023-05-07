@@ -11,8 +11,10 @@
       >
         <div
           class="sidebar__item"
+          :class="item.name == itemSelected ? 'sidebar__item--highlight' : ''"
           @mouseover="sideBarItemOnMouseOver($event, item)"
           @mouseleave="item.displayLabel = !isSidebarBig & false"
+          @click="sidebarItemOnClick(item.name)"
         >
           <div class="item__icon mi mi-24" :class="item.icon"></div>
           <div v-show="isSidebarBig" class="item__text">
@@ -50,10 +52,15 @@ const $common = inject("$common");
 const $emitter = inject("$emitter");
 const sidebarItems = ref($common.sidebarItems);
 const isSidebarBig = ref(true);
+const itemSelected = ref("");
 sidebarItems.value.forEach((item) => {
   item.displayLabel = false;
   item.labelPos = 0;
 });
+
+function sidebarItemOnClick(itemName) {
+  itemSelected.value = itemName;
+}
 
 function sideBarItemOnMouseOver($event, item) {
   item.labelPos = $event.currentTarget.getBoundingClientRect().y - 56;
