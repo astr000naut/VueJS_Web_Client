@@ -231,7 +231,7 @@ async function btnRefreshOnClick() {
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: #c7c7c71a;
+  background-color: #00000045;
   z-index: 99;
 }
 </style>
