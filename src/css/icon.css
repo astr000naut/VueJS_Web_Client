@@ -105,6 +105,18 @@ background-position: -77px -356px;
 background-position: -77px -355px;
 }
 
+.mi-close-small {   
+background-position: -80px -312px;   
+}
+.mi-close-small:active {   
+background-position: -79px -311px;   
+}
+
+.mi-icon-success {
+background: url(../assets/img/Sprites.64af8f61.svg) no-repeat;
+background-position: -1600px -256px;
+}
+
 /* Sidebar icon */
 
 .mi-sidebar-dashboard {

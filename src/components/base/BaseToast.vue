@@ -1,65 +1,52 @@
 <template>
-  <div class="notibox">
-    <div class="notibox__content">
-      <div
-        class="content__logo"
-        :class="[props.type == 'alert' ? 'logo--alert' : '']"
-      ></div>
-      <div class="content__text">{{ props.message }}</div>
+  <div class="toast">
+    <div class="left__area">
+      <div class="mi-icon-success mi-24"></div>
+      <div class="toast__title title--success">
+        <strong>Thành công!</strong>
+      </div>
+      <div class="toast__message">Công việc đã bị xóa.</div>
     </div>
-    <hr />
-    <div class="notibox__footer">
-      <BaseButton
-        bname="Đồng ý"
-        class="btn--primary"
-        @click="props.yesOnClick"
-      />
+    <div class="right__area">
+      <div class="mi mi-16 mi-close-small"></div>
     </div>
   </div>
 </template>
 
 <script setup>
-const props = defineProps({
-  type: String,
-  message: String,
-  yesOnClick: Function,
-});
+// const props = defineProps({
+//   type: String,
+//   message: String,
+//   yesOnClick: Function,
+// });
 </script>
 
 <style scoped>
-.notibox {
-  width: 450px;
-  height: 200px;
+.toast {
+  min-width: 450px;
+  max-width: 650px;
   background-color: #fff;
-  border-radius: var(--border-radius);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  padding: 24px;
-  transform: translate(-50%, -50%);
+  height: 56px;
+  padding: 16px;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+  border-radius: 4px;
 }
 
-.notibox__content {
-  flex: 1;
+.left__area {
   display: flex;
   align-items: center;
-  column-gap: 24px;
-  font-weight: 400;
+  column-gap: 8px;
 }
 
-.content__logo {
-  width: 36px;
-  height: 36px;
+.right__area {
+  display: flex;
+  align-items: center;
+  column-gap: 16px;
 }
-
-.notibox__footer {
-  margin: 18px auto 0 auto;
-}
-
-.logo--alert {
-  background-image: url("../../assets/img/Sprites.64af8f61.svg");
-  background-position: -752px -462px;
+.title--success {
+  color: var(--clr-lg500);
 }
 </style>

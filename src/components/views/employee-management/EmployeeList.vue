@@ -16,6 +16,7 @@
     @update-emplist="empListOnUpdate"
   ></router-view>
   <div class="pcontent">
+    <BaseToast class="toast__position" v-show="false" />
     <div class="pcontent__heading">
       <div class="pcontent__title">Nhân viên</div>
       <BaseButton
@@ -57,6 +58,7 @@ import { useRouter } from "vue-router";
 import { ref, onMounted, onBeforeUnmount, inject } from "vue";
 import BaseLoader from "@/components/base/BaseLoader.vue";
 import BaseDialog from "@/components/base/BaseDialog.vue";
+import BaseToast from "@/components/base/BaseToast.vue";
 import $enum from "@/js/common/enum";
 
 const router = useRouter();
@@ -218,6 +220,7 @@ async function btnRefreshOnClick() {
   padding: 24px;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 /* Heading */
@@ -298,5 +301,12 @@ async function btnRefreshOnClick() {
   right: 0;
   background-color: #00000045;
   z-index: 99;
+}
+
+.toast__position {
+  position: absolute;
+  top: 10px;
+  left: 30vw;
+  z-index: 20;
 }
 </style>

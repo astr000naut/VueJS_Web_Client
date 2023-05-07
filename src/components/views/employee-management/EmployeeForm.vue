@@ -338,7 +338,7 @@ function initState() {
 async function getDepartmentList() {
   const departmentApiResponse = await $axios.get($enum.api.departments);
   departmentList.value = departmentApiResponse.data;
-  console.log(departmentApiResponse.data);
+  // console.log(departmentApiResponse.data);
 }
 
 async function getDataFromApi() {
