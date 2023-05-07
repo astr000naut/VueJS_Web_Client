@@ -11,7 +11,7 @@ const $formatter = {
   formatDateToApiDate: (input) => {
     let d = moment(input, dateFormat).toDate();
     d.setTime(d.getTime() + 7 * 60 * 60 * 1000);
-    console.log(d.toISOString());
+    // console.log(d.toISOString());
     return d;
   },
   isValidDate: (inputDate) => {
