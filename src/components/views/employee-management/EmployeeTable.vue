@@ -31,7 +31,7 @@
         </thead>
         <tbody>
           <template v-if="props.isLoadingData">
-            <tr v-for="i in Math.min(20, props.pagingData.pageSize)" :key="i">
+            <tr v-for="i in Math.min(15, props.pagingData.pageSize)" :key="i">
               <td v-for="j in 11" :key="j">
                 <div class="loading-item"></div>
               </td>
