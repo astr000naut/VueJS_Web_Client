@@ -438,6 +438,31 @@ async function callCreateEmployeeApi() {
   console.log(response);
 }
 
+async function callEditEmployeeApi() {
+  const requestBody = {
+    employeeId: form.value.empId,
+    employeeCode: form.value.empCode,
+    fullName: form.value.empFullName,
+    departmentId: form.value.empDepartmentId,
+    departmentName: form.value.empDepartmentName,
+    positionName: form.value.empPositionName,
+    dateOfBirth: $formatter.formatDateToApiDate(form.value.empDateOfBirth),
+    gender: form.value.empGender,
+    identityNumber: form.value.empIdentityNumber,
+    identityDate: $formatter.formatDateToApiDate(form.value.empIdentityDate),
+    identityPlace: form.value.empIdentityPlace,
+    address: form.value.empAddress,
+    phoneNumber: form.value.empPhoneNumber,
+    email: form.value.empEmail,
+  };
+  // console.log(requestBody);
+  const response = await $axios.put(
+    $enum.api.employees.one(form.value.empId),
+    requestBody
+  );
+  console.log(response);
+}
+
 async function btnSaveOnClick() {
   console.log(form.value);
   validateForm();
@@ -445,8 +470,9 @@ async function btnSaveOnClick() {
     // show notibox
     formNoti.value.showNotibox = true;
   } else {
-    if (form.value.type == $enum.form.createType) {
-      try {
+    try {
+      if (form.value.type == $enum.form.createType) {
+        // create employee
         form.value.isLoading = true;
         await callCreateEmployeeApi();
         emits("updateEmplist", {
@@ -460,9 +486,24 @@ async function btnSaveOnClick() {
         });
         form.value.isLoading = false;
         router.replace("/employee");
-      } catch (error) {
-        console.log(error);
+      } else {
+        // edit employee
+        form.value.isLoading = true;
+        await callEditEmployeeApi();
+        emits("updateEmplist", {
+          EmployeeCode: form.value.empCode,
+          FullName: form.value.empFullName,
+          GenderName: form.value.empGenderName,
+          DateOfBirth: form.value.empDateOfBirth,
+          IdentityNumber: form.value.empIdentityNumber,
+          PositionName: form.value.empPositionName,
+          DepartmentName: form.value.empDepartmentName,
+        });
+        form.value.isLoading = false;
+        router.replace("/employee");
       }
+    } catch (error) {
+      console.log(error);
     }
   }
 }
