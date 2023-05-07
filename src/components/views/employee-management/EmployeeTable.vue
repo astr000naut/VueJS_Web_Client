@@ -111,7 +111,14 @@
                     @mouseleave="table.expandEmpId = ''"
                   >
                     <li><div class="li-data">Nhân bản</div></li>
-                    <li><div class="li-data">Xóa</div></li>
+                    <li>
+                      <div
+                        class="li-data"
+                        @click="$emit('deleteEmployee', emp.EmployeeId)"
+                      >
+                        Xóa
+                      </div>
+                    </li>
                     <li><div class="li-data">Ngừng sử dụng</div></li>
                   </ul>
                 </div>
@@ -199,18 +206,6 @@ function btnExpandOnClick(empId) {
   }
 }
 
-// function unShiftNewEmployee(emp) {
-//   props.empList.value.unshift({
-//     EmployeeCode: emp.EmployeeCode,
-//     FullName: emp.FullName,
-//     GenderName: emp.GenderName,
-//     DateOfBirth: emp.DateOfBirth,
-//     IdentityNumber: emp.IdentityNumber,
-//     PositionName: emp.PositionName,
-//     DepartmentName: emp.DepartmentName,
-//   });
-// }
-
 function recordAmountOptionOnClick(recordAmount) {
   table.value.recordPerPage = recordAmount;
   table.value.recordAmountOpen = false;
@@ -220,7 +215,7 @@ function pagArrowdownOnClick() {
   table.value.recordAmountOpen = !table.value.recordAmountOpen;
 }
 function checkBoxOnClick(empId) {
-  for (const emp of props.empList.value) {
+  for (const emp of props.empList) {
     if (emp.EmployeeId == empId) {
       emp.selected = !emp.selected;
       if (emp.selected == false) {
@@ -231,7 +226,7 @@ function checkBoxOnClick(empId) {
 }
 
 function trOnClick(empId) {
-  for (const emp of props.empList.value) {
+  for (const emp of props.empList) {
     if (emp.EmployeeId == empId || emp.selected) {
       emp.active = true;
     } else {

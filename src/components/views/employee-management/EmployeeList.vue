@@ -1,5 +1,8 @@
 <template>
-  <router-view name="EmployeeForm"></router-view>
+  <router-view
+    name="EmployeeForm"
+    @update-emplist="empListOnUpdate"
+  ></router-view>
   <div class="pcontent">
     <div class="pcontent__heading">
       <div class="pcontent__title">Nhân viên</div>
@@ -68,6 +71,12 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   $emitter.off("rerenderTable");
 });
+
+async function empListOnUpdate(data) {
+  console.log(data);
+  // empList.value.unshift(data);
+  await loadData();
+}
 
 function btnAddOnClick() {
   router.replace("/employee/create");

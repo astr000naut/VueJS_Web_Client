@@ -265,6 +265,7 @@ import { useRouter, useRoute } from "vue-router";
 import $formatter from "@/js/common/formater";
 const $axios = inject("$axios");
 
+const emits = defineEmits(["updateEmplist"]);
 const router = useRouter();
 const route = useRoute();
 const form = ref({
@@ -416,6 +417,7 @@ async function addNewDepartment(name) {
 
 async function callCreateEmployeeApi() {
   const response = await $axios.post($enum.api.employees.index, {
+    // employeeId: "14c624fa-f731-4bba-9656-e73af03940bb",
     employeeCode: form.value.empCode,
     fullName: form.value.empFullName,
     departmentId: form.value.empDepartmentId,
@@ -444,6 +446,15 @@ async function btnSaveOnClick() {
       try {
         form.value.isLoading = true;
         await callCreateEmployeeApi();
+        emits("updateEmplist", {
+          EmployeeCode: form.value.empCode,
+          FullName: form.value.empFullName,
+          GenderName: form.value.empGenderName,
+          DateOfBirth: form.value.empDateOfBirth,
+          IdentityNumber: form.value.empIdentityNumber,
+          PositionName: form.value.empPositionName,
+          DepartmentName: form.value.empDepartmentName,
+        });
         form.value.isLoading = false;
         router.replace("/employee");
       } catch (error) {
