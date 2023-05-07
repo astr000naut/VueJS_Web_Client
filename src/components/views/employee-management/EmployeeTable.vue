@@ -114,7 +114,7 @@
                     <li>
                       <div
                         class="li-data"
-                        @click="$emit('deleteEmployee', emp.EmployeeId)"
+                        @click="deleteEmployeeFunction(emp.EmployeeId)"
                       >
                         Xóa
                       </div>
@@ -192,6 +192,7 @@ const table = ref({
 const props = defineProps({
   isLoadingData: Boolean,
   empList: Array,
+  deleteEmployeeFunction: Function,
 });
 
 function btnEditOnClick(empId) {

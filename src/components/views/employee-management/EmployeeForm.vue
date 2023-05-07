@@ -10,6 +10,7 @@
     <div class="form__wrapper" v-show="formDialog.isShow">
       <BaseDialog
         title="Lưu lại thay đổi"
+        message="Dữ liệu đã bị thay đổi. Bạn có muốn cất không ?"
         :close-on-click="formDialogCloseBtnOnClick"
         :no-on-click="formDialogNoBtnOnClick"
       />

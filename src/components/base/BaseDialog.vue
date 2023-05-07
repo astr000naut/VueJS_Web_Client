@@ -9,7 +9,7 @@
       />
     </div>
     <div class="dialog__content">
-      Dữ liệu đã bị thay đổi. Bạn có muốn cất không ?
+      {{ props.message }}
     </div>
     <div class="dialog__footer">
       <BaseButton
@@ -17,7 +17,7 @@
         class="btn--secondary"
         @click="props.noOnClick"
       />
-      <BaseButton bname="Có" class="btn--primary" />
+      <BaseButton bname="Có" class="btn--primary" @click="props.yesOnClick" />
     </div>
   </div>
 </template>
@@ -25,6 +25,7 @@
 <script setup>
 const props = defineProps({
   title: String,
+  message: String,
   closeOnClick: Function,
   yesOnClick: Function,
   noOnClick: Function,

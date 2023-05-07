@@ -1,4 +1,16 @@
 <template>
+  <div class="page__wrapper" v-show="isLoadingPage">
+    <BaseLoader />
+  </div>
+  <div class="page__wrapper" v-show="dialog.isDisplay">
+    <BaseDialog
+      title="Xác nhận xóa nhân viên"
+      :message="dialog.message"
+      :close-on-click="dialogCloseOnClick"
+      :no-on-click="dialogCloseOnClick"
+      :yes-on-click="deleteEmployee"
+    />
+  </div>
   <router-view
     name="EmployeeForm"
     @update-emplist="empListOnUpdate"
@@ -29,6 +41,7 @@
         :is-loading-data="isLoadingData"
         :emp-list="empList"
         :key="tableKey"
+        :delete-employee-function="deleteEmployeeOnClick"
       />
     </div>
   </div>
@@ -38,14 +51,59 @@
 import EmployeeTable from "@/components/views/employee-management/EmployeeTable.vue";
 import { useRouter } from "vue-router";
 import { ref, onMounted, onBeforeUnmount, inject } from "vue";
+import BaseLoader from "@/components/base/BaseLoader.vue";
+import BaseDialog from "@/components/base/BaseDialog.vue";
 import $enum from "@/js/common/enum";
 
 const router = useRouter();
 const $emitter = inject("$emitter");
 const empList = ref([]);
 const isLoadingData = ref(true);
+const isLoadingPage = ref(false);
 const $axios = inject("$axios");
 const tableKey = ref(0);
+const dialog = ref({
+  isDisplay: false,
+  message: "",
+});
+const cache = ref({
+  empDeleteId: "",
+  empDeleteIndex: "",
+});
+
+function dialogCloseOnClick() {
+  dialog.value.isDisplay = false;
+}
+
+function showDeleteConfirmDialog(empFullName) {
+  dialog.value.message = `Bạn có muốn xóa nhân viên <${empFullName}>`;
+  dialog.value.isDisplay = true;
+}
+
+async function deleteEmployee() {
+  try {
+    dialog.value.isDisplay = false;
+    isLoadingPage.value = true;
+    await $axios.delete($enum.api.employees.one(cache.value.empDeleteId));
+    empList.value.splice(cache.value.empDeleteIndex, 1);
+    isLoadingPage.value = false;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function deleteEmployeeOnClick(empId) {
+  let empName = "";
+  cache.value.empDeleteId = empId;
+  for (let index in empList.value) {
+    if (empList.value[index].EmployeeId == empId) {
+      cache.value.empDeleteIndex = index;
+      break;
+    }
+  }
+  empName = empList.value[cache.value.empDeleteIndex].FullName;
+  showDeleteConfirmDialog(empName);
+}
 
 async function loadData() {
   try {
@@ -165,5 +223,15 @@ async function btnRefreshOnClick() {
 
 .mi-refresh:hover + .button__hoverbox {
   display: block;
+}
+
+.page__wrapper {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #c7c7c71a;
+  z-index: 99;
 }
 </style>
