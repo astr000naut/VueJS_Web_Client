@@ -240,12 +240,13 @@
             bname="Cất"
             class="btn--secondary"
             ref="saveBtnRef"
-            @click="btnSaveOnClick"
+            @click="btnSaveOnClick(true)"
           />
           <BaseButton
             bname="Cất và Thêm"
             class="btn--primary"
             @keydown.tab.prevent="saveAndAddBtnOnTabKeydown"
+            @click="btnSaveAndAddOnClick"
           />
         </div>
       </div>
@@ -269,33 +270,7 @@ const $axios = inject("$axios");
 const emits = defineEmits(["updateEmplist"]);
 const router = useRouter();
 const route = useRoute();
-const form = ref({
-  type: "",
-  isLoading: false,
-  checkbox1: false,
-  checkbox2: false,
-  empId: "",
-  empCode: "",
-  empFullName: "",
-  empDepartmentCode: "",
-  empDepartmentName: "",
-  empDepartmentId: "",
-  empPositionId: "",
-  empPositionName: "",
-  empDateOfBirth: "",
-  empGender: -1,
-  empGenderName: "",
-  empIdentityNumber: "",
-  empIdentityDate: "",
-  empIdentityPlace: "",
-  empAddress: "",
-  empPhoneNumber: "",
-  empLandlineNumber: "",
-  empEmail: "",
-  empBankAcc: "",
-  empBankName: "",
-  empBankPlace: "",
-});
+const form = ref({});
 const formNoti = ref({
   showNotibox: false,
   notiboxType: "",
@@ -317,7 +292,7 @@ const empDepartmentNameRef = ref(null);
 const empIdentitiNumberRef = ref(null);
 const departmentList = ref([]);
 
-initState();
+resetFormState();
 
 onMounted(async () => {
   form.value.isLoading = true;
@@ -326,7 +301,34 @@ onMounted(async () => {
   empCodeRef.value.refInput.focus();
 });
 
-function initState() {
+function resetFormState() {
+  form.value = {
+    type: "",
+    isLoading: false,
+    checkbox1: false,
+    checkbox2: false,
+    empId: "",
+    empCode: "",
+    empFullName: "",
+    empDepartmentCode: "",
+    empDepartmentName: "",
+    empDepartmentId: "",
+    empPositionId: "",
+    empPositionName: "",
+    empDateOfBirth: "",
+    empGender: -1,
+    empGenderName: "",
+    empIdentityNumber: "",
+    empIdentityDate: "",
+    empIdentityPlace: "",
+    empAddress: "",
+    empPhoneNumber: "",
+    empLandlineNumber: "",
+    empEmail: "",
+    empBankAcc: "",
+    empBankName: "",
+    empBankPlace: "",
+  };
   if (route.params.id) {
     form.value.type = $enum.form.infoType;
     form.value.empId = route.params.id;
@@ -340,15 +342,17 @@ async function getDepartmentList() {
   departmentList.value = departmentApiResponse.data;
   // console.log(departmentApiResponse.data);
 }
-
+async function fetchNewEmployeeCode() {
+  const response = await $axios.get($enum.api.employees.newCode);
+  form.value.empCode = response.data;
+}
 async function getDataFromApi() {
   try {
     // Fetch Department List
     await getDepartmentList();
     if (form.value.type == $enum.form.createType) {
       // Fetch new employee code
-      const response = await $axios.get($enum.api.employees.newCode);
-      form.value.empCode = response.data;
+      await fetchNewEmployeeCode();
     } else {
       // Fetch employee information
       await getEmployee(form.value.empId);
@@ -463,7 +467,7 @@ async function callEditEmployeeApi() {
   console.log(response);
 }
 
-async function btnSaveOnClick() {
+async function btnSaveOnClick(goBackToEmployeeList) {
   console.log(form.value);
   validateForm();
   if (formNoti.value.notiboxMessage != "") {
@@ -471,9 +475,9 @@ async function btnSaveOnClick() {
     formNoti.value.showNotibox = true;
   } else {
     try {
+      form.value.isLoading = true;
       if (form.value.type == $enum.form.createType) {
         // create employee
-        form.value.isLoading = true;
         await callCreateEmployeeApi();
         emits("updateEmplist", "create", {
           EmployeeCode: form.value.empCode,
@@ -484,11 +488,8 @@ async function btnSaveOnClick() {
           PositionName: form.value.empPositionName,
           DepartmentName: form.value.empDepartmentName,
         });
-        form.value.isLoading = false;
-        router.replace("/employee");
       } else {
         // edit employee
-        form.value.isLoading = true;
         await callEditEmployeeApi();
         emits("updateEmplist", "edit", {
           EmployeeCode: form.value.empCode,
@@ -499,12 +500,24 @@ async function btnSaveOnClick() {
           PositionName: form.value.empPositionName,
           DepartmentName: form.value.empDepartmentName,
         });
-        form.value.isLoading = false;
-        router.replace("/employee");
       }
+      form.value.isLoading = false;
+      if (goBackToEmployeeList) router.replace("/employee");
     } catch (error) {
       console.log(error);
     }
+  }
+}
+
+async function btnSaveAndAddOnClick() {
+  try {
+    await btnSaveOnClick(false);
+    router.replace("/employee/create");
+    resetFormState();
+    await fetchNewEmployeeCode();
+    empCodeRef.value.refInput.focus();
+  } catch (error) {
+    console.log(error);
   }
 }
 
