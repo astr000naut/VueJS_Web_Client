@@ -164,7 +164,7 @@ async function loadDataPaging(pageSize, pageNumber) {
       params: { pageSize: pageSize, pageNumber: pageNumber },
     });
     empList.value = response.data.Data;
-    console.log(response);
+    // console.log(response);
     pagingData.value.curAmount = response.data.Data.length;
     isLoadingData.value = false;
     // console.log(pagingData.value);

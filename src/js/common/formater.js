@@ -22,6 +22,7 @@ const $formatter = {
     ).isValid();
   },
   changeFormat: (input) => {
+    if (!input) return "";
     return moment(input).format(dateFormat);
   },
   stringToDmy: (input) => {
