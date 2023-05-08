@@ -87,8 +87,8 @@ function dialogCloseOnClick() {
   dialog.value.isDisplay = false;
 }
 
-function showDeleteConfirmDialog(empFullName) {
-  dialog.value.message = `Bạn có muốn xóa nhân viên <${empFullName}>`;
+function showDeleteConfirmDialog(empCode) {
+  dialog.value.message = `Bạn có muốn xóa Nhân viên <${empCode}>`;
   dialog.value.isDisplay = true;
 }
 
@@ -108,7 +108,7 @@ async function deleteEmployee() {
 }
 
 function deleteEmployeeOnClick(empId) {
-  let empName = "";
+  let empCode = "";
   cache.value.empDeleteId = empId;
   for (let index in empList.value) {
     if (empList.value[index].EmployeeId == empId) {
@@ -116,8 +116,8 @@ function deleteEmployeeOnClick(empId) {
       break;
     }
   }
-  empName = empList.value[cache.value.empDeleteIndex].FullName;
-  showDeleteConfirmDialog(empName);
+  empCode = empList.value[cache.value.empDeleteIndex].EmployeeCode;
+  showDeleteConfirmDialog(empCode);
 }
 
 // async function loadData() {
