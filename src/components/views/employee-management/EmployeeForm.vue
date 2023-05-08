@@ -24,7 +24,7 @@
           <div class="header__title">
             {{
               form.type == $enum.form.infoType
-                ? "Thông tin nhân viên"
+                ? "Sửa thông tin nhân viên"
                 : "Thêm mới nhân viên"
             }}
           </div>
