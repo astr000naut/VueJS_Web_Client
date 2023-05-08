@@ -88,6 +88,7 @@
 <script setup>
 import { ref } from "vue";
 import BaseLoader from "./BaseLoader.vue";
+// Luu cac bien setTimeout
 const typingTimers = [];
 const timeoutVal = 500;
 const optionIdHide = ref([]);
@@ -109,6 +110,7 @@ const emits = defineEmits([
   "update:selectedItemId",
 ]);
 defineExpose({ refInput });
+
 const cbox = ref({
   isOptionboxOpen: false,
   isLoading: false,
@@ -117,16 +119,37 @@ const cbox = ref({
   hasScrollbar: false,
 });
 
+/**
+ * Sự kiện click vào item trong danh sách combobox option
+ * NEED đổi lại tên biến cho general
+ * @param {Object} _$event biến sự kiện
+ * @param {String} departmentId Id Đơn vị
+ * @param {String} departmentName Tên đơn vị
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function optionOnClick(_$event, departmentId, departmentName) {
+  // Update dữ liệu lên Form Object
   emits("update:text", departmentName);
   emits("update:noti", "");
+
+  // Đóng optionbox
   cbox.value.isOptionboxOpen = false;
   emits("update:selectedItemId", departmentId);
+  // Xóa bỏ gợi ý thêm mới đơn vị
   cbox.value.suggestAddingItem = "";
 }
 
+/**
+ * Sự kiện click vào mũi tên mở rộng combobox
+ * NEED xóa cusor hoặc code lại
+ * NEED rf if lồng nhau
+ * Author: Dũng (08/05/2023)
+ */
 function selectButtonOnClick() {
   cbox.value.cusorItemId = null;
+
+  // Kiểm tra xem chọn đúng đơn vị trong danh sách
   if (cbox.value.isOptionboxOpen == true) {
     if (props.text.length != 0 && props.selectedItemId == "") {
       emits("update:noti", `Vui lòng chọn <${props.label}> có trong danh mục`);
@@ -137,26 +160,41 @@ function selectButtonOnClick() {
   cbox.value.isOptionboxOpen = !cbox.value.isOptionboxOpen;
 }
 
+/**
+ * Sự kiện click vào thêm mới Item
+ * Author: Dũng (08/05/2023)
+ */
 async function addingItemOnClick() {
   await props.addNewItem(cbox.value.suggestAddingItem);
   cbox.value.isOptionboxOpen = false;
   cbox.value.suggestAddingItem = "";
 }
 
+/**
+ * Sự kiện Keyup ô Input
+ * @param {Object} $event biến sự kiện
+ *
+ * Author: Dũng (08/05/2023)
+ */
+
 function inputKeyupHandler($event) {
+  // Nếu combobox là requied thì khi xóa hết text sẽ thông báo lỗi
   if (props.isrequired) {
     if (props.text.length == 0 && $event.key == "Backspace") {
       emits("update:noti", `${props.label} không được để trống`);
     } else {
+      // Khi typing thì tắt thông báo lỗi
       emits("update:noti", "");
     }
   }
+
+  // 500ms sau khi Typing tự động mở optionBox
   if (cbox.value.isOptionboxOpen == false && $event.key != "Tab") {
     setTimeout(() => {
       cbox.value.isOptionboxOpen = true;
     }, 500);
   }
-
+  // Xóa các timeout trước trong khi typing
   while (typingTimers.length > 0) {
     clearTimeout(typingTimers[0]);
     typingTimers.splice(0, 1);
@@ -180,14 +218,25 @@ function inputKeyupHandler($event) {
   );
 }
 
+/**
+ * Sự kiện Typing vào ô input
+ * Author: Dũng (08/05/2023)
+ */
 function inputKeyPressHandler() {
   cbox.value.isLoading = true;
+  // Xóa setTimeout đã tạo từ tước
   while (typingTimers.length > 0) {
     clearTimeout(typingTimers[0]);
     typingTimers.splice(0, 1);
   }
 }
 
+/**
+ * Hàm tìm kiếm đơn vị
+ * @param {String} input Tên đơn vị
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function filterData(input) {
   const IdHideList = [];
   for (let i = 0; i < props.optionList.length; ++i) {

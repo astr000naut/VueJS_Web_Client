@@ -4,7 +4,11 @@
 
 <script setup>
 import { ref } from "vue";
-const props = defineProps(["bname"]);
+const props = defineProps({
+  // Ten button
+  bname: String,
+});
+// Template reference
 const refBtn = ref(null);
 defineExpose({ refBtn });
 </script>
