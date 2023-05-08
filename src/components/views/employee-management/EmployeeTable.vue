@@ -18,12 +18,38 @@
             <th><div class="text-left mw-200">Tên nhân viên</div></th>
             <th><div class="text-left mw-70">Giới tính</div></th>
             <th><div class="text-left mw-80">Ngày sinh</div></th>
-            <th><div class="text-left mw-120">Số CMND</div></th>
+            <th class="zindex--3">
+              <div class="text-left mw-120">
+                <span
+                  class="text"
+                  @mouseenter="thOnMouseEnter('isShowIdentityNumber')"
+                  @mouseleave="thOnMouseLeave('isShowIdentityNumber')"
+                >
+                  Số CMND
+                </span>
+                <div class="th__tooltip" v-show="tooltip.isShowIdentityNumber">
+                  Số chứng minh nhân dân
+                </div>
+              </div>
+            </th>
             <th><div class="text-left mw-150">Chức danh</div></th>
             <th><div class="text-left mw-200">Tên đơn vị</div></th>
             <th><div class="text-left mw-150">Số tài khoản</div></th>
             <th><div class="text-left mw-150">Tên ngân hàng</div></th>
-            <th><div class="text-left mw-200">Chi nhánh TK ngân hàng</div></th>
+            <th class="zindex--3">
+              <div class="text-left mw-200">
+                <span
+                  class="text"
+                  @mouseenter="thOnMouseEnter('isShowBankPlace')"
+                  @mouseleave="thOnMouseLeave('isShowBankPlace')"
+                >
+                  Chi nhánh TK ngân hàng
+                </span>
+                <div class="th__tooltip" v-show="tooltip.isShowBankPlace">
+                  Chi nhánh tài khoản ngân hàng
+                </div>
+              </div>
+            </th>
             <th class="thn--sticky">
               <div class="text-left mw-80">Chức năng</div>
             </th>
@@ -32,7 +58,8 @@
         <tbody>
           <template v-if="props.isLoadingData">
             <tr v-for="i in Math.min(15, props.pagingData.pageSize)" :key="i">
-              <td v-for="j in 11" :key="j">
+              <td class="td1--sticky"><div class="loading-item"></div></td>
+              <td v-for="j in 10" :key="j">
                 <div class="loading-item"></div>
               </td>
               <td class="tdn--sticky">
@@ -208,7 +235,6 @@ import { ref } from "vue";
 import BaseLoader from "../../base/BaseLoader.vue";
 import { useRouter } from "vue-router";
 import $formatter from "@/js/common/formater";
-
 const router = useRouter();
 
 const table = ref({
@@ -225,6 +251,18 @@ const props = defineProps({
   pagingPrevPage: Function,
 });
 const emits = defineEmits(["updatePagingData"]);
+const tooltip = ref({
+  isShowIdentityNumber: false,
+  isShowBankPlace: false,
+});
+ref("");
+function thOnMouseLeave(name) {
+  tooltip.value[name] = false;
+}
+function thOnMouseEnter(name) {
+  tooltip.value[name] = true;
+}
+
 async function nextPageOnClick() {
   if (
     (props.pagingData.pageNumber - 1) * props.pagingData.pageSize +
@@ -360,13 +398,13 @@ tbody tr {
 .th1--sticky {
   position: sticky;
   left: -1px;
-  z-index: 4;
+  z-index: 5;
 }
 
 .thn--sticky {
   position: sticky;
   right: -1px;
-  z-index: 4;
+  z-index: 5;
   border-left: 1px solid #c7c7c7;
 }
 
@@ -374,6 +412,7 @@ tbody tr {
   position: sticky;
   left: -1px;
   background-color: inherit;
+  z-index: 4;
 }
 
 .tdn--sticky {
@@ -381,6 +420,7 @@ tbody tr {
   right: -1px;
   background-color: inherit;
   border-left: 1px solid #c7c7c7;
+  z-index: 4;
 }
 
 .t__optionbox {
@@ -564,5 +604,21 @@ td:has(.loading-item) {
   100% {
     background-position-x: 80%;
   }
+}
+
+.th__tooltip {
+  position: absolute;
+  top: 36px;
+  left: -8px;
+  padding: 2px;
+  border-radius: 4px;
+  width: max-content;
+  color: #fff;
+  background-color: #393a3d;
+  font-weight: 400;
+}
+
+.zindex--3 {
+  z-index: 3;
 }
 </style>

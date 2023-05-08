@@ -275,7 +275,6 @@ async function btnRefreshOnClick() {
 .hover__text {
   padding: 4px 8px;
   background-color: #393a3d;
-  font-size: 12px;
   color: #fff;
   border-radius: 4px;
 }
