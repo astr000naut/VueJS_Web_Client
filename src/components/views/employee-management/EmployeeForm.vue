@@ -65,6 +65,7 @@
                   :isrequired="true"
                   v-model:text="form.empCode"
                   v-model:noti="formNoti.empCode"
+                  @keydown.shift.tab.prevent="empCodeTextfieldOnShiftTab"
                   ref="empCodeRef"
                 />
               </div>
@@ -209,6 +210,7 @@
                 label="Tên ngân hàng"
                 noti=""
                 v-model:text="form.empBankName"
+                ref="empBankNameRef"
               />
             </div>
             <div class="fl__bankarea">
@@ -219,6 +221,7 @@
                 ref="bankAreaInputRef"
                 noti=""
                 @keydown.tab.prevent="bankAreaInputOnTabKeyDown"
+                @keydown.shift.tab.prevent="bankAreaInputOnShiftTabKeyDown"
               />
             </div>
           </div>
@@ -232,6 +235,7 @@
             bname="Hủy"
             class="btn--secondary"
             @keydown.tab.prevent="cancelBtnOnTabKeydown"
+            @keydown.shift.tab.prevent="cancelBtnOnShiftTabKeydown"
             @click="cancelBtnOnClick"
           />
         </div>
@@ -241,11 +245,14 @@
             class="btn--secondary"
             ref="saveBtnRef"
             @click="btnSaveOnClick(true)"
+            @keydown.shift.tab.prevent="saveBtnOnShiftTabKeydown"
           />
           <BaseButton
             bname="Cất và Thêm"
             class="btn--primary"
+            ref="saveAndAddBtnRef"
             @keydown.tab.prevent="saveAndAddBtnOnTabKeydown"
+            @keydown.shift.tab.prevent="saveAndAddBtnOnShiftTabKeydown"
             @click="btnSaveAndAddOnClick"
           />
         </div>
@@ -286,10 +293,12 @@ const formDialog = ref({
 });
 const cancelBtnRef = ref(null);
 const saveBtnRef = ref(null);
+const saveAndAddBtnRef = ref(null);
 const bankAreaInputRef = ref(null);
 const empFullNameRef = ref(null);
 const empDepartmentNameRef = ref(null);
 const empIdentitiNumberRef = ref(null);
+const empBankNameRef = ref(null);
 const departmentList = ref([]);
 
 resetFormState();
@@ -558,12 +567,32 @@ function cancelBtnOnClick() {
   router.replace("/employee");
 }
 
+function cancelBtnOnShiftTabKeydown() {
+  saveAndAddBtnRef.value.refBtn.focus();
+}
+
 function cancelBtnOnTabKeydown() {
   empCodeRef.value.refInput.focus();
 }
 
 function bankAreaInputOnTabKeyDown() {
   saveBtnRef.value.refBtn.focus();
+}
+
+function saveBtnOnShiftTabKeydown() {
+  bankAreaInputRef.value.refInput.focus();
+}
+
+function bankAreaInputOnShiftTabKeyDown() {
+  empBankNameRef.value.refInput.focus();
+}
+
+function saveAndAddBtnOnShiftTabKeydown() {
+  saveBtnRef.value.refBtn.focus();
+}
+
+function empCodeTextfieldOnShiftTab() {
+  cancelBtnRef.value.refBtn.focus();
 }
 
 function saveAndAddBtnOnTabKeydown() {
