@@ -209,7 +209,10 @@
         </div>
         <div class="pag__info">
           {{
-            props.pagingData.pageSize * (props.pagingData.pageNumber - 1) + 1
+            props.pagingData.pageSize * (props.pagingData.pageNumber - 1) +
+            (props.empList.length > 0)
+              ? 1
+              : 0
           }}
           -
           <span v-show="!props.isLoadingData">
