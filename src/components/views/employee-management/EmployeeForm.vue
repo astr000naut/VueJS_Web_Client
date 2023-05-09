@@ -60,7 +60,8 @@
             <div class="fu__left__top">
               <div class="fu__index">
                 <BaseTextfield
-                  pholder="Shift + F8 để tạo mã"
+                  pholder=""
+                  autoFillMessage="Shift + F8 để tự tạo mã"
                   label="Mã"
                   :isrequired="true"
                   :autoFill="generateEmpCode"
