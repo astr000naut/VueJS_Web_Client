@@ -28,7 +28,7 @@
     <div class="pcontent__container">
       <div class="pcontent__searchbar">
         <BaseTextfield
-          pholder="Tìm kiếm theo mã, tên nhân viên"
+          pholder="Tìm kiếm nhân viên"
           class="txtfield--search mw-300"
           noti=""
         />
