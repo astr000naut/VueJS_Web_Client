@@ -60,9 +60,10 @@
             <div class="fu__left__top">
               <div class="fu__index">
                 <BaseTextfield
-                  pholder=""
+                  pholder="Shift + F8 để tạo mã"
                   label="Mã"
                   :isrequired="true"
+                  :autoFill="generateEmpCode"
                   v-model:text="form.empCode"
                   v-model:noti="formNoti.empCode"
                   @keydown.shift.tab.prevent="empCodeTextfieldOnShiftTab"
@@ -351,15 +352,46 @@ function resetFormState() {
   }
 }
 
+async function generateEmpCode() {
+  try {
+    form.value.isLoading = true;
+    await fetchNewEmployeeCode();
+    form.value.isLoading = false;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
+ * Api tim kiem nhan vien theo ma nhan vien
+ * NEED viet lai ham filter theo code only
+ * Author: Dux(09/05/2023)
+ */
+async function isEmpCodeExist(empCode, empId) {
+  const response = await $axios.get($enum.api.employees.filter, {
+    params: {
+      employeeFilter: empCode,
+    },
+  });
+  if (response.data == "") return false;
+  for (const emp of response.data.Data) {
+    if (emp.EmployeeCode == empCode && emp.EmployeeId != empId) return true;
+  }
+}
+
 /**
  * Gọi Api lấy danh sách department
  *
- * Author: Dũng (08/05/2023)
+ * Author:  Dux (08/05/2023)
  */
 async function getDepartmentList() {
-  const departmentApiResponse = await $axios.get($enum.api.departments);
-  departmentList.value = departmentApiResponse.data;
-  // console.log(departmentApiResponse.data);
+  try {
+    const departmentApiResponse = await $axios.get($enum.api.departments);
+    departmentList.value = departmentApiResponse.data;
+    // console.log(departmentApiResponse.data);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 /**
@@ -398,43 +430,59 @@ async function getDataFromApi() {
  *
  * Author: Dũng (08/05/2023)
  */
-function validateForm() {
-  let firstMessage = "";
-  // EmpCode
-  if (form.value.empCode == "") {
-    formNoti.value.empCode = "Mã không được để trống";
-    if (firstMessage == "") {
-      firstMessage = formNoti.value.empCode;
+async function validateForm() {
+  try {
+    let firstMessage = "";
+    // EmpCode
+    if (form.value.empCode.trim() == "") {
+      form.value.empCode = "";
+      formNoti.value.empCode = "Mã không được để trống";
+      if (firstMessage == "") {
+        firstMessage = formNoti.value.empCode;
+      }
+    } else {
+      const isCodeExist = await isEmpCodeExist(
+        form.value.empCode,
+        form.value.empId
+      );
+      if (isCodeExist) {
+        formNoti.value.empCode = `Mã nhân viên đã tồn tại`;
+        if (firstMessage == "") {
+          firstMessage = formNoti.value.empCode;
+        }
+      }
     }
-  }
-  // EmpFullName
-  if (form.value.empFullName == "") {
-    formNoti.value.empFullName = "Tên không được để trống";
-    if (firstMessage == "") {
-      firstMessage = formNoti.value.empFullName;
+    // EmpFullName
+    if (form.value.empFullName == "") {
+      formNoti.value.empFullName = "Tên không được để trống";
+      if (firstMessage == "") {
+        firstMessage = formNoti.value.empFullName;
+      }
     }
-  }
-  // EmpDepartmentName
-  if (form.value.empDepartmentName == "") {
-    formNoti.value.empDepartmentName = "Đơn vị không được để trống";
-    if (firstMessage == "") {
-      firstMessage = formNoti.value.empDepartmentName;
+    // EmpDepartmentName
+    if (form.value.empDepartmentName == "") {
+      formNoti.value.empDepartmentName = "Đơn vị không được để trống";
+      if (firstMessage == "") {
+        firstMessage = formNoti.value.empDepartmentName;
+      }
     }
-  }
-  // EmpIdentityNumber
-  if (!/^$|^\d{9}$|^\d{12}$/.test(form.value.empIdentityNumber)) {
-    formNoti.value.empIdentityNumber = "Số CMND không đúng định dạng";
-    if (firstMessage == "") {
-      firstMessage = formNoti.value.empIdentityNumber;
+    // EmpIdentityNumber
+    if (!/^$|^\d{9}$|^\d{12}$/.test(form.value.empIdentityNumber)) {
+      formNoti.value.empIdentityNumber = "Số CMND không đúng định dạng";
+      if (firstMessage == "") {
+        firstMessage = formNoti.value.empIdentityNumber;
+      }
     }
-  }
 
-  if (firstMessage != "") {
-    // Update notibox value
-    formNoti.value.notiboxType = "alert";
-    formNoti.value.notiboxMessage = firstMessage;
-  } else {
-    formNoti.value.notiboxMessage = "";
+    if (firstMessage != "") {
+      // Update notibox value
+      formNoti.value.notiboxType = "alert";
+      formNoti.value.notiboxMessage = firstMessage;
+    } else {
+      formNoti.value.notiboxMessage = "";
+    }
+  } catch (error) {
+    console.log(error);
   }
 }
 
@@ -485,8 +533,7 @@ async function callCreateEmployeeApi() {
     email: form.value.empEmail,
   };
   // console.log(requestBody);
-  const response = await $axios.post($enum.api.employees.index, requestBody);
-  console.log(response);
+  await $axios.post($enum.api.employees.index, requestBody);
 }
 
 /**
@@ -512,11 +559,7 @@ async function callEditEmployeeApi() {
     email: form.value.empEmail,
   };
   // console.log(requestBody);
-  const response = await $axios.put(
-    $enum.api.employees.one(form.value.empId),
-    requestBody
-  );
-  console.log(response);
+  await $axios.put($enum.api.employees.one(form.value.empId), requestBody);
 }
 
 /**
@@ -526,14 +569,14 @@ async function callEditEmployeeApi() {
  * Author: Dũng (08/05/2023)
  */
 async function btnSaveOnClick(goBackToEmployeeList) {
-  console.log(form.value);
-  validateForm();
-  if (formNoti.value.notiboxMessage != "") {
-    // show notibox
-    formNoti.value.showNotibox = true;
-  } else {
-    try {
-      form.value.isLoading = true;
+  try {
+    form.value.isLoading = true;
+    await validateForm();
+    if (formNoti.value.notiboxMessage != "") {
+      form.value.isLoading = false;
+      // show notibox
+      formNoti.value.showNotibox = true;
+    } else {
       if (form.value.type == $enum.form.createType) {
         // create employee
         await callCreateEmployeeApi();
@@ -561,9 +604,9 @@ async function btnSaveOnClick(goBackToEmployeeList) {
       }
       form.value.isLoading = false;
       if (goBackToEmployeeList) router.replace("/employee");
-    } catch (error) {
-      console.log(error);
     }
+  } catch (error) {
+    console.log(error);
   }
 }
 
@@ -832,11 +875,11 @@ function btnCloseOnClick() {
   column-gap: 12px;
 }
 .fu__index {
-  flex: 1;
+  flex: 2;
 }
 
 .fu__name {
-  flex: 2;
+  flex: 3;
 }
 
 .fu__left__mid {

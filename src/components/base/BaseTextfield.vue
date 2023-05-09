@@ -30,6 +30,7 @@
         @input="$emit('update:text', $event.target.value)"
         @keyup="inputKeyupHandler($event)"
         @keypress="inputKeyPressHandler"
+        @keydown.shift.f8.prevent="autoFill"
       />
       <div class="txtfield__icon"></div>
     </div>
@@ -48,6 +49,7 @@ const props = defineProps({
   noti: String,
   realTimeSearch: Boolean,
   doSearch: Function,
+  autoFill: Function,
 });
 const typingTimers = [];
 const timeoutVal = 500;

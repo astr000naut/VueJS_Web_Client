@@ -144,17 +144,6 @@ function deleteEmployeeOnClick(empId) {
   showDeleteConfirmDialog(empCode);
 }
 
-// async function loadData() {
-//   try {
-//     isLoadingData.value = true;
-//     const response = await $axios.get($enum.api.employees.index);
-//     empList.value = response.data;
-//     isLoadingData.value = false;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
-
 /**
  * Sự kiện cập nhật trạng thái của object pagingData
  * @param {Object} newData giá trị mới
