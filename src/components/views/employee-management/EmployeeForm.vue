@@ -310,6 +310,11 @@ onMounted(async () => {
   empCodeRef.value.refInput.focus();
 });
 
+/**
+ * Reset giá trị của form
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function resetFormState() {
   form.value = {
     type: "",
@@ -346,15 +351,32 @@ function resetFormState() {
   }
 }
 
+/**
+ * Gọi Api lấy danh sách department
+ *
+ * Author: Dũng (08/05/2023)
+ */
 async function getDepartmentList() {
   const departmentApiResponse = await $axios.get($enum.api.departments);
   departmentList.value = departmentApiResponse.data;
   // console.log(departmentApiResponse.data);
 }
+
+/**
+ * Gọi API lấy mã nhân viên mới
+ *
+ * Author: Dũng (08/05/2023)
+ */
 async function fetchNewEmployeeCode() {
   const response = await $axios.get($enum.api.employees.newCode);
   form.value.empCode = response.data;
 }
+
+/**
+ * Gọi API khởi tạo dữ liệu cho form
+ *
+ * Author: Dũng (08/05/2023)
+ */
 async function getDataFromApi() {
   try {
     // Fetch Department List
@@ -371,6 +393,11 @@ async function getDataFromApi() {
   }
 }
 
+/**
+ * Validate các thông tin có trong form
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function validateForm() {
   let firstMessage = "";
   // EmpCode
@@ -411,6 +438,12 @@ function validateForm() {
   }
 }
 
+/**
+ * Gọi API tạo mới Department
+ * @param {String} name tên Department
+ *
+ * Author: Dũng (08/05/2023)
+ */
 async function addNewDepartment(name) {
   form.value.isLoading = true;
   try {
@@ -429,6 +462,11 @@ async function addNewDepartment(name) {
   }
 }
 
+/**
+ * Gọi API tạo mới nhân viên
+ *
+ * Author: Dũng (08/05/2023)
+ */
 async function callCreateEmployeeApi() {
   const requestBody = {
     // employeeId: "14c624fa-f731-4bba-9656-e73af03940bb",
@@ -451,6 +489,11 @@ async function callCreateEmployeeApi() {
   console.log(response);
 }
 
+/**
+ * Gọi API sửa nhân viên
+ *
+ * Author: Dũng (08/05/2023)
+ */
 async function callEditEmployeeApi() {
   const requestBody = {
     employeeId: form.value.empId,
@@ -476,6 +519,12 @@ async function callEditEmployeeApi() {
   console.log(response);
 }
 
+/**
+ * Sự kiện click vào nút cất
+ * @param {Boolean} goBackToEmployeeList có quay lại trang employee sau khi click không
+ *
+ * Author: Dũng (08/05/2023)
+ */
 async function btnSaveOnClick(goBackToEmployeeList) {
   console.log(form.value);
   validateForm();
@@ -518,6 +567,11 @@ async function btnSaveOnClick(goBackToEmployeeList) {
   }
 }
 
+/**
+ * Sự kiện click vào nút cất và thêm
+ *
+ * Author: Dũng (08/05/2023)
+ */
 async function btnSaveAndAddOnClick() {
   try {
     await btnSaveOnClick(false);
@@ -530,6 +584,11 @@ async function btnSaveAndAddOnClick() {
   }
 }
 
+/**
+ * Focus vào ô lỗi đầu tiên
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function focusOnFirstErrorInput() {
   if (formNoti.value.empCode != "") {
     empCodeRef.value.refInput.focus();
@@ -548,57 +607,100 @@ function focusOnFirstErrorInput() {
     return;
   }
 }
-
+/**
+ * Sự kiện click vào nút có trong notibox
+ * Author: Dũng (08/05/2023)
+ */
 function formNotiboxYesBtnOnClick() {
   formNoti.value.showNotibox = false;
   focusOnFirstErrorInput();
 }
-
+/**
+ * Sự kiện click vào nút đóng dialog
+ * Author: Dũng (08/05/2023)
+ */
 function formDialogCloseBtnOnClick() {
   formDialog.value.isShow = false;
 }
 
+/**
+ * Sự kiện click vào nút không trong notibox
+ * Author: Dũng (08/05/2023)
+ */
 function formDialogNoBtnOnClick() {
   formDialog.value.isShow = false;
   router.replace("/employee");
 }
-
+/**
+ * Sự kiện click vào nút hủy trong notibox
+ * Author: Dũng (08/05/2023)
+ */
 function cancelBtnOnClick() {
   router.replace("/employee");
 }
-
+/**
+ * Sự kiện shift tab của nút hủy
+ * Author: Dũng (08/05/2023)
+ */
 function cancelBtnOnShiftTabKeydown() {
   saveAndAddBtnRef.value.refBtn.focus();
 }
-
+/**
+ * Sự kiện tab của nút hủy
+ * Author: Dũng (08/05/2023)
+ */
 function cancelBtnOnTabKeydown() {
   empCodeRef.value.refInput.focus();
 }
-
+/**
+ * Sự kiện tab của ô chi nhánh
+ * Author: Dũng (08/05/2023)
+ */
 function bankAreaInputOnTabKeyDown() {
   saveBtnRef.value.refBtn.focus();
 }
-
+/**
+ * Sự kiện shift tab của nút cất
+ * Author: Dũng (08/05/2023)
+ */
 function saveBtnOnShiftTabKeydown() {
   bankAreaInputRef.value.refInput.focus();
 }
-
+/**
+ * Sự kiện shift tab của ô chi nhánh
+ * Author: Dũng (08/05/2023)
+ */
 function bankAreaInputOnShiftTabKeyDown() {
   empBankNameRef.value.refInput.focus();
 }
-
+/**
+ * Sự kiện shift tab của nút cất và thêm
+ * Author: Dũng (08/05/2023)
+ */
 function saveAndAddBtnOnShiftTabKeydown() {
   saveBtnRef.value.refBtn.focus();
 }
-
+/**
+ * Sự kiện shift tab của ô mã nhân viên
+ * Author: Dũng (08/05/2023)
+ */
 function empCodeTextfieldOnShiftTab() {
   cancelBtnRef.value.refBtn.focus();
 }
-
+/**
+ * Sự kiện tab của nút cất và thêm
+ * Author: Dũng (08/05/2023)
+ */
 function saveAndAddBtnOnTabKeydown() {
   cancelBtnRef.value.refBtn.focus();
 }
 
+/**
+ * Gọi API lấy thông tin nhân viên
+ * @param {String} empId Id nhân viên
+ *
+ * Author: Dũng (08/05/2023)
+ */
 async function getEmployee(empId) {
   try {
     const response = await $axios.get($enum.api.employees.one(empId));
@@ -626,7 +728,10 @@ async function getEmployee(empId) {
     console.log(error);
   }
 }
-
+/**
+ * Sự kiện click vào nút đóng form
+ * Author: Dũng (08/05/2023)
+ */
 function btnCloseOnClick() {
   formDialog.value.isShow = true;
 }

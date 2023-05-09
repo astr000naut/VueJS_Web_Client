@@ -160,18 +160,33 @@ const selectedIdx = ref(-1);
 const maxYearLimit = date.getFullYear() + 12;
 const minYearLimit = date.getFullYear() - 150;
 
+/**
+ * Gán ngày hiển thị bằng ngày đã chọn
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function assignRealtoCur() {
   curDay.value = realDay.value;
   curMonth.value = realMonth.value;
   curYear.value = realYear.value;
 }
 
+/**
+ * Gán ngày đã chọn bằng ngày hiển thị
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function assignCurToReal() {
   realDay.value = curDay.value;
   realMonth.value = curMonth.value;
   realYear.value = curYear.value;
 }
 
+/**
+ * Sự kiện click vào chọn ngày hôm nay
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function todayBtnOnClick() {
   date = new Date();
   realYear.value = date.getFullYear();
@@ -189,12 +204,24 @@ function todayBtnOnClick() {
   );
 }
 
+/**
+ * Sự kiện click vào btn hủy chọn ngày
+ * Author: Dũng (08/05/2023)
+ */
 function cancelBtnOnClick() {
   assignRealtoCur();
   boxStatus.value = 0;
   boxText.value = `Tháng ${realMonth.value}, ${realYear.value}`;
 }
 
+/**
+ * Sự kiện click vào ngày trong lịch
+ * NEED đổi lại tên biến cho general
+ * @param {Object} _e biến sự kiện
+ * @param {String} dateChooseIdx Index của ngày được chọn trong cells
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function dateItemOnClick(_e, dateChoosedIdx) {
   if (cell[dateChoosedIdx] == 0) {
     return;
@@ -208,6 +235,13 @@ function dateItemOnClick(_e, dateChoosedIdx) {
   );
 }
 
+/**
+ * Sự kiện click vào tháng trong lịch
+ * @param {Object} _e biến sự kiện
+ * @param {Number} monthChoosed tháng được chọn
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function monthItemOnClick(_e, monthChoosed) {
   curMonth.value = monthChoosed;
   boxText.value = `Tháng ${curMonth.value}, ${curYear.value}`;
@@ -215,12 +249,26 @@ function monthItemOnClick(_e, monthChoosed) {
   boxStatus.value = 0;
 }
 
+/**
+ * Sự kiện click vào năm trong lịch
+ * @param {Object} _ biến sự kiện
+ * @param {String} yearChoosed năm được chọn
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function yearItemOnClick(_e, yearChoosed) {
   curYear.value = yearChoosed;
   boxText.value = `Năm ${yearChoosed}`;
   boxStatus.value = 1;
 }
 
+/**
+ * Cập nhật lại giá trị ngày cho cell
+ * @param {Number} year Id Đơn vị
+ * @param {Number} month Tên đơn vị
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function updateCell(year, month) {
   const fd = new Date(year, month - 1, 1);
 
@@ -241,6 +289,12 @@ function updateCell(year, month) {
     }
   }
 }
+
+/**
+ * Sự kiện click vào item calendar
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function miCalendarOnClick() {
   // Init
   if (!isBoxOpen.value) {
@@ -280,6 +334,11 @@ function miCalendarOnClick() {
   isBoxOpen.value = !isBoxOpen.value;
 }
 
+/**
+ * Sự kiện click vào nút chọn năm, tháng
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function expandIcOnClick() {
   // Lịch -> Năm
   if (boxStatus.value == 0) {
@@ -293,6 +352,11 @@ function expandIcOnClick() {
   }
 }
 
+/**
+ * Sự kiện click vào nút prev
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function prevOnClick() {
   // Back Năm
   if (boxStatus.value == 2) {
@@ -321,6 +385,11 @@ function prevOnClick() {
   }
 }
 
+/**
+ * Sự kiện click vào nút next
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function nextOnClick() {
   if (boxStatus.value == 2) {
     if (yearRangeNow.value < maxYearLimit) {

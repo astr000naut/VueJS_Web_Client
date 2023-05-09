@@ -50,6 +50,14 @@ const refInput = ref(null);
 const showTooltip = ref(false);
 const emits = defineEmits(["update:text", "update:noti"]);
 defineExpose({ refInput });
+
+/**
+ * Sự kiện keyup cho ô input
+ * NEED đổi lại tên biến cho general
+ * @param {Object} $event biến sự kiện
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function inputKeyupHandler($event) {
   emits("update:noti", "");
   if (props.isrequired) {
@@ -58,10 +66,20 @@ function inputKeyupHandler($event) {
     }
   }
 }
-
+/**
+ * Sự kiện mouse enter vào label
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function labelOnMouseEnter() {
   showTooltip.value = true;
 }
+
+/**
+ * Sự kiện mouse out khỏi label
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function labelOnMouseOut() {
   showTooltip.value = false;
 }

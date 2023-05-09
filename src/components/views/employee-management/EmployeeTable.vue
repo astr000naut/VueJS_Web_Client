@@ -255,14 +255,28 @@ const tooltip = ref({
   isShowIdentityNumber: false,
   isShowBankPlace: false,
 });
-ref("");
+/**
+ * Mouse leave vào ô th có tooltip
+ * @param {String} name tên tooltip của ô th
+ * Author: Dũng (08/05/2023)
+ */
 function thOnMouseLeave(name) {
   tooltip.value[name] = false;
 }
+
+/**
+ * Mouse enter vào ô th có tooltip
+ * @param {String} name tên tooltip của ô th
+ * Author: Dũng (08/05/2023)
+ */
 function thOnMouseEnter(name) {
   tooltip.value[name] = true;
 }
 
+/**
+ * Click next chuyển trang
+ * Author: Dũng (08/05/2023)
+ */
 async function nextPageOnClick() {
   if (
     (props.pagingData.pageNumber - 1) * props.pagingData.pageSize +
@@ -274,16 +288,30 @@ async function nextPageOnClick() {
   console.log("Next");
 }
 
+/**
+ * Click prev chuyển trang
+ * Author: Dũng (08/05/2023)
+ */
 async function prevPageOnClick() {
   if (props.pagingData.pageNumber <= 1) return;
   await props.pagingPrevPage();
   console.log("Prev");
 }
 
+/**
+ * Click vào btn sửa nhân viên
+ * @param {String} empId Id nhân viên
+ * Author: Dũng (08/05/2023)
+ */
 function btnEditOnClick(empId) {
   router.push(`/employee/${empId}`);
 }
 
+/**
+ * Click vào nút mở rộng của một nhân viên
+ * @param {String} empId Id nhân viên
+ * Author: Dũng (08/05/2023)
+ */
 function btnExpandOnClick(empId) {
   if (table.value.expandEmpId == empId) {
     table.value.expandEmpId = "";
@@ -292,6 +320,11 @@ function btnExpandOnClick(empId) {
   }
 }
 
+/**
+ * Click chọn số lượng bản ghi/trang
+ * @param {Number} recordAmount số lượng bản ghi/trang
+ * Author: Dũng (08/05/2023)
+ */
 function recordAmountOptionOnClick(recordAmount) {
   emits("updatePagingData", {
     totalRecord: props.pagingData.totalRecord,
@@ -302,9 +335,19 @@ function recordAmountOptionOnClick(recordAmount) {
   table.value.recordAmountOpen = false;
 }
 
+/**
+ * Click mở menu chọn số lượng bản ghi/trang
+ * Author: Dũng (08/05/2023)
+ */
 function pagArrowdownOnClick() {
   table.value.recordAmountOpen = !table.value.recordAmountOpen;
 }
+
+/**
+ * Click vào checkbox
+ * @param {String} empId Id nhân viên
+ * Author: Dũng (08/05/2023)
+ */
 function checkBoxOnClick(empId) {
   for (const emp of props.empList) {
     if (emp.EmployeeId == empId) {
@@ -316,6 +359,11 @@ function checkBoxOnClick(empId) {
   }
 }
 
+/**
+ * Click vào tr
+ * @param {String} empId Id nhân viên
+ * Author: Dũng (08/05/2023)
+ */
 function trOnClick(empId) {
   for (const emp of props.empList) {
     if (emp.EmployeeId == empId || emp.selected) {
@@ -326,6 +374,11 @@ function trOnClick(empId) {
   }
 }
 
+/**
+ * DblClick vào checkbox
+ * @param {String} empId Id nhân viên
+ * Author: Dũng (08/05/2023)
+ */
 function trOnDblclick(empId) {
   router.push(`/employee/${empId}`);
 }

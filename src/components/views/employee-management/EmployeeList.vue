@@ -82,16 +82,30 @@ const cache = ref({
   empDeleteId: "",
   empDeleteIndex: "",
 });
-
+/**
+ * Sự kiện click vào nút đóng dialog
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function dialogCloseOnClick() {
   dialog.value.isDisplay = false;
 }
 
+/**
+ * Hiển thị cảnh báo xóa nhân viên
+ * @param {String} empCode mã nhân viên
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function showDeleteConfirmDialog(empCode) {
   dialog.value.message = `Bạn có muốn xóa Nhân viên <${empCode}>`;
   dialog.value.isDisplay = true;
 }
 
+/**
+ * Gọi API xóa nhân viên
+ * Author: Dũng (08/05/2023)
+ */
 async function deleteEmployee() {
   try {
     dialog.value.isDisplay = false;
@@ -107,6 +121,12 @@ async function deleteEmployee() {
   }
 }
 
+/**
+ * Sự kiện click vào nút xóa nhân viên
+ * @param {String} empId Id nhân viên
+ *
+ * Author: Dũng (08/05/2023)
+ */
 function deleteEmployeeOnClick(empId) {
   let empCode = "";
   cache.value.empDeleteId = empId;
@@ -131,23 +151,44 @@ function deleteEmployeeOnClick(empId) {
 //   }
 // }
 
+/**
+ * Sự kiện cập nhật trạng thái của object pagingData
+ * @param {Object} newData giá trị mới
+ *
+ * Author: Dũng (08/05/2023)
+ */
 async function pagingDataOnUpdate(newData) {
   pagingData.value = newData;
   await loadDataPaging(pagingData.value.pageSize, pagingData.value.pageNumber);
 }
 
+/**
+ * Chuyển sang trang paging kế tiếp
+ *
+ * Author: Dũng (08/05/2023)
+ */
 async function pagingNextPage() {
   pagingData.value.pageNumber += 1;
   await loadDataPaging(pagingData.value.pageSize, pagingData.value.pageNumber);
   // console.log("n next");
 }
 
+/**
+ * Chuyển sang trang paging trước đó
+ *
+ * Author: Dũng (08/05/2023)
+ */
 async function pagingPrevPage() {
   pagingData.value.pageNumber -= 1;
   await loadDataPaging(pagingData.value.pageSize, pagingData.value.pageNumber);
   // console.log("p prev");
 }
 
+/**
+ * Gọi API lấy tổng số lượng bản ghi nhân viên
+ *
+ * Author: Dũng (08/05/2023)
+ */
 async function getTotalAmountOfRecord() {
   try {
     isLoadingData.value = true;
@@ -159,6 +200,12 @@ async function getTotalAmountOfRecord() {
   }
 }
 
+/**
+ * Gọi API lấy dữ liệu nhân viên theo phân trang
+ * @param {Number} pageSize số bản ghi / trang
+ * @param {Number} pageNumber trang cần lấy dữ liệu
+ * Author: Dũng (08/05/2023)
+ */
 async function loadDataPaging(pageSize, pageNumber) {
   try {
     isLoadingData.value = true;
@@ -191,6 +238,12 @@ onBeforeUnmount(() => {
   $emitter.off("rerenderTable");
 });
 
+/**
+ * Sự kiện cập nhật mảng empList
+ * @param {String} type kiểu update (thêm hay sửa)
+ * @param {Object} data dữ liệu của employee mới
+ * Author: Dũng (08/05/2023)
+ */
 async function empListOnUpdate(type, data) {
   console.log(type);
   console.log(data);
@@ -201,11 +254,17 @@ async function empListOnUpdate(type, data) {
   }
   await loadDataPaging(pagingData.value.pageSize, pagingData.value.pageNumber);
 }
-
+/**
+ * Sự kiện click vào nút thêm
+ * Author: Dũng (08/05/2023)
+ */
 function btnAddOnClick() {
   router.replace("/employee/create");
 }
-
+/**
+ * Sự kiện click vào nút refresh
+ * Author: Dũng (08/05/2023)
+ */
 async function btnRefreshOnClick() {
   // await loadData();
   await loadDataPaging(pagingData.value.pageSize, pagingData.value.pageNumber);

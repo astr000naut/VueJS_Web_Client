@@ -4,16 +4,34 @@ import common from "../../js/common/value.js";
 const dateFormat = common.dateFormat[common.defaultDateFormat][0];
 const $formatter = {
   dateFormat,
+  /**
+   * Hàm format từ ngày dạng số sang string dateFormat
+   * @param {Number} dd ngày
+   * @param {Number} mm tháng
+   * @param {Number} yyyy năm
+   * Author: Dũng (08/05/2023)
+   */
   formatDate: (dd, mm, yyyy) => {
     let d = new Date(`${yyyy}/${mm}/${dd}`);
     return moment(d).format(dateFormat);
   },
+
+  /**
+   * Hàm format từ ngày dạng string sang dạng của Backend
+   * @param {String} input ngày dạng string
+   * Author: Dũng (08/05/2023)
+   */
   formatDateToApiDate: (input) => {
     let d = moment(input, dateFormat).toDate();
     d.setTime(d.getTime() + 7 * 60 * 60 * 1000);
     // console.log(d.toISOString());
     return d;
   },
+  /**
+   * Kiểm tra xem string date có phải ngày hợp lệ hay không
+   * @param {String} inputDate ngày
+   * Author: Dũng (08/05/2023)
+   */
   isValidDate: (inputDate) => {
     return moment(
       inputDate,
@@ -21,10 +39,20 @@ const $formatter = {
       true
     ).isValid();
   },
+  /**
+   * Hàm format ngày sang định dạng dateFormat
+   * @param {String} input ngày
+   * Author: Dũng (08/05/2023)
+   */
   changeFormat: (input) => {
     if (!input) return "";
     return moment(input).format(dateFormat);
   },
+  /**
+   * Hàm format từ ngày dạng string sang dạng số
+   * @param {String} input ngày dạng string
+   * Author: Dũng (08/05/2023)
+   */
   stringToDmy: (input) => {
     const dateParsed = input.split("/");
     switch (common.defaultDateFormat) {
@@ -48,6 +76,13 @@ const $formatter = {
         };
     }
   },
+  /**
+   * Hàm format từ ngày dạng số sang string
+   * @param {Number} dd ngày
+   * @param {Number} mm tháng
+   * @param {Number} yyyy năm
+   * Author: Dũng (08/05/2023)
+   */
   dateToString: (dd, mm, yyyy) => {
     switch (common.defaultDateFormat) {
       case "dmy":
