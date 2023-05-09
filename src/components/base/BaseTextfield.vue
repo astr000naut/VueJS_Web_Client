@@ -29,6 +29,7 @@
         ref="refInput"
         @input="$emit('update:text', $event.target.value)"
         @keyup="inputKeyupHandler($event)"
+        @keypress="inputKeyPressHandler"
       />
       <div class="txtfield__icon"></div>
     </div>
@@ -45,7 +46,11 @@ const props = defineProps({
   isrequired: Boolean,
   tooltip: String,
   noti: String,
+  realTimeSearch: Boolean,
+  doSearch: Function,
 });
+const typingTimers = [];
+const timeoutVal = 500;
 const refInput = ref(null);
 const showTooltip = ref(false);
 const emits = defineEmits(["update:text", "update:noti"]);
@@ -65,7 +70,35 @@ function inputKeyupHandler($event) {
       emits("update:noti", `${props.label} không được để trống`);
     }
   }
+
+  if (props.realTimeSearch) {
+    // Xóa các timeout trước trong khi typing
+    while (typingTimers.length > 0) {
+      clearTimeout(typingTimers[0]);
+      typingTimers.splice(0, 1);
+    }
+
+    typingTimers.push(
+      setTimeout(() => {
+        // Display loading
+        props.doSearch(props.text);
+      }, timeoutVal)
+    );
+  }
 }
+
+/**
+ * Sự kiện Typing vào ô input
+ * Author: Dũng (08/05/2023)
+ */
+function inputKeyPressHandler() {
+  // Xóa setTimeout đã tạo từ tước
+  while (typingTimers.length > 0) {
+    clearTimeout(typingTimers[0]);
+    typingTimers.splice(0, 1);
+  }
+}
+
 /**
  * Sự kiện mouse enter vào label
  *

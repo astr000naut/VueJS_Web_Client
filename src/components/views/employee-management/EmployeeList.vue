@@ -31,6 +31,9 @@
           pholder="Tìm kiếm nhân viên"
           class="txtfield--search mw-300"
           noti=""
+          v-model:text="cache.empSearchPattern"
+          :realTimeSearch="true"
+          :doSearch="loadEmployeeData"
         />
         <BaseButton class="mi mi-36 mi-refresh" @click="btnRefreshOnClick" />
         <div class="button__hoverbox">
@@ -81,6 +84,7 @@ const dialog = ref({
 const cache = ref({
   empDeleteId: "",
   empDeleteIndex: "",
+  empSearchPattern: "",
 });
 /**
  * Sự kiện click vào nút đóng dialog
@@ -159,7 +163,7 @@ function deleteEmployeeOnClick(empId) {
  */
 async function pagingDataOnUpdate(newData) {
   pagingData.value = newData;
-  await loadDataPaging(pagingData.value.pageSize, pagingData.value.pageNumber);
+  await loadEmployeeData();
 }
 
 /**
@@ -169,7 +173,7 @@ async function pagingDataOnUpdate(newData) {
  */
 async function pagingNextPage() {
   pagingData.value.pageNumber += 1;
-  await loadDataPaging(pagingData.value.pageSize, pagingData.value.pageNumber);
+  await loadEmployeeData();
   // console.log("n next");
 }
 
@@ -180,41 +184,34 @@ async function pagingNextPage() {
  */
 async function pagingPrevPage() {
   pagingData.value.pageNumber -= 1;
-  await loadDataPaging(pagingData.value.pageSize, pagingData.value.pageNumber);
+  await loadEmployeeData();
   // console.log("p prev");
 }
 
 /**
- * Gọi API lấy tổng số lượng bản ghi nhân viên
- *
+ * Gọi API lấy dữ liệu nhân viên theo filter
  * Author: Dũng (08/05/2023)
  */
-async function getTotalAmountOfRecord() {
-  try {
-    isLoadingData.value = true;
-    const response = await $axios.get($enum.api.employees.index);
-    pagingData.value.totalRecord = response.data.length;
-    isLoadingData.value = false;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-/**
- * Gọi API lấy dữ liệu nhân viên theo phân trang
- * @param {Number} pageSize số bản ghi / trang
- * @param {Number} pageNumber trang cần lấy dữ liệu
- * Author: Dũng (08/05/2023)
- */
-async function loadDataPaging(pageSize, pageNumber) {
+async function loadEmployeeData() {
   try {
     isLoadingData.value = true;
     const response = await $axios.get($enum.api.employees.filter, {
-      params: { pageSize: pageSize, pageNumber: pageNumber },
+      params: {
+        pageSize: pagingData.value.pageSize,
+        pageNumber: pagingData.value.pageNumber,
+        employeeFilter: cache.value.empSearchPattern,
+      },
     });
-    empList.value = response.data.Data;
-    // console.log(response);
-    pagingData.value.curAmount = response.data.Data.length;
+    if (response.data.Data) {
+      empList.value = response.data.Data;
+      // pagingData.value.pageNumber = response.data.CurrentPage;
+      pagingData.value.curAmount = response.data.CurrentPageRecords;
+      pagingData.value.totalRecord = response.data.TotalRecord;
+    } else {
+      empList.value = [];
+      pagingData.value.curAmount = 0;
+      pagingData.value.totalRecord = 0;
+    }
     isLoadingData.value = false;
     // console.log(pagingData.value);
   } catch (error) {
@@ -223,9 +220,7 @@ async function loadDataPaging(pageSize, pageNumber) {
 }
 
 onMounted(async () => {
-  await getTotalAmountOfRecord();
-  // await loadData();
-  await loadDataPaging(pagingData.value.pageSize, pagingData.value.pageNumber);
+  await loadEmployeeData();
   $emitter.on("rerenderTable", () => {
     tableKey.value += 1;
     if (tableKey.value > 100) {
@@ -252,7 +247,7 @@ async function empListOnUpdate(type, data) {
   if (type == "create") {
     pagingData.value.totalRecord += 1;
   }
-  await loadDataPaging(pagingData.value.pageSize, pagingData.value.pageNumber);
+  await loadEmployeeData();
 }
 /**
  * Sự kiện click vào nút thêm
@@ -267,7 +262,7 @@ function btnAddOnClick() {
  */
 async function btnRefreshOnClick() {
   // await loadData();
-  await loadDataPaging(pagingData.value.pageSize, pagingData.value.pageNumber);
+  await loadEmployeeData();
 }
 </script>
 
