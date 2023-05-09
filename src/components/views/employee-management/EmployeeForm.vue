@@ -405,6 +405,15 @@ async function fetchNewEmployeeCode() {
   form.value.empCode = response.data;
 }
 
+function updateDepartmentInfo() {
+  for (const department of departmentList.value) {
+    if (department.DepartmentId == form.value.empDepartmentId) {
+      form.value.empDepartmentCode = department.DepartmentCode;
+      form.value.empDepartmentName = department.DepartmentName;
+    }
+  }
+}
+
 /**
  * Gọi API khởi tạo dữ liệu cho form
  *
@@ -420,6 +429,7 @@ async function getDataFromApi() {
     } else {
       // Fetch employee information
       await getEmployee(form.value.empId);
+      updateDepartmentInfo();
     }
   } catch (error) {
     console.log(error);
@@ -753,6 +763,7 @@ async function getEmployee(empId) {
     form.value.empFullName = data.FullName ?? "";
     form.value.empDepartmentName = data.DepartmentName ?? "";
     form.value.empDepartmentCode = data.DepartmentCode ?? "";
+    form.value.empDepartmentId = data.DepartmentId ?? "";
     form.value.empPositionId = data.PositionId ?? "";
     form.value.empPositionName = data.empPositionName ?? "";
     form.value.empDateOfBirth = $formatter.changeFormat(data.DateOfBirth);
