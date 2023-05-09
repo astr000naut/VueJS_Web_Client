@@ -121,21 +121,21 @@ const cbox = ref({
 
 /**
  * Sự kiện click vào item trong danh sách combobox option
- * NEED đổi lại tên biến cho general
+ *
  * @param {Object} _$event biến sự kiện
- * @param {String} departmentId Id Đơn vị
- * @param {String} departmentName Tên đơn vị
+ * @param {String} optionId Option Id
+ * @param {String} optionName Option Name
  *
  * Author: Dũng (08/05/2023)
  */
-function optionOnClick(_$event, departmentId, departmentName) {
+function optionOnClick(_$event, optionId, optionName) {
   // Update dữ liệu lên Form Object
-  emits("update:text", departmentName);
+  emits("update:text", optionName);
   emits("update:noti", "");
 
   // Đóng optionbox
   cbox.value.isOptionboxOpen = false;
-  emits("update:selectedItemId", departmentId);
+  emits("update:selectedItemId", optionId);
   // Xóa bỏ gợi ý thêm mới đơn vị
   cbox.value.suggestAddingItem = "";
 }
@@ -143,7 +143,7 @@ function optionOnClick(_$event, departmentId, departmentName) {
 /**
  * Sự kiện click vào mũi tên mở rộng combobox
  * NEED xóa cusor hoặc code lại
- * NEED rf if lồng nhau
+ *
  * Author: Dũng (08/05/2023)
  */
 function selectButtonOnClick() {

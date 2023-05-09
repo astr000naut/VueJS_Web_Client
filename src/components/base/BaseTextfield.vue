@@ -61,7 +61,7 @@ defineExpose({ refInput });
 
 /**
  * Sự kiện keyup cho ô input
- * NEED đổi lại tên biến cho general
+ *
  * @param {Object} $event biến sự kiện
  *
  * Author: Dũng (08/05/2023)

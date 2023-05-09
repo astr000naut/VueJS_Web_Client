@@ -216,7 +216,7 @@ function cancelBtnOnClick() {
 
 /**
  * Sự kiện click vào ngày trong lịch
- * NEED đổi lại tên biến cho general
+ *
  * @param {Object} _e biến sự kiện
  * @param {String} dateChooseIdx Index của ngày được chọn trong cells
  *
