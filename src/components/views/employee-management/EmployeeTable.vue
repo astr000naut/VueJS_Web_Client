@@ -9,7 +9,11 @@
           <tr>
             <th class="th1--sticky">
               <div class="align-center mw-40">
-                <div class="t__checkbox mi-24">
+                <div
+                  class="t__checkbox mi-24"
+                  :class="[props.selectedEmpIds.length > 0 ? 'selected' : '']"
+                  @click="thCheckboxOnClick"
+                >
                   <i class="fas fa-minus"></i>
                 </div>
               </div>
@@ -69,12 +73,12 @@
           </template>
           <template v-else>
             <tr
-              v-for="emp in props.empList"
+              v-for="(emp, index) in props.empList"
               :key="emp.EmployeeId"
               :class="{
                 active: emp.active,
               }"
-              @click="trOnClick(emp.EmployeeId)"
+              @click="trOnClick(index)"
               @dblclick="trOnDblclick(emp.EmployeeId)"
             >
               <td class="td1--sticky" @dblclick.stop>
@@ -84,7 +88,7 @@
                     :class="{
                       selected: emp.selected,
                     }"
-                    @click="checkBoxOnClick(emp.EmployeeId)"
+                    @click.stop="checkBoxOnClick(index)"
                   >
                     <i class="fas fa-check"></i>
                   </div>
@@ -249,12 +253,21 @@ const props = defineProps({
   deleteEmployeeFunction: Function,
   pagingNextPage: Function,
   pagingPrevPage: Function,
+  selectedEmpIds: Array,
 });
-const emits = defineEmits(["updatePagingData"]);
+const emits = defineEmits(["updatePagingData", "updateEmpStatus"]);
 const tooltip = ref({
   isShowIdentityNumber: false,
   isShowBankPlace: false,
 });
+
+function thCheckboxOnClick() {
+  emits("updateEmpStatus", {
+    type: "toggleAll",
+    empIndex: "",
+  });
+}
+
 /**
  * Mouse leave vào ô th có tooltip
  * @param {String} name tên tooltip của ô th
@@ -348,15 +361,11 @@ function pagArrowdownOnClick() {
  * @param {String} empId Id nhân viên
  * Author: Dũng (08/05/2023)
  */
-function checkBoxOnClick(empId) {
-  for (const emp of props.empList) {
-    if (emp.EmployeeId == empId) {
-      emp.selected = !emp.selected;
-      if (emp.selected == false) {
-        emp.active = false;
-      }
-    }
-  }
+function checkBoxOnClick(empIndex) {
+  emits("updateEmpStatus", {
+    type: "selected",
+    empIndex: empIndex,
+  });
 }
 
 /**
@@ -364,14 +373,11 @@ function checkBoxOnClick(empId) {
  * @param {String} empId Id nhân viên
  * Author: Dũng (08/05/2023)
  */
-function trOnClick(empId) {
-  for (const emp of props.empList) {
-    if (emp.EmployeeId == empId || emp.selected) {
-      emp.active = true;
-    } else {
-      emp.active = false;
-    }
-  }
+function trOnClick(empIndex) {
+  emits("updateEmpStatus", {
+    type: "active",
+    empIndex: empIndex,
+  });
 }
 
 /**

@@ -8,7 +8,7 @@
       :message="dialog.message"
       :close-on-click="dialogCloseOnClick"
       :no-on-click="dialogCloseOnClick"
-      :yes-on-click="deleteEmployee"
+      :yes-on-click="dialog.action"
     />
   </div>
   <router-view
@@ -27,18 +27,36 @@
     </div>
     <div class="pcontent__container">
       <div class="pcontent__searchbar">
-        <BaseTextfield
-          pholder="Tìm kiếm nhân viên"
-          class="txtfield--search mw-300"
-          noti=""
-          v-model:text="cache.empSearchPattern"
-          :realTimeSearch="true"
-          :doSearch="loadEmployeeData"
-        />
-        <BaseButton class="mi mi-36 mi-refresh" @click="btnRefreshOnClick" />
-        <div class="button__hoverbox">
-          <div class="hover__arrow"></div>
-          <div class="hover__text">Tải lại dữ liệu</div>
+        <div class="searchbar__left">
+          <BaseButton
+            bname="Thực hiện hàng loạt"
+            class="btn--secondary"
+            @click="batchBtnOnClick"
+            v-show="selectedEmpIds.length > 1"
+          />
+          <div
+            class="left__option"
+            v-show="batchOperator.showMenu"
+            @mouseleave="batchMenuOnMouseLeave"
+          >
+            <div class="option__item" @click="batchDeleteBtnOnClick">Xóa</div>
+            <div class="option__item">Gộp</div>
+          </div>
+        </div>
+        <div class="searchbar__right">
+          <BaseTextfield
+            pholder="Tìm kiếm nhân viên"
+            class="txtfield--search mw-300"
+            noti=""
+            v-model:text="cache.empSearchPattern"
+            :realTimeSearch="true"
+            :doSearch="loadEmployeeData"
+          />
+          <BaseButton class="mi mi-36 mi-refresh" @click="btnRefreshOnClick" />
+          <div class="button__hoverbox">
+            <div class="hover__arrow"></div>
+            <div class="hover__text">Tải lại dữ liệu</div>
+          </div>
         </div>
       </div>
       <EmployeeTable
@@ -46,10 +64,12 @@
         :emp-list="empList"
         :key="tableKey"
         :delete-employee-function="deleteEmployeeOnClick"
+        :selected-emp-ids="selectedEmpIds"
         v-model:pagingData="pagingData"
         :paging-next-page="pagingNextPage"
         :paging-prev-page="pagingPrevPage"
         @update-paging-data="pagingDataOnUpdate"
+        @update-emp-status="empStatusOnUpdate"
       />
     </div>
   </div>
@@ -80,12 +100,88 @@ const pagingData = ref({
 const dialog = ref({
   isDisplay: false,
   message: "",
+  action: null,
 });
 const cache = ref({
   empDeleteId: "",
   empDeleteIndex: "",
   empSearchPattern: "",
 });
+const batchOperator = ref({
+  showMenu: false,
+});
+const selectedEmpIds = ref([]);
+
+function batchDeleteBtnOnClick() {
+  showBatchDeleteConfirmDialog();
+}
+
+function batchMenuOnMouseLeave() {
+  batchOperator.value.showMenu = false;
+}
+
+function batchBtnOnClick() {
+  batchOperator.value.showMenu = !batchOperator.value.showMenu;
+}
+
+function empStatusOnUpdate(data) {
+  const { type, empIndex } = data;
+  if (type == "toggleAll") {
+    if (selectedEmpIds.value.length == 0) {
+      for (const emp of empList.value) {
+        emp.selected = true;
+        emp.active = true;
+        selectedEmpIds.value.push(emp.EmployeeId);
+      }
+    } else {
+      for (const emp of empList.value) {
+        emp.selected = false;
+        emp.active = false;
+        selectedEmpIds.value = [];
+      }
+    }
+  }
+
+  if (type == "selected") {
+    // Toggle selected class
+    empList.value[empIndex].selected = !empList.value[empIndex].selected;
+
+    // Nếu selected true thì thêm vào selectedEmpIds và bật active
+    if (empList.value[empIndex].selected) {
+      selectedEmpIds.value.push(empList.value[empIndex].EmployeeId);
+      empList.value[empIndex].active = true;
+      for (const emp of empList.value) {
+        if (
+          emp.EmployeeId != empList.value[empIndex].EmployeeId &&
+          !emp.selected
+        )
+          emp.active = false;
+      }
+    } else {
+      // Xóa khỏi selectedEmpIds và tắt active
+      selectedEmpIds.value.splice(
+        selectedEmpIds.value.indexOf(empList.value[empIndex].EmployeeId),
+        1
+      );
+      empList.value[empIndex].active = false;
+    }
+  }
+  if (data.type == "active") {
+    if (!empList.value[empIndex].selected) {
+      empList.value[empIndex].active = !empList.value[empIndex].active;
+    }
+    if (empList.value[empIndex].active) {
+      for (const emp of empList.value) {
+        if (
+          emp.EmployeeId != empList.value[empIndex].EmployeeId &&
+          !emp.selected
+        )
+          emp.active = false;
+      }
+    }
+  }
+}
+
 /**
  * Sự kiện click vào nút đóng dialog
  *
@@ -101,8 +197,20 @@ function dialogCloseOnClick() {
  *
  * Author: Dũng (08/05/2023)
  */
-function showDeleteConfirmDialog(empCode) {
+function showDeleteOneConfirmDialog(empCode) {
   dialog.value.message = `Bạn có muốn xóa Nhân viên <${empCode}>`;
+  dialog.value.action = deleteEmployee;
+  dialog.value.isDisplay = true;
+}
+
+/**
+ * Hiển thị cảnh báo xóa hàng loạt
+ *
+ * Author: Dũng (08/05/2023)
+ */
+function showBatchDeleteConfirmDialog() {
+  dialog.value.message = `Bạn có muốn xóa <${selectedEmpIds.value.length}> Nhân viên`;
+  dialog.value.action = deleteBatchEmployee;
   dialog.value.isDisplay = true;
 }
 
@@ -126,6 +234,25 @@ async function deleteEmployee() {
 }
 
 /**
+ * Gọi API xóa hàng loạt nhân viên
+ * Author: Dũng (08/05/2023)
+ */
+async function deleteBatchEmployee() {
+  try {
+    dialog.value.isDisplay = false;
+    isLoadingPage.value = true;
+    for (const id of selectedEmpIds.value) {
+      await $axios.delete($enum.api.employees.one(id));
+    }
+    selectedEmpIds.value = [];
+    await loadEmployeeData();
+    isLoadingPage.value = false;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/**
  * Sự kiện click vào nút xóa nhân viên
  * @param {String} empId Id nhân viên
  *
@@ -141,7 +268,7 @@ function deleteEmployeeOnClick(empId) {
     }
   }
   empCode = empList.value[cache.value.empDeleteIndex].EmployeeCode;
-  showDeleteConfirmDialog(empCode);
+  showDeleteOneConfirmDialog(empCode);
 }
 
 /**
@@ -302,17 +429,52 @@ async function btnRefreshOnClick() {
 .pcontent__searchbar {
   display: flex;
   flex-shrink: 0;
-  justify-content: flex-end;
-  column-gap: 24px;
-  overflow: hidden;
+  justify-content: space-between;
   align-items: center;
+  position: relative;
+}
+
+.searchbar__left {
+  position: relative;
+}
+
+.left__option {
+  position: absolute;
+  width: 110px;
+  padding: 4px;
+  top: 38px;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  row-gap: 4px;
+  border-radius: 4px;
+  z-index: 5;
+  background-color: #fff;
+  border: 1px solid var(--clr-t-border);
+}
+.option__item {
+  border-radius: 4px;
+  height: 32px;
+  line-height: 32px;
+  padding-left: 10px;
+}
+
+.option__item:hover {
+  background-color: #e6e6e68b;
+  color: var(--clr-lg500);
+  cursor: pointer;
+}
+
+.searchbar__right {
+  display: flex;
+  column-gap: 24px;
 }
 .button__hoverbox {
   display: none;
   z-index: 20;
   position: absolute;
-  top: 0px;
-  right: 0px;
+  top: -24px;
+  right: -22px;
 }
 
 .hover__text {
@@ -327,7 +489,7 @@ async function btnRefreshOnClick() {
   background-color: #393a3d;
   position: absolute;
   bottom: -9px;
-  right: 42%;
+  right: 34%;
   transform: translateY(-50%) rotate(45deg);
 }
 
