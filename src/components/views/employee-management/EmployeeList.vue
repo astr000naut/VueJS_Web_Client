@@ -209,7 +209,7 @@ function showDeleteOneConfirmDialog(empCode) {
  * Author: Dũng (08/05/2023)
  */
 function showBatchDeleteConfirmDialog() {
-  dialog.value.message = `Bạn có muốn xóa <${selectedEmpIds.value.length}> Nhân viên`;
+  dialog.value.message = `Bạn có chắc chắn muốn xóa ${selectedEmpIds.value.length} Nhân viên`;
   dialog.value.action = deleteBatchEmployee;
   dialog.value.isDisplay = true;
 }
