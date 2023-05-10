@@ -16,7 +16,11 @@
     @update-emplist="empListOnUpdate"
   ></router-view>
   <div class="pcontent">
-    <BaseToast class="toast__position" v-show="false" />
+    <BaseToastbox
+      class="toastbox__position"
+      :toast-list="toastList"
+      :remove-toast="removeToast"
+    />
     <div class="pcontent__heading">
       <div class="pcontent__title">Nhân viên</div>
       <BaseButton
@@ -77,14 +81,14 @@
 
 <script setup>
 import EmployeeTable from "@/components/views/employee-management/EmployeeTable.vue";
-import { useRouter } from "vue-router";
+// import { useRouter } from "vue-router";
 import { ref, onMounted, onBeforeUnmount, inject } from "vue";
 import BaseLoader from "@/components/base/BaseLoader.vue";
 import BaseDialog from "@/components/base/BaseDialog.vue";
-import BaseToast from "@/components/base/BaseToast.vue";
+import BaseToastbox from "@/components/base/BaseToastbox.vue";
 import $enum from "@/js/common/enum";
 
-const router = useRouter();
+// const router = useRouter();
 const $emitter = inject("$emitter");
 const empList = ref([]);
 const isLoadingData = ref(true);
@@ -111,6 +115,45 @@ const batchOperator = ref({
   showMenu: false,
 });
 const selectedEmpIds = ref([]);
+
+const toastList = ref([]);
+var toastId = 0;
+
+function pushToast(toast) {
+  toastList.value.push({
+    id: toast.id,
+    type: toast.type,
+    title: toast.title,
+    message: toast.message,
+  });
+  if (toast.timeToLive != -1) {
+    setToastTimeToLive(toast.id, toast.timeToLive);
+  }
+}
+
+function removeToast(id) {
+  let i = 0;
+  while (i < toastList.value.length) {
+    if (toastList.value[i].id == id) {
+      toastList.value.splice(i, 1);
+      break;
+    }
+    ++i;
+  }
+}
+
+function setToastTimeToLive(id, timeToLive) {
+  setTimeout(() => {
+    let i = 0;
+    while (i < toastList.value.length) {
+      if (toastList.value[i].id == id) {
+        toastList.value.splice(i, 1);
+        break;
+      }
+      ++i;
+    }
+  }, timeToLive);
+}
 
 function batchDeleteBtnOnClick() {
   showBatchDeleteConfirmDialog();
@@ -370,7 +413,16 @@ async function empListOnUpdate(type, data) {
  * Author: Dũng (08/05/2023)
  */
 function btnAddOnClick() {
-  router.replace("/employee/create");
+  setTimeout(() => {
+    pushToast({
+      id: toastId++,
+      type: "success",
+      title: "Thành công!",
+      message: "Nhân viên đã bị xóa",
+      timeToLive: 3000,
+    });
+  }, 200);
+  // router.replace("/employee/create");
 }
 /**
  * Sự kiện click vào nút refresh
@@ -507,10 +559,10 @@ async function btnRefreshOnClick() {
   z-index: 99;
 }
 
-.toast__position {
+.toastbox__position {
   position: absolute;
-  top: 10px;
-  left: 30vw;
+  top: 14px;
+  left: 25vw;
   z-index: 20;
 }
 </style>
