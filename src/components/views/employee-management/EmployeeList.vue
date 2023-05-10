@@ -120,6 +120,12 @@ const selectedEmpIds = ref([]);
 const toastList = ref([]);
 var toastId = 0;
 
+/**
+ * Tạo toast message mới và đẩy vào toastList
+ * @param {Object} toast object thông báo
+ *
+ * Author: Dũng (10/05/2023)
+ */
 function pushToast(toast) {
   if (toastList.value.length > 5) toastList.value.splice(0, 1);
   toastList.value.push({
@@ -133,6 +139,12 @@ function pushToast(toast) {
   }
 }
 
+/**
+ * Xóa một toast
+ * @param {Number} id id của toast
+ *
+ * Author: Dũng (10/05/2023)
+ */
 function removeToast(id) {
   let i = 0;
   while (i < toastList.value.length) {
@@ -144,6 +156,13 @@ function removeToast(id) {
   }
 }
 
+/**
+ * Set thời gian hiển thị của toast message
+ * @param {Number} id id của toast
+ * @param {Number} timeToLive thời gian hiển thị theo ms
+ *
+ * Author: Dũng (10/05/2023)
+ */
 function setToastTimeToLive(id, timeToLive) {
   setTimeout(() => {
     let i = 0;
@@ -157,18 +176,39 @@ function setToastTimeToLive(id, timeToLive) {
   }, timeToLive);
 }
 
+/**
+ * Sự kiện click vào nút xóa hàng loạt
+ *
+ * Author: Dũng (10/05/2023)
+ */
 function batchDeleteBtnOnClick() {
   showBatchDeleteConfirmDialog();
 }
 
+/**
+ * Sự kiện mouseLeave của menu thực hiện hàng loạt
+ *
+ * Author: Dũng (10/05/2023)
+ */
 function batchMenuOnMouseLeave() {
   batchOperator.value.showMenu = false;
 }
 
+/**
+ * Sự kiện click vào nút thực hiện hàng loạt
+ *
+ * Author: Dũng (10/05/2023)
+ */
 function batchBtnOnClick() {
   batchOperator.value.showMenu = !batchOperator.value.showMenu;
 }
 
+/**
+ * Sự kiện khi cập nhật trạng thái của nhân viên (select, active, toggleAll)
+ * @param {Object} data object thông báo
+ *
+ * Author: Dũng (10/05/2023)
+ */
 function empStatusOnUpdate(data) {
   const { type, empIndex } = data;
   if (type == "toggleAll") {
