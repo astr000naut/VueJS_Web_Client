@@ -413,15 +413,13 @@ async function empListOnUpdate(type, data) {
  * Author: Dũng (08/05/2023)
  */
 function btnAddOnClick() {
-  setTimeout(() => {
-    pushToast({
-      id: toastId++,
-      type: "success",
-      title: "Thành công!",
-      message: "Nhân viên đã bị xóa",
-      timeToLive: 3000,
-    });
-  }, 200);
+  pushToast({
+    id: toastId++,
+    type: "success",
+    title: "Thành công!",
+    message: "Nhân viên đã bị xóa",
+    timeToLive: 3000,
+  });
   // router.replace("/employee/create");
 }
 /**
