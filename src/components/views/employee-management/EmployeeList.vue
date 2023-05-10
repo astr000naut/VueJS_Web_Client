@@ -83,12 +83,13 @@
 import EmployeeTable from "@/components/views/employee-management/EmployeeTable.vue";
 // import { useRouter } from "vue-router";
 import { ref, onMounted, onBeforeUnmount, inject } from "vue";
+import { useRouter } from "vue-router";
 import BaseLoader from "@/components/base/BaseLoader.vue";
 import BaseDialog from "@/components/base/BaseDialog.vue";
 import BaseToastbox from "@/components/base/BaseToastbox.vue";
 import $enum from "@/js/common/enum";
 
-// const router = useRouter();
+const router = useRouter();
 const $emitter = inject("$emitter");
 const empList = ref([]);
 const isLoadingData = ref(true);
@@ -120,6 +121,7 @@ const toastList = ref([]);
 var toastId = 0;
 
 function pushToast(toast) {
+  if (toastList.value.length > 5) toastList.value.splice(0, 1);
   toastList.value.push({
     id: toast.id,
     type: toast.type,
@@ -374,6 +376,14 @@ async function loadEmployeeData() {
     isLoadingData.value = false;
     // console.log(pagingData.value);
   } catch (error) {
+    console.log("LOAD FAILED");
+    pushToast({
+      id: toastId++,
+      type: "fail",
+      title: "Lỗi!",
+      message: "Không thể tải dữ liệu. Vui lòng kiểm tra lại kết nối Internet.",
+      timeToLive: -1,
+    });
     console.log(error);
   }
 }
@@ -413,14 +423,7 @@ async function empListOnUpdate(type, data) {
  * Author: Dũng (08/05/2023)
  */
 function btnAddOnClick() {
-  pushToast({
-    id: toastId++,
-    type: "success",
-    title: "Thành công!",
-    message: "Nhân viên đã bị xóa",
-    timeToLive: -1,
-  });
-  // router.replace("/employee/create");
+  router.replace("/employee/create");
 }
 /**
  * Sự kiện click vào nút refresh
