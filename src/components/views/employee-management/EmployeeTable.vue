@@ -210,9 +210,7 @@
         <div class="pag__info">
           {{
             props.pagingData.pageSize * (props.pagingData.pageNumber - 1) +
-            (props.empList.length > 0)
-              ? 1
-              : 0
+            (props.empList.length > 0 ? 1 : 0)
           }}
           -
           <span v-show="!props.isLoadingData">
@@ -301,6 +299,7 @@ async function nextPageOnClick() {
   )
     return;
   await props.pagingNextPage();
+  console.log(props.pagingData);
   console.log("Next");
 }
 
