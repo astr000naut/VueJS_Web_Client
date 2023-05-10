@@ -1,164 +1,174 @@
 <template>
   <div class="tablebox">
-    <div class="loader__container" v-show="false">
-      <BaseLoader />
-    </div>
-    <div class="table__wrapper">
-      <table class="m-table">
-        <thead>
-          <tr>
-            <th class="th1--sticky">
-              <div class="align-center mw-40">
+    <table
+      class="m-table"
+      :style="{
+        'z-index': !isLoadingData && props.empList.length <= 6 ? 30 : 0,
+      }"
+    >
+      <thead>
+        <tr>
+          <th class="th1--sticky">
+            <div class="align-center mw-40">
+              <div
+                class="t__checkbox mi-24"
+                :class="[props.selectedEmpIds.length > 0 ? 'selected' : '']"
+                @click="thCheckboxOnClick"
+              >
+                <i class="fas fa-minus"></i>
+              </div>
+            </div>
+          </th>
+          <th><div class="text-left mw-100">Mã nhân viên</div></th>
+          <th><div class="text-left mw-200">Tên nhân viên</div></th>
+          <th><div class="text-left mw-70">Giới tính</div></th>
+          <th><div class="text-left mw-80">Ngày sinh</div></th>
+          <th class="zindex--3">
+            <div class="text-left mw-120">
+              <span
+                class="text"
+                @mouseenter="thOnMouseEnter('isShowIdentityNumber')"
+                @mouseleave="thOnMouseLeave('isShowIdentityNumber')"
+              >
+                Số CMND
+              </span>
+              <div class="th__tooltip" v-show="tooltip.isShowIdentityNumber">
+                Số chứng minh nhân dân
+              </div>
+            </div>
+          </th>
+          <th><div class="text-left mw-150">Chức danh</div></th>
+          <th><div class="text-left mw-200">Tên đơn vị</div></th>
+          <th><div class="text-left mw-150">Số tài khoản</div></th>
+          <th><div class="text-left mw-150">Tên ngân hàng</div></th>
+          <th class="zindex--3">
+            <div class="text-left mw-200">
+              <span
+                class="text"
+                @mouseenter="thOnMouseEnter('isShowBankPlace')"
+                @mouseleave="thOnMouseLeave('isShowBankPlace')"
+              >
+                Chi nhánh TK ngân hàng
+              </span>
+              <div class="th__tooltip" v-show="tooltip.isShowBankPlace">
+                Chi nhánh tài khoản ngân hàng
+              </div>
+            </div>
+          </th>
+          <th class="thn--sticky">
+            <div class="text-left mw-80">Chức năng</div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <template v-if="props.isLoadingData">
+          <tr v-for="i in Math.min(15, props.pagingData.pageSize)" :key="i">
+            <td class="td1--sticky"><div class="loading-item"></div></td>
+            <td v-for="j in 10" :key="j">
+              <div class="loading-item"></div>
+            </td>
+            <td class="tdn--sticky">
+              <div class="loading-item"></div>
+            </td>
+          </tr>
+        </template>
+        <template v-else>
+          <tr
+            v-for="(emp, index) in props.empList"
+            :key="emp.EmployeeId"
+            :class="{
+              active: emp.active,
+            }"
+            @click="trOnClick(index)"
+            @dblclick="trOnDblclick(emp.EmployeeId)"
+          >
+            <td class="td1--sticky" @dblclick.stop>
+              <div class="align-center">
                 <div
                   class="t__checkbox mi-24"
-                  :class="[props.selectedEmpIds.length > 0 ? 'selected' : '']"
-                  @click="thCheckboxOnClick"
+                  :class="{
+                    selected: emp.selected,
+                  }"
+                  @click.stop="checkBoxOnClick(index)"
                 >
-                  <i class="fas fa-minus"></i>
+                  <i class="fas fa-check"></i>
                 </div>
               </div>
-            </th>
-            <th><div class="text-left mw-100">Mã nhân viên</div></th>
-            <th><div class="text-left mw-200">Tên nhân viên</div></th>
-            <th><div class="text-left mw-70">Giới tính</div></th>
-            <th><div class="text-left mw-80">Ngày sinh</div></th>
-            <th class="zindex--3">
-              <div class="text-left mw-120">
-                <span
-                  class="text"
-                  @mouseenter="thOnMouseEnter('isShowIdentityNumber')"
-                  @mouseleave="thOnMouseLeave('isShowIdentityNumber')"
-                >
-                  Số CMND
-                </span>
-                <div class="th__tooltip" v-show="tooltip.isShowIdentityNumber">
-                  Số chứng minh nhân dân
-                </div>
+            </td>
+            <td>
+              <div class="text-left">{{ emp.EmployeeCode }}</div>
+            </td>
+            <td>
+              <div class="text-left">{{ emp.FullName }}</div>
+            </td>
+            <td>
+              <div class="text-left">{{ emp.GenderName }}</div>
+            </td>
+            <td>
+              <div class="text-left">
+                {{ $formatter.changeFormat(emp.DateOfBirth) }}
               </div>
-            </th>
-            <th><div class="text-left mw-150">Chức danh</div></th>
-            <th><div class="text-left mw-200">Tên đơn vị</div></th>
-            <th><div class="text-left mw-150">Số tài khoản</div></th>
-            <th><div class="text-left mw-150">Tên ngân hàng</div></th>
-            <th class="zindex--3">
-              <div class="text-left mw-200">
-                <span
-                  class="text"
-                  @mouseenter="thOnMouseEnter('isShowBankPlace')"
-                  @mouseleave="thOnMouseLeave('isShowBankPlace')"
-                >
-                  Chi nhánh TK ngân hàng
-                </span>
-                <div class="th__tooltip" v-show="tooltip.isShowBankPlace">
-                  Chi nhánh tài khoản ngân hàng
-                </div>
-              </div>
-            </th>
-            <th class="thn--sticky">
-              <div class="text-left mw-80">Chức năng</div>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <template v-if="props.isLoadingData">
-            <tr v-for="i in Math.min(15, props.pagingData.pageSize)" :key="i">
-              <td class="td1--sticky"><div class="loading-item"></div></td>
-              <td v-for="j in 10" :key="j">
-                <div class="loading-item"></div>
-              </td>
-              <td class="tdn--sticky">
-                <div class="loading-item"></div>
-              </td>
-            </tr>
-          </template>
-          <template v-else>
-            <tr
-              v-for="(emp, index) in props.empList"
-              :key="emp.EmployeeId"
-              :class="{
-                active: emp.active,
-              }"
-              @click="trOnClick(index)"
-              @dblclick="trOnDblclick(emp.EmployeeId)"
+            </td>
+            <td>
+              <div class="text-right">{{ emp.IdentityNumber }}</div>
+            </td>
+            <td>
+              <div class="text-left">{{ emp.PositionName }}</div>
+            </td>
+            <td>
+              <div class="text-left">{{ emp.DepartmentName }}</div>
+            </td>
+            <td><div class="text-right">231239485923</div></td>
+            <td><div class="text-left">BIDV</div></td>
+            <td><div class="text-left">Cầu Giấy</div></td>
+            <td
+              :class="[table.expandEmpId == emp.EmployeeId ? 'above' : '']"
+              class="tdn--sticky"
+              @dblclick.stop
+              @click.stop
             >
-              <td class="td1--sticky" @dblclick.stop>
-                <div class="align-center">
-                  <div
-                    class="t__checkbox mi-24"
-                    :class="{
-                      selected: emp.selected,
-                    }"
-                    @click.stop="checkBoxOnClick(index)"
-                  >
-                    <i class="fas fa-check"></i>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="text-left">{{ emp.EmployeeCode }}</div>
-              </td>
-              <td>
-                <div class="text-left">{{ emp.FullName }}</div>
-              </td>
-              <td>
-                <div class="text-left">{{ emp.GenderName }}</div>
-              </td>
-              <td>
-                <div class="text-left">
-                  {{ $formatter.changeFormat(emp.DateOfBirth) }}
-                </div>
-              </td>
-              <td>
-                <div class="text-right">{{ emp.IdentityNumber }}</div>
-              </td>
-              <td>
-                <div class="text-left">{{ emp.PositionName }}</div>
-              </td>
-              <td>
-                <div class="text-left">{{ emp.DepartmentName }}</div>
-              </td>
-              <td><div class="text-right">231239485923</div></td>
-              <td><div class="text-left">BIDV</div></td>
-              <td><div class="text-left">Cầu Giấy</div></td>
-              <td
-                :class="[table.expandEmpId == emp.EmployeeId ? 'above' : '']"
-                class="tdn--sticky"
-                @dblclick.stop
-              >
-                <div class="t__optionbox align-center">
-                  <button
-                    class="option__edit"
-                    @click="btnEditOnClick(emp.EmployeeId)"
-                  >
-                    Sửa
-                  </button>
-                  <button
-                    class="btn__expand mi mi-16 mi-expand-down"
-                    @click="btnExpandOnClick(emp.EmployeeId)"
-                  ></button>
-                  <ul
-                    class="actions-list btn__expand"
-                    v-show="table.expandEmpId == emp.EmployeeId"
-                    @mouseleave="table.expandEmpId = ''"
-                  >
-                    <li><div class="li-data">Nhân bản</div></li>
-                    <li>
-                      <div
-                        class="li-data"
-                        @click="deleteEmployeeFunction(emp.EmployeeId)"
-                      >
-                        Xóa
-                      </div>
-                    </li>
-                    <li><div class="li-data">Ngừng sử dụng</div></li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
-    </div>
+              <div class="t__optionbox align-center">
+                <button
+                  class="option__edit"
+                  @click="btnEditOnClick(emp.EmployeeId)"
+                >
+                  Sửa
+                </button>
+                <button
+                  class="btn__expand mi mi-16 mi-expand-down"
+                  @click="btnExpandOnClick(emp.EmployeeId)"
+                ></button>
+                <ul
+                  class="actions-list btn__expand"
+                  :class="
+                    (emp.EmployeeId ==
+                      props.empList[props.empList.length - 1].EmployeeId ||
+                      emp.EmployeeId ==
+                        props.empList[props.empList.length - 2].EmployeeId) &&
+                    props.empList.length > 6
+                      ? 'action-list--top'
+                      : ''
+                  "
+                  v-show="table.expandEmpId == emp.EmployeeId"
+                  @mouseleave="table.expandEmpId = ''"
+                >
+                  <li><div class="li-data">Nhân bản</div></li>
+                  <li>
+                    <div
+                      class="li-data"
+                      @click="deleteEmployeeFunction(emp.EmployeeId)"
+                    >
+                      Xóa
+                    </div>
+                  </li>
+                  <li><div class="li-data">Ngừng sử dụng</div></li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        </template>
+      </tbody>
+    </table>
     <div class="table__pag">
       <div class="pag__leftside">
         <span
@@ -237,7 +247,6 @@
 
 <script setup>
 import { ref } from "vue";
-import BaseLoader from "../../base/BaseLoader.vue";
 import { useRouter } from "vue-router";
 import $formatter from "@/js/common/formater";
 const router = useRouter();
@@ -430,6 +439,7 @@ function trOnDblclick(empId) {
   border-collapse: separate;
   transform: translate3d(0, 0, 0);
   user-select: none;
+  position: relative;
 }
 
 td {
@@ -465,7 +475,7 @@ tbody tr {
 .thn--sticky {
   position: sticky;
   right: -1px;
-  z-index: 5;
+  z-index: 9;
   border-left: 1px solid #c7c7c7;
 }
 
@@ -502,6 +512,12 @@ tbody tr {
   width: 130px;
   right: 5px;
   background-color: #fff;
+  z-index: 30;
+}
+
+.action-list--top {
+  top: unset;
+  bottom: 38px;
 }
 
 .actions-list > li:hover {
@@ -540,6 +556,7 @@ tbody tr {
   border-left: unset;
   position: sticky;
   left: 0;
+  z-index: 20;
   bottom: -1px;
 }
 
