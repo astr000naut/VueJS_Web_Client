@@ -313,6 +313,14 @@ async function deleteEmployee() {
     pagingData.value.curAmount -= 1;
     pagingData.value.totalRecord -= 1;
     isLoadingPage.value = false;
+    // NEED REFACTOR
+    pushToast({
+      id: toastId++,
+      type: "success",
+      title: "Thành công!",
+      message: "Nhân viên đã bị xóa khỏi hệ thống.",
+      timeToLive: 3000,
+    });
   } catch (error) {
     console.log(error);
   }
@@ -332,6 +340,13 @@ async function deleteBatchEmployee() {
     selectedEmpIds.value = [];
     await loadEmployeeData();
     isLoadingPage.value = false;
+    pushToast({
+      id: toastId++,
+      type: "success",
+      title: "Thành công!",
+      message: "Xóa hàng loạt thành công.",
+      timeToLive: 3000,
+    });
   } catch (error) {
     console.log(error);
   }
@@ -455,6 +470,13 @@ async function empListOnUpdate(type, data) {
   // await loadData();
   if (type == "create") {
     pagingData.value.totalRecord += 1;
+    pushToast({
+      id: toastId++,
+      type: "success",
+      title: "Thành công!",
+      message: "Thêm mới nhân viên thành công.",
+      timeToLive: 3000,
+    });
   }
   await loadEmployeeData();
 }
