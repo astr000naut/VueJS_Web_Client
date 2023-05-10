@@ -443,8 +443,9 @@ async function getDataFromApi() {
  */
 async function validateForm() {
   try {
+    // Giá trị text lỗi của ô bị lỗi đầu tiên
     let firstMessage = "";
-    // EmpCode
+    // Validate mã nhân viên
     if (form.value.empCode.trim() == "") {
       form.value.empCode = "";
       formNoti.value.empCode = "Mã không được để trống";
@@ -452,6 +453,7 @@ async function validateForm() {
         firstMessage = formNoti.value.empCode;
       }
     } else {
+      // Kiểm tra trùng mã
       const isCodeExist = await isEmpCodeExist(
         form.value.empCode,
         form.value.empId
@@ -463,21 +465,21 @@ async function validateForm() {
         }
       }
     }
-    // EmpFullName
+    // Kiểm tra tên nhân viên
     if (form.value.empFullName == "") {
       formNoti.value.empFullName = "Tên không được để trống";
       if (firstMessage == "") {
         firstMessage = formNoti.value.empFullName;
       }
     }
-    // EmpDepartmentName
+    // Kiểm tra thông tin đơn vị
     if (form.value.empDepartmentName == "") {
       formNoti.value.empDepartmentName = "Đơn vị không được để trống";
       if (firstMessage == "") {
         firstMessage = formNoti.value.empDepartmentName;
       }
     }
-    // EmpIdentityNumber
+    // Kiểm tra thông tin CMND
     if (!/^$|^\d{9}$|^\d{12}$/.test(form.value.empIdentityNumber)) {
       formNoti.value.empIdentityNumber = "Số CMND không đúng định dạng";
       if (firstMessage == "") {
