@@ -418,7 +418,7 @@ function btnAddOnClick() {
     type: "success",
     title: "Thành công!",
     message: "Nhân viên đã bị xóa",
-    timeToLive: 3000,
+    timeToLive: -1,
   });
   // router.replace("/employee/create");
 }

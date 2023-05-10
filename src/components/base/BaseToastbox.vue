@@ -30,32 +30,11 @@ const props = defineProps({
   toastList: Array,
   removeToast: Function,
 });
-// toastList.value = [
-//   {
-//     id: 0,
-//     type: "success",
-//     title: "Thành công!",
-//     message: "Nhân viên đã bị xóa.",
-//     timeToLive: 0,
-//   },
-//   {
-//     id: 1,
-//     type: "alert",
-//     title: "Cảnh báo!",
-//     message: "Thay đổi thông tin nhân viên thành công.",
-//   },
-//   {
-//     id: 2,
-//     type: "fail",
-//     title: "Lỗi!",
-//     message:
-//       "Tải dữ liệu không thành công. Vui lòng kiểm tra lại kết nối Internet.",
-//   },
-// ];
 </script>
 
 <style scoped>
-.list-enter-active {
+.list-enter-active,
+.list-leave-active {
   transition: all 0.5s ease;
 }
 
@@ -63,23 +42,25 @@ const props = defineProps({
   opacity: 0;
   transform: translateX(30px);
 }
-.list-leave-active {
-  transition: all 0.75s ease;
+.list-enter-to {
+  max-height: 56px;
+}
+
+.list-leave-from {
+  max-height: 56px;
 }
 
 .list-leave-to {
   opacity: 0;
-  transform: translateX(30px);
-}
-.toast__box {
-  height: 300px;
-  /* background-color: rgba(153, 205, 50, 0.164); */
+  max-height: 0px;
+  transform: translateY(-10px);
 }
 .toast {
   min-width: 450px;
   max-width: 650px;
   height: 56px;
-  padding: 16px;
+  padding: 0 16px;
+  overflow: hidden;
   display: flex;
   background-color: #fff;
   justify-content: space-between;
