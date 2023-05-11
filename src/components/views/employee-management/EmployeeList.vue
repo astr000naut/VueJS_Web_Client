@@ -58,7 +58,7 @@
             :realTimeSearch="true"
             :doSearch="loadEmployeeData"
           />
-          <BaseButton class="mi mi-36 mi-refresh" @click="btnRefreshOnClick" />
+          <BaseButton class="mi mi-36 mi-refresh" @click="loadEmployeeData" />
           <div class="button__hoverbox">
             <div class="hover__arrow"></div>
             <div class="hover__text">Tải lại dữ liệu</div>
@@ -121,6 +121,20 @@ const selectedEmpIds = ref([]);
 
 const toastList = ref([]);
 var toastId = 0;
+
+onMounted(async () => {
+  await loadEmployeeData();
+  $emitter.on("rerenderTable", () => {
+    tableKey.value += 1;
+    if (tableKey.value > 100) {
+      tableKey.value = 0;
+    }
+  });
+});
+
+onBeforeUnmount(() => {
+  $emitter.off("rerenderTable");
+});
 
 /**
  * Tạo toast message mới và đẩy vào toastList
@@ -355,10 +369,10 @@ function deleteEmployeeOnClick(empId) {
   for (let index in empList.value) {
     if (empList.value[index].EmployeeId == empId) {
       cache.value.empDeleteIndex = index;
+      empCode = empList.value[index].EmployeeCode;
       break;
     }
   }
-  empCode = empList.value[cache.value.empDeleteIndex].EmployeeCode;
   showDeleteOneConfirmDialog(empCode);
 }
 
@@ -409,18 +423,10 @@ async function loadEmployeeData() {
         employeeFilter: cache.value.empSearchPattern,
       },
     });
-    if (response.data.Data) {
-      empList.value = response.data.Data;
-      // pagingData.value.pageNumber = response.data.CurrentPage;
-      pagingData.value.curAmount = response.data.CurrentPageRecords;
-      pagingData.value.totalRecord = response.data.TotalRecord;
-    } else {
-      empList.value = [];
-      pagingData.value.curAmount = 0;
-      pagingData.value.totalRecord = 0;
-    }
+    empList.value = response.data.Data ?? [];
+    pagingData.value.curAmount = response.data.CurrentPageRecords ?? 0;
+    pagingData.value.totalRecord = response.data.TotalRecord ?? 0;
     isLoadingData.value = false;
-    // console.log(pagingData.value);
   } catch (error) {
     console.log("LOAD FAILED");
     pushToast({
@@ -430,20 +436,6 @@ async function loadEmployeeData() {
     console.log(error);
   }
 }
-
-onMounted(async () => {
-  await loadEmployeeData();
-  $emitter.on("rerenderTable", () => {
-    tableKey.value += 1;
-    if (tableKey.value > 100) {
-      tableKey.value = 0;
-    }
-  });
-});
-
-onBeforeUnmount(() => {
-  $emitter.off("rerenderTable");
-});
 
 /**
  * Sự kiện cập nhật mảng empList
@@ -456,20 +448,24 @@ async function empListOnUpdate(type, data) {
   console.log(data);
   // empList.value.unshift(data);
   // await loadData();
-  if (type == "create") {
-    pagingData.value.totalRecord += 1;
-    pushToast({
-      type: "success",
-      message: "Thêm mới nhân viên thành công.",
-      timeToLive: 3000,
-    });
-  }
-  if (type == "edit") {
-    pushToast({
-      type: "success",
-      message: "Sửa thông tin nhân viên thành công.",
-      timeToLive: 3000,
-    });
+  switch (type) {
+    case "create":
+      pagingData.value.totalRecord += 1;
+      pushToast({
+        type: "success",
+        message: "Thêm mới nhân viên thành công.",
+        timeToLive: 3000,
+      });
+      break;
+    case "edit":
+      pushToast({
+        type: "success",
+        message: "Sửa thông tin nhân viên thành công.",
+        timeToLive: 3000,
+      });
+      break;
+    default:
+      break;
   }
   await loadEmployeeData();
 }
@@ -479,14 +475,6 @@ async function empListOnUpdate(type, data) {
  */
 function btnAddOnClick() {
   router.replace("/employee/create");
-}
-/**
- * Sự kiện click vào nút refresh
- * Author: Dũng (08/05/2023)
- */
-async function btnRefreshOnClick() {
-  // await loadData();
-  await loadEmployeeData();
 }
 </script>
 
