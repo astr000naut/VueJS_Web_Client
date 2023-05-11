@@ -87,7 +87,7 @@ import { useRouter } from "vue-router";
 import BaseLoader from "@/components/base/BaseLoader.vue";
 import BaseDialog from "@/components/base/BaseDialog.vue";
 import BaseToastbox from "@/components/base/BaseToastbox.vue";
-import $enum from "@/js/common/enum";
+import $api from "@/js/api";
 
 const router = useRouter();
 const $emitter = inject("$emitter");
@@ -307,7 +307,7 @@ async function deleteEmployee() {
   try {
     dialog.value.isDisplay = false;
     isLoadingPage.value = true;
-    await $axios.delete($enum.api.employees.one(cache.value.empDeleteId));
+    await $axios.delete($api.employee.one(cache.value.empDeleteId));
     empList.value.splice(cache.value.empDeleteIndex, 1);
     // Update pagingData
     pagingData.value.curAmount -= 1;
@@ -335,7 +335,7 @@ async function deleteBatchEmployee() {
     dialog.value.isDisplay = false;
     isLoadingPage.value = true;
     for (const id of selectedEmpIds.value) {
-      await $axios.delete($enum.api.employees.one(id));
+      await $axios.delete($api.employee.one(id));
     }
     selectedEmpIds.value = [];
     await loadEmployeeData();
@@ -411,7 +411,7 @@ async function pagingPrevPage() {
 async function loadEmployeeData() {
   try {
     isLoadingData.value = true;
-    const response = await $axios.get($enum.api.employees.filter, {
+    const response = await $axios.get($api.employee.filter, {
       params: {
         pageSize: pagingData.value.pageSize,
         pageNumber: pagingData.value.pageNumber,

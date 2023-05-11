@@ -275,6 +275,7 @@ import { ref, inject, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import $formatter from "@/js/common/formater";
 const $axios = inject("$axios");
+import $api from "../../../js/api/index";
 
 const emits = defineEmits(["updateEmplist"]);
 const router = useRouter();
@@ -369,7 +370,7 @@ async function generateEmpCode() {
  * Author: Dux(09/05/2023)
  */
 async function isEmpCodeExist(empCode, empId) {
-  const response = await $axios.get($enum.api.employees.filter, {
+  const response = await $axios.get($api.employee.filter, {
     params: {
       employeeFilter: empCode,
     },
@@ -387,7 +388,7 @@ async function isEmpCodeExist(empCode, empId) {
  */
 async function getDepartmentList() {
   try {
-    const departmentApiResponse = await $axios.get($enum.api.departments);
+    const departmentApiResponse = await $axios.get($api.department.index);
     departmentList.value = departmentApiResponse.data;
     // console.log(departmentApiResponse.data);
   } catch (error) {
@@ -401,7 +402,7 @@ async function getDepartmentList() {
  * Author: Dũng (08/05/2023)
  */
 async function fetchNewEmployeeCode() {
-  const response = await $axios.get($enum.api.employees.newCode);
+  const response = await $axios.get($api.employee.newCode);
   form.value.empCode = response.data;
 }
 
@@ -509,7 +510,7 @@ async function addNewDepartment(name) {
   form.value.isLoading = true;
   try {
     console.log(name);
-    const response = await $axios.post($enum.api.departments, {
+    const response = await $axios.post($api.department.index, {
       departmentCode: "",
       departmentName: name,
       description: "",
@@ -546,7 +547,7 @@ async function callCreateEmployeeApi() {
     email: form.value.empEmail,
   };
   // console.log(requestBody);
-  await $axios.post($enum.api.employees.index, requestBody);
+  await $axios.post($api.employee.index, requestBody);
 }
 
 /**
@@ -572,7 +573,7 @@ async function callEditEmployeeApi() {
     email: form.value.empEmail,
   };
   // console.log(requestBody);
-  await $axios.put($enum.api.employees.one(form.value.empId), requestBody);
+  await $axios.put($api.employee.one(form.value.empId), requestBody);
 }
 
 /**
@@ -759,7 +760,7 @@ function saveAndAddBtnOnTabKeydown() {
  */
 async function getEmployee(empId) {
   try {
-    const response = await $axios.get($enum.api.employees.one(empId));
+    const response = await $axios.get($api.employee.one(empId));
     const data = response.data;
     form.value.empCode = data.EmployeeCode ?? "";
     form.value.empFullName = data.FullName ?? "";
