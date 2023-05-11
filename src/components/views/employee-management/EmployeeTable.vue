@@ -125,7 +125,6 @@
               :class="[table.expandEmpId == emp.EmployeeId ? 'above' : '']"
               class="tdn--sticky"
               @dblclick.stop
-              @click.stop
             >
               <div class="t__optionbox align-center">
                 <button
@@ -416,6 +415,7 @@ function trOnDblclick(empId) {
   max-width: 100%;
   overflow: auto;
   position: relative;
+  transform: translate3d(0, 0, 0);
 }
 
 .tablebox::-webkit-scrollbar {
