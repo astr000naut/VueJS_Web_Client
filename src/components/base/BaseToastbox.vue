@@ -10,7 +10,13 @@
         <div class="left__area">
           <div class="minc mi-24"></div>
           <div class="toast__title">
-            <strong>{{ toast.title }}</strong>
+            <strong>{{
+              toast.type == "success"
+                ? "Thành công!"
+                : toast.type == "alert"
+                ? "Cảnh báo!"
+                : "Lỗi!"
+            }}</strong>
           </div>
           <div class="toast__message">{{ toast.message }}</div>
         </div>

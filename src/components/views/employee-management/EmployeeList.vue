@@ -129,14 +129,15 @@ var toastId = 0;
 function pushToast(toast) {
   if (toastList.value.length > 5) toastList.value.splice(0, 1);
   toastList.value.push({
-    id: toast.id,
+    id: toastId,
     type: toast.type,
     title: toast.title,
     message: toast.message,
   });
   if (toast.timeToLive != -1) {
-    setToastTimeToLive(toast.id, toast.timeToLive);
+    setToastTimeToLive(toastId, toast.timeToLive);
   }
+  ++toastId;
 }
 
 /**
@@ -315,7 +316,6 @@ async function deleteEmployee() {
     isLoadingPage.value = false;
     // NEED REFACTOR
     pushToast({
-      id: toastId++,
       type: "success",
       title: "Thành công!",
       message: "Nhân viên đã bị xóa khỏi hệ thống.",
@@ -341,7 +341,6 @@ async function deleteBatchEmployee() {
     await loadEmployeeData();
     isLoadingPage.value = false;
     pushToast({
-      id: toastId++,
       type: "success",
       title: "Thành công!",
       message: "Xóa hàng loạt thành công.",
@@ -433,7 +432,6 @@ async function loadEmployeeData() {
   } catch (error) {
     console.log("LOAD FAILED");
     pushToast({
-      id: toastId++,
       type: "fail",
       title: "Lỗi!",
       message: "Không thể tải dữ liệu. Vui lòng kiểm tra lại kết nối Internet.",
@@ -471,10 +469,17 @@ async function empListOnUpdate(type, data) {
   if (type == "create") {
     pagingData.value.totalRecord += 1;
     pushToast({
-      id: toastId++,
       type: "success",
       title: "Thành công!",
       message: "Thêm mới nhân viên thành công.",
+      timeToLive: 3000,
+    });
+  }
+  if (type == "edit") {
+    pushToast({
+      type: "success",
+      title: "Thành công!",
+      message: "Sửa thông tin nhân viên thành công.",
       timeToLive: 3000,
     });
   }
