@@ -96,10 +96,12 @@ function inputKeyupHandler($event) {
  * Author: Dũng (08/05/2023)
  */
 function inputKeyPressHandler() {
-  // Xóa setTimeout đã tạo từ tước
-  while (typingTimers.length > 0) {
-    clearTimeout(typingTimers[0]);
-    typingTimers.splice(0, 1);
+  if (props.realTimeSearch) {
+    // Xóa setTimeout đã tạo từ tước
+    while (typingTimers.length > 0) {
+      clearTimeout(typingTimers[0]);
+      typingTimers.splice(0, 1);
+    }
   }
 }
 
