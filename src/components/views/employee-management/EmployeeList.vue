@@ -334,9 +334,11 @@ async function deleteBatchEmployee() {
   try {
     dialog.value.isDisplay = false;
     isLoadingPage.value = true;
+    const promiseList = [];
     for (const id of selectedEmpIds.value) {
-      await $axios.delete($api.employee.one(id));
+      promiseList.push($axios.delete($api.employee.one(id)));
     }
+    await Promise.all(promiseList);
     selectedEmpIds.value = [];
     await loadEmployeeData();
     isLoadingPage.value = false;
