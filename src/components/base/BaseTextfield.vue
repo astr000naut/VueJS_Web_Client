@@ -70,7 +70,7 @@ function inputKeyupHandler($event) {
   emits("update:noti", "");
   if (props.isrequired) {
     if (props.text.length == 0 && $event.key == "Backspace") {
-      refInput.value.placeholder = props.autoFillMessage;
+      refInput.value.placeholder = props.autoFillMessage ?? "";
       emits("update:noti", `${props.label} không được để trống`);
     }
   }
