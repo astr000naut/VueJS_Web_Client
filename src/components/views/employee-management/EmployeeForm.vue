@@ -65,7 +65,7 @@
                   label="Mã"
                   :isrequired="true"
                   :autoFill="generateEmpCode"
-                  v-model:text="form.empCode"
+                  v-model:text="employee.employeeCode"
                   v-model:noti="formNoti.empCode"
                   @keydown.shift.tab.prevent="empCodeTextfieldOnShiftTab"
                   ref="empCodeRef"
@@ -76,7 +76,7 @@
                   pholder=""
                   label="Tên"
                   :isrequired="true"
-                  v-model:text="form.empFullName"
+                  v-model:text="employee.fullName"
                   v-model:noti="formNoti.empFullName"
                   ref="empFullNameRef"
                 />
@@ -89,9 +89,9 @@
                   :isrequired="true"
                   :option-list="departmentList"
                   :add-new-item="addNewDepartment"
-                  v-model:text="form.empDepartmentName"
+                  v-model:text="employee.departmentName"
                   v-model:noti="formNoti.empDepartmentName"
-                  v-model:selectedItemId="form.empDepartmentId"
+                  v-model:selectedItemId="employee.departmentId"
                   ref="empDepartmentNameRef"
                 />
               </div>
@@ -101,7 +101,7 @@
                 <BaseTextfield
                   pholder=""
                   label="Chức danh"
-                  v-model:text="form.empPositionName"
+                  v-model:text="employee.positionName"
                   noti=""
                 />
               </div>
@@ -112,7 +112,7 @@
               <div class="fu__dob">
                 <BaseDatepicker
                   label="Ngày sinh"
-                  v-model:inputText="form.empDateOfBirth"
+                  v-model:inputText="employee.dateOfBirth"
                 />
               </div>
               <div class="fu__gender">
@@ -123,7 +123,7 @@
                     { text: 'Nữ', value: 1 },
                     { text: 'Khác', value: 2 },
                   ]"
-                  v-model:radioValue="form.empGender"
+                  v-model:radioValue="employee.gender"
                 />
               </div>
             </div>
@@ -132,7 +132,7 @@
                 <BaseTextfield
                   pholder=""
                   label="Số CMND"
-                  v-model:text="form.empIdentityNumber"
+                  v-model:text="employee.identityNumber"
                   v-model:noti="formNoti.empIdentityNumber"
                   tooltip="Số chứng minh nhân dân"
                   ref="empIdentitiNumberRef"
@@ -141,7 +141,7 @@
               <div class="fu__cmnddate">
                 <BaseDatepicker
                   label="Ngày cấp"
-                  v-model:inputText="form.empIdentityDate"
+                  v-model:inputText="employee.identityDate"
                 />
               </div>
             </div>
@@ -151,7 +151,7 @@
                   pholder=""
                   label="Nơi cấp"
                   noti=""
-                  v-model:text="form.empIdentityPlace"
+                  v-model:text="employee.identityPlace"
                 />
               </div>
             </div>
@@ -165,7 +165,7 @@
                 pholder=""
                 label="Địa chỉ"
                 noti=""
-                v-model:text="form.empAddress"
+                v-model:text="employee.address"
               />
             </div>
           </div>
@@ -176,7 +176,7 @@
                 label="ĐT di động"
                 tooltip="Số điện thoại di động"
                 noti=""
-                v-model:text="form.empPhoneNumber"
+                v-model:text="employee.phoneNumber"
               />
             </div>
             <div class="fl__homephone">
@@ -185,7 +185,7 @@
                 label="ĐT cố định"
                 tooltip="Số điện thoại cố định"
                 noti=""
-                v-model:text="form.empLandlineNumber"
+                v-model:text="employee.landlineNumber"
               />
             </div>
             <div class="fl__email">
@@ -193,7 +193,7 @@
                 pholder=""
                 label="Email"
                 noti=""
-                v-model:text="form.empEmail"
+                v-model:text="employee.email"
               />
             </div>
           </div>
@@ -203,7 +203,7 @@
                 pholder=""
                 label="Tài khoản ngân hàng"
                 noti=""
-                v-model:text="form.empBankAcc"
+                v-model:text="employee.bankAccount"
               />
             </div>
             <div class="fl__bankname">
@@ -211,7 +211,7 @@
                 pholder=""
                 label="Tên ngân hàng"
                 noti=""
-                v-model:text="form.empBankName"
+                v-model:text="employee.bankName"
                 ref="empBankNameRef"
               />
             </div>
@@ -219,8 +219,8 @@
               <BaseTextfield
                 pholder=""
                 label="Chi nhánh"
-                v-model:text="form.empBankPlace"
-                ref="bankAreaInputRef"
+                v-model:text="employee.bankBranch"
+                ref="bankBranchInputRef"
                 noti=""
                 @keydown.tab.prevent="bankAreaInputOnTabKeyDown"
                 @keydown.shift.tab.prevent="bankAreaInputOnShiftTabKeyDown"
@@ -273,14 +273,21 @@ import BaseNotibox from "@/components/base/BaseNotibox.vue";
 import $enum from "@/js/common/enum";
 import { ref, inject, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import $formatter from "@/js/common/formater";
+import { Employee } from "../../../js/model/employee";
 const $axios = inject("$axios");
 import $api from "../../../js/api/index";
 
 const emits = defineEmits(["updateEmplist"]);
 const router = useRouter();
 const route = useRoute();
-const form = ref({});
+const form = ref({
+  type: "",
+  empId: "",
+  isLoading: false,
+  checkbox1: false,
+  checkbox2: false,
+});
+const employee = ref(new Employee());
 const formNoti = ref({
   showNotibox: false,
   notiboxType: "",
@@ -297,13 +304,12 @@ const formDialog = ref({
 const cancelBtnRef = ref(null);
 const saveBtnRef = ref(null);
 const saveAndAddBtnRef = ref(null);
-const bankAreaInputRef = ref(null);
+const bankBranchInputRef = ref(null);
 const empFullNameRef = ref(null);
 const empDepartmentNameRef = ref(null);
 const empIdentitiNumberRef = ref(null);
 const empBankNameRef = ref(null);
 const departmentList = ref([]);
-
 resetFormState();
 
 onMounted(async () => {
@@ -314,46 +320,25 @@ onMounted(async () => {
 });
 
 /**
- * Reset giá trị của form
+ * Reset giá trị employee và trạng thái form
  *
  * Author: Dũng (08/05/2023)
  */
 function resetFormState() {
   form.value = {
-    type: "",
+    type: route.params.id ? $enum.form.infoType : $enum.form.createType,
+    empId: route.params.id ?? "",
     isLoading: false,
     checkbox1: false,
     checkbox2: false,
-    empId: "",
-    empCode: "",
-    empFullName: "",
-    empDepartmentCode: "",
-    empDepartmentName: "",
-    empDepartmentId: "",
-    empPositionId: "",
-    empPositionName: "",
-    empDateOfBirth: "",
-    empGender: -1,
-    empGenderName: "",
-    empIdentityNumber: "",
-    empIdentityDate: "",
-    empIdentityPlace: "",
-    empAddress: "",
-    empPhoneNumber: "",
-    empLandlineNumber: "",
-    empEmail: "",
-    empBankAcc: "",
-    empBankName: "",
-    empBankPlace: "",
   };
-  if (route.params.id) {
-    form.value.type = $enum.form.infoType;
-    form.value.empId = route.params.id;
-  } else {
-    form.value.type = $enum.form.createType;
-  }
+  employee.value = new Employee();
 }
-
+/**
+ * Lấy mã nhân viên mới
+ *
+ * Author: Dux(11/05/2023)
+ */
 async function generateEmpCode() {
   try {
     form.value.isLoading = true;
@@ -390,6 +375,7 @@ async function getDepartmentList() {
   try {
     const departmentApiResponse = await $axios.get($api.department.index);
     departmentList.value = departmentApiResponse.data;
+    console.log(departmentList.value);
     // console.log(departmentApiResponse.data);
   } catch (error) {
     console.log(error);
@@ -403,14 +389,19 @@ async function getDepartmentList() {
  */
 async function fetchNewEmployeeCode() {
   const response = await $axios.get($api.employee.newCode);
-  form.value.empCode = response.data;
+  employee.value.employeeCode = response.data;
 }
 
+/**
+ * Cập nhật Department name cho employee
+ *
+ * Author: Dũng (11/05/2023)
+ */
 function updateDepartmentInfo() {
   for (const department of departmentList.value) {
-    if (department.DepartmentId == form.value.empDepartmentId) {
-      form.value.empDepartmentCode = department.DepartmentCode;
-      form.value.empDepartmentName = department.DepartmentName;
+    if (department.DepartmentId == employee.value.departmentId) {
+      employee.value.departmentName = department.DepartmentName;
+      employee.value.departmentCode = department.DepartmentCode;
     }
   }
 }
@@ -442,13 +433,13 @@ async function getDataFromApi() {
  *
  * Author: Dũng (08/05/2023)
  */
-async function validateForm() {
+async function validateData() {
   try {
     // Giá trị text lỗi của ô bị lỗi đầu tiên
     let firstMessage = "";
     // Validate mã nhân viên
-    if (form.value.empCode.trim() == "") {
-      form.value.empCode = "";
+    if (employee.value.employeeCode.trim() == "") {
+      employee.value.employeeCode = "";
       formNoti.value.empCode = "Mã không được để trống";
       if (firstMessage == "") {
         firstMessage = formNoti.value.empCode;
@@ -456,7 +447,7 @@ async function validateForm() {
     } else {
       // Kiểm tra trùng mã
       const isCodeExist = await isEmpCodeExist(
-        form.value.empCode,
+        employee.value.employeeCode,
         form.value.empId
       );
       if (isCodeExist) {
@@ -467,21 +458,21 @@ async function validateForm() {
       }
     }
     // Kiểm tra tên nhân viên
-    if (form.value.empFullName == "") {
+    if (employee.value.fullName == "") {
       formNoti.value.empFullName = "Tên không được để trống";
       if (firstMessage == "") {
         firstMessage = formNoti.value.empFullName;
       }
     }
     // Kiểm tra thông tin đơn vị
-    if (form.value.empDepartmentName == "") {
+    if (employee.value.departmentName == "") {
       formNoti.value.empDepartmentName = "Đơn vị không được để trống";
       if (firstMessage == "") {
         firstMessage = formNoti.value.empDepartmentName;
       }
     }
     // Kiểm tra thông tin CMND
-    if (!/^$|^\d{9}$|^\d{12}$/.test(form.value.empIdentityNumber)) {
+    if (!/^$|^\d{9}$|^\d{12}$/.test(employee.value.identityNumber)) {
       formNoti.value.empIdentityNumber = "Số CMND không đúng định dạng";
       if (firstMessage == "") {
         firstMessage = formNoti.value.empIdentityNumber;
@@ -530,22 +521,7 @@ async function addNewDepartment(name) {
  * Author: Dũng (08/05/2023)
  */
 async function callCreateEmployeeApi() {
-  const requestBody = {
-    // employeeId: "14c624fa-f731-4bba-9656-e73af03940bb",
-    employeeCode: form.value.empCode,
-    fullName: form.value.empFullName,
-    departmentId: form.value.empDepartmentId,
-    departmentName: form.value.empDepartmentName,
-    positionName: form.value.empPositionName,
-    dateOfBirth: $formatter.formatDateToApiDate(form.value.empDateOfBirth),
-    gender: form.value.empGender,
-    identityNumber: form.value.empIdentityNumber,
-    identityDate: $formatter.formatDateToApiDate(form.value.empIdentityDate),
-    identityPlace: form.value.empIdentityPlace,
-    address: form.value.empAddress,
-    phoneNumber: form.value.empPhoneNumber,
-    email: form.value.empEmail,
-  };
+  const requestBody = employee.value.convertToApiFormat(false);
   // console.log(requestBody);
   await $axios.post($api.employee.index, requestBody);
 }
@@ -556,22 +532,7 @@ async function callCreateEmployeeApi() {
  * Author: Dũng (08/05/2023)
  */
 async function callEditEmployeeApi() {
-  const requestBody = {
-    employeeId: form.value.empId,
-    employeeCode: form.value.empCode,
-    fullName: form.value.empFullName,
-    departmentId: form.value.empDepartmentId,
-    departmentName: form.value.empDepartmentName,
-    positionName: form.value.empPositionName,
-    dateOfBirth: $formatter.formatDateToApiDate(form.value.empDateOfBirth),
-    gender: form.value.empGender,
-    identityNumber: form.value.empIdentityNumber,
-    identityDate: $formatter.formatDateToApiDate(form.value.empIdentityDate),
-    identityPlace: form.value.empIdentityPlace,
-    address: form.value.empAddress,
-    phoneNumber: form.value.empPhoneNumber,
-    email: form.value.empEmail,
-  };
+  const requestBody = employee.value.convertToApiFormat(true);
   // console.log(requestBody);
   await $axios.put($api.employee.one(form.value.empId), requestBody);
 }
@@ -585,7 +546,7 @@ async function callEditEmployeeApi() {
 async function btnSaveOnClick(goBackToEmployeeList) {
   try {
     form.value.isLoading = true;
-    await validateForm();
+    await validateData();
     if (formNoti.value.notiboxMessage != "") {
       form.value.isLoading = false;
       // show notibox
@@ -594,27 +555,11 @@ async function btnSaveOnClick(goBackToEmployeeList) {
       if (form.value.type == $enum.form.createType) {
         // create employee
         await callCreateEmployeeApi();
-        emits("updateEmplist", "create", {
-          EmployeeCode: form.value.empCode,
-          FullName: form.value.empFullName,
-          GenderName: form.value.empGenderName,
-          DateOfBirth: form.value.empDateOfBirth,
-          IdentityNumber: form.value.empIdentityNumber,
-          PositionName: form.value.empPositionName,
-          DepartmentName: form.value.empDepartmentName,
-        });
+        emits("updateEmplist", "create", {});
       } else {
         // edit employee
         await callEditEmployeeApi();
-        emits("updateEmplist", "edit", {
-          EmployeeCode: form.value.empCode,
-          FullName: form.value.empFullName,
-          GenderName: form.value.empGenderName,
-          DateOfBirth: form.value.empDateOfBirth,
-          IdentityNumber: form.value.empIdentityNumber,
-          PositionName: form.value.empPositionName,
-          DepartmentName: form.value.empDepartmentName,
-        });
+        emits("updateEmplist", "edit", {});
       }
       form.value.isLoading = false;
       if (goBackToEmployeeList) router.replace("/employee");
@@ -721,7 +666,7 @@ function bankAreaInputOnTabKeyDown() {
  * Author: Dũng (08/05/2023)
  */
 function saveBtnOnShiftTabKeydown() {
-  bankAreaInputRef.value.refInput.focus();
+  bankBranchInputRef.value.refInput.focus();
 }
 /**
  * Sự kiện shift tab của ô chi nhánh
@@ -761,27 +706,10 @@ function saveAndAddBtnOnTabKeydown() {
 async function getEmployee(empId) {
   try {
     const response = await $axios.get($api.employee.one(empId));
+    console.log(response.data);
     const data = response.data;
-    form.value.empCode = data.EmployeeCode ?? "";
-    form.value.empFullName = data.FullName ?? "";
-    form.value.empDepartmentName = data.DepartmentName ?? "";
-    form.value.empDepartmentCode = data.DepartmentCode ?? "";
-    form.value.empDepartmentId = data.DepartmentId ?? "";
-    form.value.empPositionId = data.PositionId ?? "";
-    form.value.empPositionName = data.empPositionName ?? "";
-    form.value.empDateOfBirth = $formatter.changeFormat(data.DateOfBirth);
-    form.value.empGender = data.Gender ?? -1;
-    form.value.empGenderName = data.GenderName ?? "";
-    form.value.empIdentityNumber = data.IdentityNumber ?? "";
-    form.value.empIdentityDate = $formatter.changeFormat(data.IdentityDate);
-    form.value.empIdentityPlace = data.IdentityPlace ?? "";
-    form.value.empAddress = data.Address ?? "";
-    form.value.empPhoneNumber = data.PhoneNumber ?? "";
-    form.value.empLandlineNumber = "sample";
-    form.value.empEmail = data.Email;
-    form.value.empBankAcc = "sample";
-    form.value.empBankName = "sample";
-    form.value.empBankPlace = "sample";
+    employee.value.syncWithDataFromApi(data);
+    console.log(employee.value);
   } catch (error) {
     console.log(error);
   }

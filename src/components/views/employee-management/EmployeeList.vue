@@ -13,7 +13,7 @@
   </div>
   <router-view
     name="EmployeeForm"
-    @update-emplist="empListOnUpdate"
+    @update-emplist="employeeOnUpdate"
   ></router-view>
   <div class="pcontent">
     <BaseToastbox
@@ -67,7 +67,7 @@
       </div>
       <EmployeeTable
         :is-loading-data="isLoadingData"
-        :emp-list="empList"
+        :row-list="rowList"
         :key="tableKey"
         :delete-employee-function="deleteEmployeeOnClick"
         :selected-emp-ids="selectedEmpIds"
@@ -75,7 +75,7 @@
         :paging-next-page="pagingNextPage"
         :paging-prev-page="pagingPrevPage"
         @update-paging-data="pagingDataOnUpdate"
-        @update-emp-status="empStatusOnUpdate"
+        @update-row-status="rowStatusOnUpdate"
       />
     </div>
   </div>
@@ -83,17 +83,17 @@
 
 <script setup>
 import EmployeeTable from "@/components/views/employee-management/EmployeeTable.vue";
-// import { useRouter } from "vue-router";
 import { ref, onMounted, onBeforeUnmount, inject } from "vue";
 import { useRouter } from "vue-router";
 import BaseLoader from "@/components/base/BaseLoader.vue";
 import BaseDialog from "@/components/base/BaseDialog.vue";
 import BaseToastbox from "@/components/base/BaseToastbox.vue";
 import $api from "@/js/api";
+import { Employee } from "@/js/model/employee";
 
 const router = useRouter();
 const $emitter = inject("$emitter");
-const empList = ref([]);
+const rowList = ref([]);
 const isLoadingData = ref(true);
 const isLoadingPage = ref(false);
 const $axios = inject("$axios");
@@ -210,19 +210,23 @@ function batchBtnOnClick() {
  *
  * Author: Dũng (10/05/2023)
  */
-function empStatusOnUpdate(data) {
-  const { type, empIndex } = data;
+function rowStatusOnUpdate(data) {
+  const { type, rowIndex } = data;
   if (type == "toggleAll") {
+    // Nếu không có employee nào đang được chọn
     if (selectedEmpIds.value.length == 0) {
-      for (const emp of empList.value) {
-        emp.selected = true;
-        emp.active = true;
-        selectedEmpIds.value.push(emp.EmployeeId);
+      // Chọn tất cả
+      for (const row of rowList.value) {
+        row.selected = true;
+        row.active = true;
+        selectedEmpIds.value.push(row.emp.employeeId);
       }
     } else {
-      for (const emp of empList.value) {
-        emp.selected = false;
-        emp.active = false;
+      // Nếu có ít nhất một employee đang được chọn
+      // Hủy chọn tất cả
+      for (const row of rowList.value) {
+        row.selected = false;
+        row.active = false;
         selectedEmpIds.value = [];
       }
     }
@@ -230,41 +234,47 @@ function empStatusOnUpdate(data) {
   }
 
   if (type == "selected") {
-    // Toggle selected class
-    empList.value[empIndex].selected = !empList.value[empIndex].selected;
+    // Đổi trạng thái selected của row
+    rowList.value[rowIndex].selected = !rowList.value[rowIndex].selected;
 
     // Nếu selected true thì thêm vào selectedEmpIds và bật active
-    if (empList.value[empIndex].selected) {
-      selectedEmpIds.value.push(empList.value[empIndex].EmployeeId);
-      empList.value[empIndex].active = true;
-      for (const emp of empList.value) {
+    if (rowList.value[rowIndex].selected) {
+      selectedEmpIds.value.push(rowList.value[rowIndex].emp.employeeId);
+      rowList.value[rowIndex].active = true;
+      // Tắt active của những ô khác mà không được selected
+      for (const row of rowList.value) {
         if (
-          emp.EmployeeId != empList.value[empIndex].EmployeeId &&
-          !emp.selected
+          row.emp.employeeId != rowList.value[rowIndex].emp.employeeId &&
+          !row.selected
         )
-          emp.active = false;
+          row.active = false;
       }
     } else {
+      // Nếu seleted của employee này false
       // Xóa khỏi selectedEmpIds và tắt active
       selectedEmpIds.value.splice(
-        selectedEmpIds.value.indexOf(empList.value[empIndex].EmployeeId),
+        selectedEmpIds.value.indexOf(rowList.value[rowIndex].emp.employeeId),
         1
       );
-      empList.value[empIndex].active = false;
+      rowList.value[rowIndex].active = false;
     }
     return;
   }
+
   if (data.type == "active") {
-    if (!empList.value[empIndex].selected) {
-      empList.value[empIndex].active = !empList.value[empIndex].active;
+    // Nếu row này đang không được select thì cập nhật trạng thái active
+    if (!rowList.value[rowIndex].selected) {
+      rowList.value[rowIndex].active = !rowList.value[rowIndex].active;
     }
-    if (empList.value[empIndex].active) {
-      for (const emp of empList.value) {
+    // Nếu row này được bật active
+    if (rowList.value[rowIndex].active) {
+      // Tắt những row khác đang active mà không selected
+      for (const row of rowList.value) {
         if (
-          emp.EmployeeId != empList.value[empIndex].EmployeeId &&
-          !emp.selected
+          !row.selected &&
+          row.emp.employeeId != rowList.value[rowIndex].emp.employeeId
         )
-          emp.active = false;
+          row.active = false;
       }
     }
   }
@@ -316,7 +326,7 @@ async function deleteEmployee() {
   try {
     isLoadingPage.value = true;
     await $axios.delete($api.employee.one(cache.value.empDeleteId));
-    empList.value.splice(cache.value.empDeleteIndex, 1);
+    rowList.value.splice(cache.value.empDeleteIndex, 1);
     // Update pagingData
     pagingData.value.curAmount -= 1;
     pagingData.value.totalRecord -= 1;
@@ -366,10 +376,10 @@ async function deleteBatchEmployee() {
 function deleteEmployeeOnClick(empId) {
   let empCode = "";
   cache.value.empDeleteId = empId;
-  for (let index in empList.value) {
-    if (empList.value[index].EmployeeId == empId) {
+  for (let index in rowList.value) {
+    if (rowList.value[index].emp.employeeId == empId) {
       cache.value.empDeleteIndex = index;
-      empCode = empList.value[index].EmployeeCode;
+      empCode = rowList.value[index].emp.employeeCode;
       break;
     }
   }
@@ -423,7 +433,18 @@ async function loadEmployeeData() {
         employeeFilter: cache.value.empSearchPattern,
       },
     });
-    empList.value = response.data.Data ?? [];
+    rowList.value = [];
+    if (response.data.Data) {
+      for (const emp of response.data.Data) {
+        let employee = new Employee();
+        employee.syncWithDataFromApi(emp);
+        rowList.value.push({
+          active: false,
+          selected: false,
+          emp: employee,
+        });
+      }
+    }
     pagingData.value.curAmount = response.data.CurrentPageRecords ?? 0;
     pagingData.value.totalRecord = response.data.TotalRecord ?? 0;
     isLoadingData.value = false;
@@ -438,16 +459,13 @@ async function loadEmployeeData() {
 }
 
 /**
- * Sự kiện cập nhật mảng empList
+ * Sự kiện cập nhật mảng rowList
  * @param {String} type kiểu update (thêm hay sửa)
  * @param {Object} data dữ liệu của employee mới
  * Author: Dũng (08/05/2023)
  */
-async function empListOnUpdate(type, data) {
-  console.log(type);
+async function employeeOnUpdate(type, data) {
   console.log(data);
-  // empList.value.unshift(data);
-  // await loadData();
   switch (type) {
     case "create":
       pagingData.value.totalRecord += 1;

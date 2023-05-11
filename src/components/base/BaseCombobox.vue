@@ -2,17 +2,17 @@
   <div
     class="cbox"
     :class="[
-      props.isrequired ? 'field--required' : '',
-      props.noti.length > 0 ? 'error-noti' : '',
+      isrequired ? 'field--required' : '',
+      noti.length > 0 ? 'error-noti' : '',
     ]"
   >
-    <div class="cbox__label label">{{ props.label }}</div>
+    <div class="cbox__label label">{{ label }}</div>
     <div class="cbox__select">
       <div class="select__box">
         <div class="select__input">
           <input
             type="text"
-            :value="props.text"
+            :value="text"
             ref="refInput"
             @input="$emit('update:text', $event.target.value)"
             @keyup="inputKeyupHandler"
@@ -41,7 +41,7 @@
           :class="[cbox.hasScrollbar ? 'hascrollbar' : '']"
         >
           <template
-            v-for="(option, index) in props.optionList"
+            v-for="(option, index) in optionList"
             :key="option.DepartmentId"
           >
             <div
@@ -55,12 +55,9 @@
                 )
               "
               :class="[
-                option.DepartmentId == props.selectedItemId
-                  ? 'item--selected'
-                  : '',
+                option.DepartmentId == selectedItemId ? 'item--selected' : '',
                 cbox.cusorItemId != null &&
-                option.DepartmentId ==
-                  props.optionList[cbox.cusorItemId].DepartmentId
+                option.DepartmentId == optionList[cbox.cusorItemId].DepartmentId
                   ? 'item--highlighted'
                   : '',
               ]"
@@ -81,7 +78,7 @@
         </div>
       </div>
     </div>
-    <div class="cbox__noti noti">{{ props.noti }}</div>
+    <div class="cbox__noti noti">{{ noti }}</div>
   </div>
 </template>
 

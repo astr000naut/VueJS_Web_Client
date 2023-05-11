@@ -2,29 +2,26 @@
   <div
     class="txtfield"
     :class="[
-      props.isrequired ? 'field--required' : '',
-      props.noti.length > 0 ? 'error-noti' : '',
+      isrequired ? 'field--required' : '',
+      noti.length > 0 ? 'error-noti' : '',
     ]"
   >
     <div
-      v-show="props.label"
+      v-show="label"
       class="txtfield__label label"
       @mouseenter="labelOnMouseEnter"
       @mouseleave="labelOnMouseOut"
     >
-      {{ props.label }}
+      {{ label }}
     </div>
-    <div
-      class="txtfield__tooltip"
-      v-show="props.tooltip != null && showTooltip"
-    >
-      {{ props.tooltip }}
+    <div class="txtfield__tooltip" v-show="tooltip != null && showTooltip">
+      {{ tooltip }}
     </div>
     <div class="txtfield__textbox">
       <input
         class="txtfield__input"
         type="text"
-        :placeholder="props.pholder"
+        :placeholder="pholder"
         :value="text"
         ref="refInput"
         @input="$emit('update:text', $event.target.value)"
@@ -34,7 +31,7 @@
       />
       <div class="txtfield__icon"></div>
     </div>
-    <div class="txtfield__noti noti">{{ props.noti }}</div>
+    <div class="txtfield__noti noti">{{ noti }}</div>
   </div>
 </template>
 

@@ -1,10 +1,10 @@
 <template>
-  <button ref="refBtn">{{ props.bname }}</button>
+  <button ref="refBtn">{{ bname }}</button>
 </template>
 
 <script setup>
 import { ref } from "vue";
-const props = defineProps({
+defineProps({
   // Ten button
   bname: String,
 });

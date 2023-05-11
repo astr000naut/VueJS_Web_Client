@@ -46,7 +46,8 @@ const $formatter = {
    */
   changeFormat: (input) => {
     if (!input) return "";
-    return moment(input).format(dateFormat);
+    const date = moment(new Date("2020/12/06"));
+    return date.format("DD/MM/YYYY");
   },
   /**
    * Hàm format từ ngày dạng string sang dạng số

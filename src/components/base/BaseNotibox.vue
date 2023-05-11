@@ -3,23 +3,19 @@
     <div class="notibox__content">
       <div
         class="content__logo"
-        :class="[props.type == 'alert' ? 'logo--alert' : '']"
+        :class="[type == 'alert' ? 'logo--alert' : '']"
       ></div>
-      <div class="content__text">{{ props.message }}</div>
+      <div class="content__text">{{ message }}</div>
     </div>
     <hr />
     <div class="notibox__footer">
-      <BaseButton
-        bname="Đồng ý"
-        class="btn--primary"
-        @click="props.yesOnClick"
-      />
+      <BaseButton bname="Đồng ý" class="btn--primary" @click="yesOnClick" />
     </div>
   </div>
 </template>
 
 <script setup>
-const props = defineProps({
+defineProps({
   type: String,
   message: String,
   yesOnClick: Function,

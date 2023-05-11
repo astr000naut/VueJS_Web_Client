@@ -1,6 +1,6 @@
 <template>
   <div class="dpicker">
-    <div class="dpicker__label">{{ props.label }}</div>
+    <div class="dpicker__label">{{ label }}</div>
     <div class="dpicker__selector">
       <div class="dpicker__input">
         <input

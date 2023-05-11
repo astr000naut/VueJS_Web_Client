@@ -1,17 +1,13 @@
 <template>
   <div class="input--radio">
-    <div class="radio__label">{{ props.label }}</div>
+    <div class="radio__label">{{ label }}</div>
     <div class="radio__container">
-      <div
-        v-for="option in props.options"
-        :key="option.value"
-        class="radio__item"
-      >
+      <div v-for="option in options" :key="option.value" class="radio__item">
         <input
           type="radio"
           name="gender"
           id=""
-          :checked="option.value == props.radioValue"
+          :checked="option.value == radioValue"
           @click="$emit('update:radioValue', option.value)"
         />
         <label for="">{{ option.text }}</label>
@@ -21,7 +17,7 @@
 </template>
 
 <script setup>
-const props = defineProps({
+defineProps({
   label: String,
   options: Array,
   radioValue: Number,

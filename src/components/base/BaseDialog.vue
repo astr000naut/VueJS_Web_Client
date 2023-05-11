@@ -1,29 +1,21 @@
 <template>
   <div class="dialog">
     <div class="dialog__bar">
-      <div class="dialog__heading">{{ props.title }}</div>
-      <BaseButton
-        bname=""
-        class="mi-36 btn--close"
-        @click="props.closeOnClick"
-      />
+      <div class="dialog__heading">{{ title }}</div>
+      <BaseButton bname="" class="mi-36 btn--close" @click="closeOnClick" />
     </div>
     <div class="dialog__content">
-      {{ props.message }}
+      {{ message }}
     </div>
     <div class="dialog__footer">
-      <BaseButton
-        bname="Không"
-        class="btn--secondary"
-        @click="props.noOnClick"
-      />
-      <BaseButton bname="Có" class="btn--primary" @click="props.yesOnClick" />
+      <BaseButton bname="Không" class="btn--secondary" @click="noOnClick" />
+      <BaseButton bname="Có" class="btn--primary" @click="yesOnClick" />
     </div>
   </div>
 </template>
 
 <script setup>
-const props = defineProps({
+defineProps({
   title: String,
   message: String,
   closeOnClick: Function,

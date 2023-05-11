@@ -3,7 +3,7 @@
     <table
       class="m-table"
       :style="{
-        'z-index': !isLoadingData && props.empList.length <= 6 ? 30 : 0,
+        'z-index': !isLoadingData && rowList.length <= 6 ? 30 : 0,
       }"
     >
       <thead>
@@ -12,7 +12,7 @@
             <div class="align-center mw-40">
               <div
                 class="t__checkbox mi-24"
-                :class="[props.selectedEmpIds.length > 0 ? 'selected' : '']"
+                :class="[selectedEmpIds.length > 0 ? 'selected' : '']"
                 @click="thCheckboxOnClick"
               >
                 <i class="fas fa-minus"></i>
@@ -61,8 +61,8 @@
         </tr>
       </thead>
       <tbody>
-        <template v-if="props.isLoadingData">
-          <tr v-for="i in Math.min(15, props.pagingData.pageSize)" :key="i">
+        <template v-if="isLoadingData">
+          <tr v-for="i in Math.min(15, pagingData.pageSize)" :key="i">
             <td class="td1--sticky"><div class="loading-item"></div></td>
             <td v-for="j in 10" :key="j">
               <div class="loading-item"></div>
@@ -74,20 +74,20 @@
         </template>
         <template v-else>
           <tr
-            v-for="(emp, index) in props.empList"
-            :key="emp.EmployeeId"
+            v-for="({ active, selected, emp } = row, index) in rowList"
+            :key="emp.employeeId"
             :class="{
-              active: emp.active,
+              active: active,
             }"
             @click="trOnClick(index)"
-            @dblclick="trOnDblclick(emp.EmployeeId)"
+            @dblclick="trOnDblclick(emp.employeeId)"
           >
             <td class="td1--sticky" @dblclick.stop>
               <div class="align-center">
                 <div
                   class="t__checkbox mi-24"
                   :class="{
-                    selected: emp.selected,
+                    selected: selected,
                   }"
                   @click.stop="checkBoxOnClick(index)"
                 >
@@ -96,66 +96,66 @@
               </div>
             </td>
             <td>
-              <div class="text-left">{{ emp.EmployeeCode }}</div>
+              <div class="text-left">{{ emp.employeeCode }}</div>
             </td>
             <td>
-              <div class="text-left">{{ emp.FullName }}</div>
+              <div class="text-left">{{ emp.fullName }}</div>
             </td>
             <td>
-              <div class="text-left">{{ emp.GenderName }}</div>
+              <div class="text-left">{{ emp.genderName }}</div>
             </td>
             <td>
               <div class="text-left">
-                {{ $formatter.changeFormat(emp.DateOfBirth) }}
+                {{ $formatter.changeFormat(emp.dateOfBirth) }}
               </div>
             </td>
             <td>
-              <div class="text-right">{{ emp.IdentityNumber }}</div>
+              <div class="text-right">{{ emp.identityNumber }}</div>
             </td>
             <td>
-              <div class="text-left">{{ emp.PositionName }}</div>
+              <div class="text-left">{{ emp.positionName }}</div>
             </td>
             <td>
-              <div class="text-left">{{ emp.DepartmentName }}</div>
+              <div class="text-left">{{ emp.departmentName }}</div>
             </td>
             <td><div class="text-right">231239485923</div></td>
             <td><div class="text-left">BIDV</div></td>
             <td><div class="text-left">Cầu Giấy</div></td>
             <td
-              :class="[table.expandEmpId == emp.EmployeeId ? 'above' : '']"
+              :class="[table.expandEmpId == emp.employeeId ? 'above' : '']"
               class="tdn--sticky"
               @dblclick.stop
             >
               <div class="t__optionbox align-center">
                 <button
                   class="option__edit"
-                  @click="btnEditOnClick(emp.EmployeeId)"
+                  @click="btnEditOnClick(emp.employeeId)"
                 >
                   Sửa
                 </button>
                 <button
                   class="btn__expand mi mi-16 mi-expand-down"
-                  @click="btnExpandOnClick(emp.EmployeeId)"
+                  @click="btnExpandOnClick(emp.employeeId)"
                 ></button>
                 <ul
                   class="actions-list btn__expand"
                   :class="
-                    (emp.EmployeeId ==
-                      props.empList[props.empList.length - 1].EmployeeId ||
-                      emp.EmployeeId ==
-                        props.empList[props.empList.length - 2].EmployeeId) &&
-                    props.empList.length > 6
+                    (emp.employeeId ==
+                      rowList[rowList.length - 1].emp.employeeId ||
+                      emp.employeeId ==
+                        rowList[rowList.length - 2].emp.employeeId) &&
+                    rowList.length > 6
                       ? 'action-list--top'
                       : ''
                   "
-                  v-show="table.expandEmpId == emp.EmployeeId"
+                  v-show="table.expandEmpId == emp.employeeId"
                   @mouseleave="table.expandEmpId = ''"
                 >
                   <li><div class="li-data">Nhân bản</div></li>
                   <li>
                     <div
                       class="li-data"
-                      @click="deleteEmployeeFunction(emp.EmployeeId)"
+                      @click="deleteEmployeeFunction(emp.employeeId)"
                     >
                       Xóa
                     </div>
@@ -171,8 +171,7 @@
     <div class="table__pag">
       <div class="pag__leftside">
         <span
-          >Tổng số: <strong>{{ props.pagingData.totalRecord }}</strong> bản
-          ghi</span
+          >Tổng số: <strong>{{ pagingData.totalRecord }}</strong> bản ghi</span
         >
       </div>
       <div class="pag__rightside">
@@ -181,7 +180,7 @@
             class="record__amount__select"
             v-show="table.recordAmountOpen"
             :class="[
-              props.pagingData.curAmount > 3
+              pagingData.curAmount > 3
                 ? 'record__amount__select--top'
                 : 'record__amount__select--bottom',
             ]"
@@ -194,7 +193,7 @@
                 <div
                   class="record__amount__option"
                   :class="[
-                    recordAmount == props.pagingData.pageSize
+                    recordAmount == pagingData.pageSize
                       ? 'amount--selected'
                       : '',
                   ]"
@@ -205,7 +204,7 @@
               </li>
             </ul>
           </div>
-          <span>Số bản ghi / trang: {{ props.pagingData.pageSize }}</span>
+          <span>Số bản ghi / trang: {{ pagingData.pageSize }}</span>
           <div
             class="pag__arrowdown mi mi-24 mi-arrowdown-small"
             :class="[
@@ -218,17 +217,17 @@
         </div>
         <div class="pag__info">
           {{
-            props.pagingData.pageSize * (props.pagingData.pageNumber - 1) +
-            (props.empList.length > 0 ? 1 : 0)
+            pagingData.pageSize * (pagingData.pageNumber - 1) +
+            (rowList.length > 0 ? 1 : 0)
           }}
           -
-          <span v-show="!props.isLoadingData">
+          <span v-show="!isLoadingData">
             <strong>{{
-              props.pagingData.pageSize * (props.pagingData.pageNumber - 1) +
-              props.pagingData.curAmount
+              pagingData.pageSize * (pagingData.pageNumber - 1) +
+              pagingData.curAmount
             }}</strong>
           </span>
-          <span v-show="props.isLoadingData"><strong>xx</strong> </span>
+          <span v-show="isLoadingData"><strong>xx</strong> </span>
           bản ghi
         </div>
         <div
@@ -250,35 +249,38 @@ import { useRouter } from "vue-router";
 import $formatter from "@/js/common/formater";
 const router = useRouter();
 
-const table = ref({
-  recordAmountOpen: false,
-  recordAmountList: [10, 20, 30, 50, 100],
-  expandEmpId: "",
-});
 const props = defineProps({
   pagingData: Object,
   isLoadingData: Boolean,
-  empList: Array,
+  rowList: Array,
   deleteEmployeeFunction: Function,
   pagingNextPage: Function,
   pagingPrevPage: Function,
   selectedEmpIds: Array,
 });
-const emits = defineEmits(["updatePagingData", "updateEmpStatus"]);
+
+const emits = defineEmits(["updatePagingData", "updateRowStatus"]);
+
+const table = ref({
+  recordAmountOpen: false,
+  recordAmountList: [10, 20, 30, 50, 100],
+  expandEmpId: "",
+});
+
 const tooltip = ref({
   isShowIdentityNumber: false,
   isShowBankPlace: false,
 });
 
 function thCheckboxOnClick() {
-  emits("updateEmpStatus", {
+  emits("updateRowStatus", {
     type: "toggleAll",
-    empIndex: "",
+    rowIndex: "",
   });
 }
 
 /**
- * Mouse leave vào ô th có tooltip
+ * Mouse leave khỏi ô th có tooltip
  * @param {String} name tên tooltip của ô th
  * Author: Dũng (08/05/2023)
  */
@@ -307,8 +309,6 @@ async function nextPageOnClick() {
   )
     return;
   await props.pagingNextPage();
-  console.log(props.pagingData);
-  console.log("Next");
 }
 
 /**
@@ -371,10 +371,10 @@ function pagArrowdownOnClick() {
  * @param {String} empId Id nhân viên
  * Author: Dũng (08/05/2023)
  */
-function checkBoxOnClick(empIndex) {
-  emits("updateEmpStatus", {
+function checkBoxOnClick(rowIndex) {
+  emits("updateRowStatus", {
     type: "selected",
-    empIndex: empIndex,
+    rowIndex: rowIndex,
   });
 }
 
@@ -383,10 +383,10 @@ function checkBoxOnClick(empIndex) {
  * @param {String} empId Id nhân viên
  * Author: Dũng (08/05/2023)
  */
-function trOnClick(empIndex) {
-  emits("updateEmpStatus", {
+function trOnClick(rowIndex) {
+  emits("updateRowStatus", {
     type: "active",
-    empIndex: empIndex,
+    rowIndex: rowIndex,
   });
 }
 

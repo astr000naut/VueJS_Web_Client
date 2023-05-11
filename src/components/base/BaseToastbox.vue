@@ -2,7 +2,7 @@
   <div class="toast__box">
     <transition-group name="list">
       <div
-        v-for="toast in props.toastList"
+        v-for="toast in toastList"
         :key="toast.id"
         class="toast"
         :class="`toast--${toast.type}`"
@@ -23,7 +23,7 @@
         <div class="right__area">
           <div
             class="mi mi-16 mi-close-small"
-            @click="props.removeToast(toast.id)"
+            @click="removeToast(toast.id)"
           ></div>
         </div>
       </div>
@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-const props = defineProps({
+defineProps({
   toastList: Array,
   removeToast: Function,
 });
