@@ -133,10 +133,9 @@ function pushToast(toast) {
   toastList.value.push({
     id: toastId,
     type: toast.type,
-    title: toast.title,
     message: toast.message,
   });
-  if (toast.timeToLive != -1) {
+  if (toast.timeToLive) {
     setToastTimeToLive(toastId, toast.timeToLive);
   }
   ++toastId;
@@ -427,7 +426,6 @@ async function loadEmployeeData() {
     pushToast({
       type: "fail",
       message: "Không thể tải dữ liệu. Vui lòng kiểm tra lại kết nối Internet.",
-      timeToLive: -1,
     });
     console.log(error);
   }
