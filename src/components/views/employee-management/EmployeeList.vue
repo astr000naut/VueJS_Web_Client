@@ -285,7 +285,10 @@ function dialogCloseOnClick() {
  */
 function showDeleteOneConfirmDialog(empCode) {
   dialog.value.message = `Bạn có muốn xóa Nhân viên <${empCode}>`;
-  dialog.value.action = deleteEmployee;
+  dialog.value.action = async () => {
+    dialog.value.isDisplay = false;
+    await deleteEmployee();
+  };
   dialog.value.isDisplay = true;
 }
 
@@ -296,8 +299,11 @@ function showDeleteOneConfirmDialog(empCode) {
  */
 function showBatchDeleteConfirmDialog() {
   dialog.value.message = `Bạn có chắc chắn muốn xóa ${selectedEmpIds.value.length} Nhân viên`;
-  dialog.value.action = deleteBatchEmployee;
   dialog.value.isDisplay = true;
+  dialog.value.action = async () => {
+    dialog.value.isDisplay = false;
+    await deleteBatchEmployee();
+  };
 }
 
 /**
@@ -306,7 +312,6 @@ function showBatchDeleteConfirmDialog() {
  */
 async function deleteEmployee() {
   try {
-    dialog.value.isDisplay = false;
     isLoadingPage.value = true;
     await $axios.delete($api.employee.one(cache.value.empDeleteId));
     empList.value.splice(cache.value.empDeleteIndex, 1);
@@ -332,7 +337,6 @@ async function deleteEmployee() {
  */
 async function deleteBatchEmployee() {
   try {
-    dialog.value.isDisplay = false;
     isLoadingPage.value = true;
     const promiseList = [];
     for (const id of selectedEmpIds.value) {
