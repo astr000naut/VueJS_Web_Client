@@ -43,7 +43,9 @@
             v-show="batchOperator.showMenu"
             @mouseleave="batchMenuOnMouseLeave"
           >
-            <div class="option__item" @click="batchDeleteBtnOnClick">Xóa</div>
+            <div class="option__item" @click="showBatchDeleteConfirmDialog">
+              Xóa
+            </div>
             <div class="option__item">Gộp</div>
           </div>
         </div>
@@ -138,6 +140,7 @@ function pushToast(toast) {
     setToastTimeToLive(toastId, toast.timeToLive);
   }
   ++toastId;
+  if (toastId > 99999) toastId = 0;
 }
 
 /**
@@ -166,24 +169,8 @@ function removeToast(id) {
  */
 function setToastTimeToLive(id, timeToLive) {
   setTimeout(() => {
-    let i = 0;
-    while (i < toastList.value.length) {
-      if (toastList.value[i].id == id) {
-        toastList.value.splice(i, 1);
-        break;
-      }
-      ++i;
-    }
+    removeToast(id);
   }, timeToLive);
-}
-
-/**
- * Sự kiện click vào nút xóa hàng loạt
- *
- * Author: Dũng (10/05/2023)
- */
-function batchDeleteBtnOnClick() {
-  showBatchDeleteConfirmDialog();
 }
 
 /**
@@ -226,6 +213,7 @@ function empStatusOnUpdate(data) {
         selectedEmpIds.value = [];
       }
     }
+    return;
   }
 
   if (type == "selected") {
@@ -251,6 +239,7 @@ function empStatusOnUpdate(data) {
       );
       empList.value[empIndex].active = false;
     }
+    return;
   }
   if (data.type == "active") {
     if (!empList.value[empIndex].selected) {
