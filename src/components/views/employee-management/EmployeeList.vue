@@ -311,7 +311,6 @@ async function deleteEmployee() {
     // NEED REFACTOR
     pushToast({
       type: "success",
-      title: "Thành công!",
       message: "Nhân viên đã bị xóa khỏi hệ thống.",
       timeToLive: 3000,
     });
@@ -337,7 +336,6 @@ async function deleteBatchEmployee() {
     isLoadingPage.value = false;
     pushToast({
       type: "success",
-      title: "Thành công!",
       message: "Xóa hàng loạt thành công.",
       timeToLive: 3000,
     });
@@ -428,7 +426,6 @@ async function loadEmployeeData() {
     console.log("LOAD FAILED");
     pushToast({
       type: "fail",
-      title: "Lỗi!",
       message: "Không thể tải dữ liệu. Vui lòng kiểm tra lại kết nối Internet.",
       timeToLive: -1,
     });
@@ -465,7 +462,6 @@ async function empListOnUpdate(type, data) {
     pagingData.value.totalRecord += 1;
     pushToast({
       type: "success",
-      title: "Thành công!",
       message: "Thêm mới nhân viên thành công.",
       timeToLive: 3000,
     });
@@ -473,7 +469,6 @@ async function empListOnUpdate(type, data) {
   if (type == "edit") {
     pushToast({
       type: "success",
-      title: "Thành công!",
       message: "Sửa thông tin nhân viên thành công.",
       timeToLive: 3000,
     });
