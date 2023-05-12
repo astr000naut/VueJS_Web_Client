@@ -28,60 +28,33 @@ export class Employee {
    *
    * Author: Dũng (11/05/2023)
    */
-  constructor() {
-    this.address = "";
-    this.dateOfBirth = "";
-    this.departmentCode = "";
-    this.departmentId = "";
-    this.departmentName = "";
-    this.email = "";
-    this.employeeCode = "";
-    this.employeeId = "";
-    this.fullName = "";
-    this.gender = -1;
-    this.genderName = "";
-    this.identityDate = "";
-    this.identityNumber = "";
-    this.identityPlace = "";
-    this.phoneNumber = "";
-    this.landlineNumber = "";
-    this.positionName = "";
-    this.positionId = "";
-    this.positionCode = "";
-    this.bankAccount = "";
-    this.bankName = "";
-    this.bankBranch = "";
-  }
-
-  /**
-   * Gán dữ liệu từ object emp (do API trả về)
-   * @param {Object} emp object em do API trả về
-   *
-   * Author: Dũng (11/05/2023)
-   */
-  syncWithDataFromApi(emp) {
-    this.address = emp.Address ?? "";
-    this.dateOfBirth = $formatter.changeFormat(emp.DateOfBirth);
-    this.departmentCode = emp.DepartmentCode ?? "";
-    this.departmentId = emp.DepartmentId ?? "";
-    this.departmentName = emp.DepartmentName ?? "";
-    this.email = emp.Email ?? "";
-    this.employeeCode = emp.EmployeeCode ?? "";
-    this.employeeId = emp.EmployeeId ?? "";
-    this.fullName = emp.FullName ?? "";
-    this.gender = emp.Gender ?? -1;
-    this.genderName = emp.GenderName ?? "";
-    this.identityDate = $formatter.changeFormat(emp.IdentityDate);
-    this.identityNumber = emp.IdentityNumber ?? "";
-    this.identityPlace = emp.IdentityPlace ?? "";
-    this.phoneNumber = emp.PhoneNumber ?? "";
-    this.landlineNumber = emp.LandlineNumber ?? "";
-    this.positionName = emp.PositionName ?? "";
-    this.positionId = emp.PositionId ?? "";
-    this.positionCode = emp.PositionCode ?? "";
-    this.bankAccount = emp.BankAccount ?? "";
-    this.bankName = emp.BankName ?? "";
-    this.bankBranch = emp.BankBranch ?? "";
+  constructor(empFromApi) {
+    this.address = empFromApi.Address ?? "";
+    this.dateOfBirth = empFromApi.DateOfBirth
+      ? $formatter.changeFormat(empFromApi.DateOfBirth)
+      : "";
+    this.departmentCode = empFromApi.DepartmentCode ?? "";
+    this.departmentId = empFromApi.DepartmentId ?? "";
+    this.departmentName = empFromApi.DepartmentName ?? "";
+    this.email = empFromApi.Email ?? "";
+    this.employeeCode = empFromApi.EmployeeCode ?? "";
+    this.employeeId = empFromApi.EmployeeId ?? "";
+    this.fullName = empFromApi.FullName ?? "";
+    this.gender = empFromApi.Gender ?? -1;
+    this.genderName = empFromApi.GenderName ?? "";
+    this.identityDate = empFromApi.identityDate
+      ? $formatter.changeFormat(empFromApi.IdentityDate)
+      : "";
+    this.identityNumber = empFromApi.IdentityNumber ?? "";
+    this.identityPlace = empFromApi.IdentityPlace ?? "";
+    this.phoneNumber = empFromApi.PhoneNumber ?? "";
+    this.landlineNumber = empFromApi.LandlineNumber ?? "";
+    this.positionName = empFromApi.PositionName ?? "";
+    this.positionId = empFromApi.PositionId ?? "";
+    this.positionCode = empFromApi.PositionCode ?? "";
+    this.bankAccount = empFromApi.BankAccount ?? "";
+    this.bankName = empFromApi.BankName ?? "";
+    this.bankBranch = empFromApi.BankBranch ?? "";
   }
 
   /**

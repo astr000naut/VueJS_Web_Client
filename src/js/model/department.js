@@ -8,22 +8,10 @@ export class Department {
    *
    * Author: Dũng (12/05/2023)
    */
-  constructor() {
-    this.departmentCode = "";
-    this.departmentId = "";
-    this.departmentName = "";
-  }
-
-  /**
-   * Gán dữ liệu từ object department (do API trả về)
-   * @param {Object} department object department do API trả về
-   *
-   * Author: Dũng (12/05/2023)
-   */
-  syncWithDataFromApi(department) {
-    this.departmentCode = department.DepartmentCode;
-    this.departmentId = department.DepartmentId;
-    this.departmentName = department.DepartmentName;
+  constructor(departmentFromApi) {
+    this.departmentCode = departmentFromApi.DepartmentCode;
+    this.departmentId = departmentFromApi.DepartmentId;
+    this.departmentName = departmentFromApi.DepartmentName;
   }
 
   /**

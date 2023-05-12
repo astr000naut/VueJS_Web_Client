@@ -288,7 +288,7 @@ const form = ref({
   checkbox1: false,
   checkbox2: false,
 });
-const employee = ref(new Employee());
+const employee = ref({});
 const formNoti = ref({
   showNotibox: false,
   notiboxType: "",
@@ -333,7 +333,7 @@ function resetFormState() {
     checkbox1: false,
     checkbox2: false,
   };
-  employee.value = new Employee();
+  employee.value = new Employee({});
 }
 /**
  * Lấy mã nhân viên mới
@@ -378,12 +378,8 @@ async function getDepartmentList() {
     const departmentApiResponse = await $axios.get($api.department.index);
     departmentList.value = [];
     for (const department of departmentApiResponse.data) {
-      let departmentObj = new Department();
-      departmentObj.syncWithDataFromApi(department);
-      departmentList.value.push(departmentObj);
+      departmentList.value.push(new Department(department));
     }
-    console.log(departmentList.value);
-    // console.log(departmentApiResponse.data);
   } catch (error) {
     console.log(error);
   }
@@ -713,10 +709,8 @@ function saveAndAddBtnOnTabKeydown() {
 async function getEmployee(empId) {
   try {
     const response = await $axios.get($api.employee.one(empId));
-    console.log(response.data);
-    const data = response.data;
-    employee.value.syncWithDataFromApi(data);
-    console.log(employee.value);
+    const empFromApi = response.data;
+    employee.value = new Employee(empFromApi);
   } catch (error) {
     console.log(error);
   }

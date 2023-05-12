@@ -436,12 +436,10 @@ async function loadEmployeeData() {
     rowList.value = [];
     if (response.data.Data) {
       for (const emp of response.data.Data) {
-        let employee = new Employee();
-        employee.syncWithDataFromApi(emp);
         rowList.value.push({
           active: false,
           selected: false,
-          emp: employee,
+          emp: new Employee(emp),
         });
       }
     }
@@ -465,6 +463,7 @@ async function loadEmployeeData() {
  * Author: Dũng (08/05/2023)
  */
 async function employeeOnUpdate(type, data) {
+  console.log("Employee list updated");
   console.log(data);
   switch (type) {
     case "create":
