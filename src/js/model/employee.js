@@ -28,33 +28,33 @@ export class Employee {
    *
    * Author: Dũng (11/05/2023)
    */
-  constructor(empFromApi) {
-    this.address = empFromApi.Address ?? "";
-    this.dateOfBirth = empFromApi.DateOfBirth
-      ? $formatter.changeFormat(empFromApi.DateOfBirth)
+  constructor(e) {
+    this.address = e.Address ?? "";
+    this.dateOfBirth = e.DateOfBirth
+      ? $formatter.changeFormat(e.DateOfBirth)
       : "";
-    this.departmentCode = empFromApi.DepartmentCode ?? "";
-    this.departmentId = empFromApi.DepartmentId ?? "";
-    this.departmentName = empFromApi.DepartmentName ?? "";
-    this.email = empFromApi.Email ?? "";
-    this.employeeCode = empFromApi.EmployeeCode ?? "";
-    this.employeeId = empFromApi.EmployeeId ?? "";
-    this.fullName = empFromApi.FullName ?? "";
-    this.gender = empFromApi.Gender ?? -1;
-    this.genderName = empFromApi.GenderName ?? "";
-    this.identityDate = empFromApi.identityDate
-      ? $formatter.changeFormat(empFromApi.IdentityDate)
+    this.departmentCode = e.DepartmentCode ?? "";
+    this.departmentId = e.DepartmentId ?? "";
+    this.departmentName = e.DepartmentName ?? "";
+    this.email = e.Email ?? "";
+    this.employeeCode = e.EmployeeCode ?? "";
+    this.employeeId = e.EmployeeId ?? "";
+    this.fullName = e.FullName ?? "";
+    this.gender = e.Gender ?? -1;
+    this.genderName = e.GenderName ?? "";
+    this.identityDate = e.identityDate
+      ? $formatter.changeFormat(e.IdentityDate)
       : "";
-    this.identityNumber = empFromApi.IdentityNumber ?? "";
-    this.identityPlace = empFromApi.IdentityPlace ?? "";
-    this.phoneNumber = empFromApi.PhoneNumber ?? "";
-    this.landlineNumber = empFromApi.LandlineNumber ?? "";
-    this.positionName = empFromApi.PositionName ?? "";
-    this.positionId = empFromApi.PositionId ?? "";
-    this.positionCode = empFromApi.PositionCode ?? "";
-    this.bankAccount = empFromApi.BankAccount ?? "";
-    this.bankName = empFromApi.BankName ?? "";
-    this.bankBranch = empFromApi.BankBranch ?? "";
+    this.identityNumber = e.IdentityNumber ?? "";
+    this.identityPlace = e.IdentityPlace ?? "";
+    this.phoneNumber = e.PhoneNumber ?? "";
+    this.landlineNumber = e.LandlineNumber ?? "";
+    this.positionName = e.PositionName ?? "";
+    this.positionId = e.PositionId ?? "";
+    this.positionCode = e.PositionCode ?? "";
+    this.bankAccount = e.BankAccount ?? "";
+    this.bankName = e.BankName ?? "";
+    this.bankBranch = e.BankBranch ?? "";
   }
 
   /**

@@ -8,10 +8,10 @@ export class Department {
    *
    * Author: Dũng (12/05/2023)
    */
-  constructor(departmentFromApi) {
-    this.departmentCode = departmentFromApi.DepartmentCode;
-    this.departmentId = departmentFromApi.DepartmentId;
-    this.departmentName = departmentFromApi.DepartmentName;
+  constructor(e) {
+    this.departmentCode = e.DepartmentCode;
+    this.departmentId = e.DepartmentId;
+    this.departmentName = e.DepartmentName;
   }
 
   /**
