@@ -276,6 +276,7 @@ import { useRouter, useRoute } from "vue-router";
 import { Employee } from "../../../js/model/employee";
 const $axios = inject("$axios");
 import $api from "../../../js/api/index";
+import { Department } from "@/js/model/department";
 
 const emits = defineEmits(["updateEmplist"]);
 const router = useRouter();
@@ -375,7 +376,12 @@ async function isEmpCodeExist(empCode, empId) {
 async function getDepartmentList() {
   try {
     const departmentApiResponse = await $axios.get($api.department.index);
-    departmentList.value = departmentApiResponse.data;
+    departmentList.value = [];
+    for (const department of departmentApiResponse.data) {
+      let departmentObj = new Department();
+      departmentObj.syncWithDataFromApi(department);
+      departmentList.value.push(departmentObj);
+    }
     console.log(departmentList.value);
     // console.log(departmentApiResponse.data);
   } catch (error) {
@@ -400,9 +406,9 @@ async function fetchNewEmployeeCode() {
  */
 function updateDepartmentInfo() {
   for (const department of departmentList.value) {
-    if (department.DepartmentId == employee.value.departmentId) {
-      employee.value.departmentName = department.DepartmentName;
-      employee.value.departmentCode = department.DepartmentCode;
+    if (department.departmentId == employee.value.departmentId) {
+      employee.value.departmentName = department.departmentName;
+      employee.value.departmentCode = department.departmentCode;
     }
   }
 }

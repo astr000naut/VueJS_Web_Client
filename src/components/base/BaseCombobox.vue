@@ -42,7 +42,7 @@
         >
           <template
             v-for="(option, index) in optionList"
-            :key="option.DepartmentId"
+            :key="option.departmentId"
           >
             <div
               v-show="!optionIdHide.includes(index)"
@@ -50,19 +50,19 @@
               @click="
                 optionOnClick(
                   $event,
-                  option.DepartmentId,
-                  option.DepartmentName
+                  option.departmentId,
+                  option.departmentName
                 )
               "
               :class="[
-                option.DepartmentId == selectedItemId ? 'item--selected' : '',
+                option.departmentId == selectedItemId ? 'item--selected' : '',
                 cbox.cusorItemId != null &&
-                option.DepartmentId == optionList[cbox.cusorItemId].DepartmentId
+                option.departmentId == optionList[cbox.cusorItemId].departmentId
                   ? 'item--highlighted'
                   : '',
               ]"
             >
-              <div class="option__text">{{ option.DepartmentName }}</div>
+              <div class="option__text">{{ option.departmentName }}</div>
               <div class="option__icon"></div>
             </div>
           </template>
@@ -238,9 +238,9 @@ function filterData(input) {
   const IdHideList = [];
   for (let i = 0; i < props.optionList.length; ++i) {
     if (
-      !props.optionList[i].DepartmentName.toLowerCase().includes(
-        input.toLowerCase().trim()
-      )
+      !props.optionList[i].departmentName
+        .toLowerCase()
+        .includes(input.toLowerCase().trim())
     ) {
       IdHideList.push(i);
     }
