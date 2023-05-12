@@ -350,8 +350,9 @@ async function generateEmpCode() {
 }
 
 /**
- * Api tim kiem nhan vien theo ma nhan vien
- * NEED viet lai ham filter theo code only
+ * Kiểm tra mã empCode đã tồn tại chưa
+ * @param {String} empCode mã nhân viên cần check
+ * @param {String} empId id của nhân viên (chỉ cần nếu form là form sửa)
  * Author: Dux(09/05/2023)
  */
 async function isEmpCodeExist(empCode, empId) {
