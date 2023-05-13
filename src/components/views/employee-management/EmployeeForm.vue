@@ -473,6 +473,23 @@ async function validateData() {
       if (firstMessage == "") {
         firstMessage = formNoti.value.empDepartmentName;
       }
+    } else {
+      let isDepartmentInDepartmentList = false;
+      for (let i = 0; i < departmentList.value.length; ++i) {
+        if (
+          departmentList.value[i].departmentId == employee.value.departmentId
+        ) {
+          isDepartmentInDepartmentList = true;
+          break;
+        }
+      }
+      if (!isDepartmentInDepartmentList) {
+        formNoti.value.empDepartmentName =
+          "Vui lòng chọn Đơn vị có trong danh mục";
+        if (firstMessage == "") {
+          firstMessage = formNoti.value.empDepartmentName;
+        }
+      }
     }
     // Kiểm tra thông tin CMND
     if (!/^$|^\d{9}$|^\d{12}$/.test(employee.value.identityNumber)) {

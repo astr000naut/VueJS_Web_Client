@@ -158,10 +158,6 @@ function selectButtonOnClick() {
 
   // Kiểm tra xem chọn đúng đơn vị trong danh sách
   if (cbox.value.isOptionboxOpen == true) {
-    if (props.text.length != 0 && props.selectedItemId == "") {
-      emits("update:noti", `Vui lòng chọn <${props.label}> có trong danh mục`);
-    }
-  } else {
     optionIdHide.value = [];
   }
   cbox.value.isOptionboxOpen = !cbox.value.isOptionboxOpen;
