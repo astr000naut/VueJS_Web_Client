@@ -25,8 +25,8 @@
         :value="text"
         ref="refInput"
         @input="$emit('update:text', $event.target.value)"
-        @keyup="inputKeyupHandler($event)"
-        @keypress="inputKeyPressHandler($event)"
+        @keyup="inputKeyupHandler"
+        @keypress="inputKeyPressHandler"
         @keydown.shift.f8.prevent="autoFill"
       />
       <div class="txtfield__icon"></div>

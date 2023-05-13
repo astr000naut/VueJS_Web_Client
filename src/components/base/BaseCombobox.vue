@@ -117,6 +117,16 @@ const cbox = ref({
 });
 
 /**
+ * Kiểm tra keypress có là ký tự text bình thường không
+ * @param {String} key là $event.key
+ *
+ * Author: Dũng(12/05/2023)
+ */
+function isNormalCharacterKey(key) {
+  return key.length == 1 || key == "Backspace" ? true : false;
+}
+
+/**
  * Sự kiện click vào item trong danh sách combobox option
  *
  * @param {Object} _$event biến sự kiện
@@ -175,6 +185,7 @@ async function addingItemOnClick() {
  */
 
 function inputKeyupHandler($event) {
+  if (!isNormalCharacterKey($event.key)) return;
   // Nếu combobox là requied thì khi xóa hết text sẽ thông báo lỗi
   if (props.isrequired) {
     if (props.text.length == 0 && $event.key == "Backspace") {
@@ -219,7 +230,8 @@ function inputKeyupHandler($event) {
  * Sự kiện Typing vào ô input
  * Author: Dũng (08/05/2023)
  */
-function inputKeyPressHandler() {
+function inputKeyPressHandler($event) {
+  if (!isNormalCharacterKey($event.key)) return;
   cbox.value.isLoading = true;
   // Xóa setTimeout đã tạo từ tước
   while (typingTimers.length > 0) {
