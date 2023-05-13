@@ -26,7 +26,7 @@
         ref="refInput"
         @input="$emit('update:text', $event.target.value)"
         @keyup="inputKeyupHandler($event)"
-        @keypress="inputKeyPressHandler"
+        @keypress="inputKeyPressHandler($event)"
         @keydown.shift.f8.prevent="autoFill"
       />
       <div class="txtfield__icon"></div>
@@ -57,6 +57,16 @@ const emits = defineEmits(["update:text", "update:noti"]);
 defineExpose({ refInput });
 
 /**
+ * Kiểm tra keypress có là ký tự text bình thường không
+ * @param {String} key là $event.key
+ *
+ * Author: Dũng(12/05/2023)
+ */
+function isNormalCharacterKey(key) {
+  return key.length == 1 || key == "Backspace" ? true : false;
+}
+
+/**
  * Sự kiện keyup cho ô input
  *
  * @param {Object} $event biến sự kiện
@@ -71,8 +81,7 @@ function inputKeyupHandler($event) {
       emits("update:noti", `${props.label} không được để trống`);
     }
   }
-
-  if (props.realTimeSearch) {
+  if (isNormalCharacterKey($event.key) && props.realTimeSearch) {
     // Xóa các timeout trước trong khi typing
     while (typingTimers.length > 0) {
       clearTimeout(typingTimers[0]);
@@ -92,8 +101,8 @@ function inputKeyupHandler($event) {
  * Sự kiện Typing vào ô input
  * Author: Dũng (08/05/2023)
  */
-function inputKeyPressHandler() {
-  if (props.realTimeSearch) {
+function inputKeyPressHandler($event) {
+  if (isNormalCharacterKey($event.key) && props.realTimeSearch) {
     // Xóa setTimeout đã tạo từ tước
     while (typingTimers.length > 0) {
       clearTimeout(typingTimers[0]);
