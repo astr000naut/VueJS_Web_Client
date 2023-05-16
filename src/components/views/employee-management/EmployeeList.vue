@@ -4,7 +4,7 @@
   </div>
   <div class="page__wrapper" v-show="dialog.isDisplay">
     <BaseDialog
-      title="Xác nhận xóa nhân viên"
+      title="dialog.deleteConfirmation.title"
       :message="dialog.message"
       :close-on-click="dialogCloseOnClick"
       :no-on-click="dialogCloseOnClick"
@@ -22,9 +22,9 @@
       :remove-toast="removeToast"
     />
     <div class="pcontent__heading">
-      <div class="pcontent__title">Nhân viên</div>
+      <div class="pcontent__title">{{ $t("employeeList.title") }}</div>
       <BaseButton
-        bname="Thêm mới nhân viên"
+        bname="button.addEmployee"
         class="btn--primary"
         @click="btnAddOnClick"
       />
@@ -33,7 +33,7 @@
       <div class="pcontent__searchbar">
         <div class="searchbar__left">
           <BaseButton
-            bname="Thực hiện hàng loạt"
+            bname="button.batchOperaton"
             class="btn--secondary"
             @click="batchBtnOnClick"
             v-show="selectedEmpIds.length > 1"
@@ -51,7 +51,9 @@
         </div>
         <div class="searchbar__right">
           <BaseTextfield
-            pholder="Tìm kiếm nhân viên"
+            label="empty"
+            tooltip="empty"
+            pholder="textfield.searchBar.pholder"
             class="txtfield--search mw-300"
             noti=""
             v-model:text="cache.empSearchPattern"

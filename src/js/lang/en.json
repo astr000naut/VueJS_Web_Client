@@ -1,0 +1,155 @@
+{
+    "empty": "",
+    "sidebar_items": {
+      "dashboard": "Dashboard",
+      "cash": "Cash",
+      "bank": "Bank",
+      "purchase": "Purchase",
+      "sale": "Sale",
+      "invoice": "Manage Invoice",
+      "stock": "Stock",
+      "tools": "Tools",
+      "fixedAssets": "Fixed Assets",
+      "tax": "Tax",
+      "price": "Price",
+      "general": "General",
+      "budget": "Budget",
+      "report": "Report",
+      "finance": "Finance Analysis"
+    },
+    "dialog": {
+      "savingChanges": {
+        "title": "Saving change",
+        "message": "The data has been changed. Do you want to save ?"
+      },
+      "deleteConfirmation": {
+        "title": "Confirm delete this employee ?",
+        "message": ""
+      }
+    },
+    "form": {
+      "title": {
+        "add": "Add new employee",
+        "edit": "Edit employee information "
+      }
+    },
+    "checkboxLabel": {
+      "isCustomer": "Is Customer",
+      "isProvider": "Is Provider"
+    },
+    "textfield": {
+      "empCode": {
+        "label": "Code",
+        "autofillMessage": "Shift + F8 to generate"
+      },
+      "empName": {
+        "label": "Name"
+      },
+      "empPos": {
+        "label": "Position"
+      },
+      "empIdentity": {
+        "label": "Identity Number",
+        "tooltip": ""
+      },
+      "empIdentityPlace": {
+        "label": "Identity Place"
+      },
+      "empAddress": {
+        "label": "Address"
+      },
+      "empPhone": {
+        "label": "Phone number",
+        "tooltip": ""
+      },
+      "empLandline": {
+        "label": "Landline number",
+        "tooltip": ""
+      },
+      "empEmail": {
+        "label": "Email"
+      },
+      "empBankAcc": {
+        "label": "Bank account"
+      },
+      "empBankName": {
+        "label": "Bank name"
+      },
+      "empBankBranch": {
+        "label": "Bank branch"
+      },
+      "searchBar": {
+        "pholder": "Search employee"
+      }
+    },
+    "combobox": {
+      "addNew": "Add new",
+      "empDepart": {
+        "label": "Department"
+      }
+    },
+    "radioGroup": {
+      "empGender": {
+        "label": "Gender",
+        "male": "Male",
+        "female": "Female",
+        "other": "Other"
+      }
+    },
+    "datepicker": {
+      "empIdentityDate": {
+        "label": "Identity Date"
+      },
+      "empDob": {
+        "label": "Date of birth"
+      }
+    },
+    "button": {
+      "agree": "Agree",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saveAndAdd": "Save and Add",
+      "addEmployee": "Add employee",
+      "batchOperaton": "Batch operation",
+      "reload": "Reload data",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "items": {
+      "batch": "Batch",
+      "delete": "Delete",
+      "dupplicate": "Duplicate",
+      "stop": "Unsubscription"
+    },
+    "employeeList": {
+      "title": "Employee"
+    },
+    "tableHead": {
+      "empCode": "Employee Code",
+      "empName": "Employee Name",
+      "empGender": "Gender",
+      "empDob": "Date of birth",
+      "empIdentity": "Identity Number",
+      "empIdentityTooltip": "Identity Number",
+      "empPos": "Position",
+      "empDepart": "Department",
+      "empBankAcc": "Bank account",
+      "empBankName": "Bank name",
+      "empBankBranch": "Bank branch",
+      "empBankBranchTooltip": "Bank branch",
+      "tool": "Tools"
+    },
+    "tablePag": {
+      "total": {
+        "left": "Total",
+        "right": "record"
+      },
+      "recordAmount": "records per page",
+      "recordPerPage": "Records / page",
+      "record": "record"
+    },
+    "error": {
+        "isRequired" : "{field} cannot be empty"
+      }
+  }
+  

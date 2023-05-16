@@ -1,6 +1,6 @@
 <template>
   <div class="input--radio">
-    <div class="radio__label">{{ label }}</div>
+    <div class="radio__label">{{ $t(label) }}</div>
     <div class="radio__container">
       <div v-for="option in options" :key="option.value" class="radio__item">
         <input
@@ -10,7 +10,7 @@
           :checked="option.value == radioValue"
           @click="$emit('update:radioValue', option.value)"
         />
-        <label for="">{{ option.text }}</label>
+        <label for="">{{ $t(`radioGroup.empGender.${option.text}`) }}</label>
       </div>
     </div>
   </div>

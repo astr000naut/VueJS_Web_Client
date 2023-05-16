@@ -7,21 +7,21 @@
     ]"
   >
     <div
-      v-show="label"
+      v-show="label != 'empty'"
       class="txtfield__label label"
       @mouseenter="labelOnMouseEnter"
       @mouseleave="labelOnMouseOut"
     >
-      {{ label }}
+      {{ $t(label) }}
     </div>
-    <div class="txtfield__tooltip" v-show="tooltip != null && showTooltip">
-      {{ tooltip }}
+    <div class="txtfield__tooltip" v-show="$t(tooltip).length && showTooltip">
+      {{ $t(tooltip) }}
     </div>
     <div class="txtfield__textbox">
       <input
         class="txtfield__input"
         type="text"
-        :placeholder="pholder"
+        :placeholder="pholder ? $t(pholder) : null"
         :value="text"
         ref="refInput"
         @input="$emit('update:text', $event.target.value)"
@@ -37,6 +37,8 @@
 
 <script setup>
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 const props = defineProps({
   pholder: String,
   label: String,
@@ -77,8 +79,13 @@ function inputKeyupHandler($event) {
   emits("update:noti", "");
   if (props.isrequired) {
     if (props.text.length == 0 && $event.key == "Backspace") {
-      refInput.value.placeholder = props.autoFillMessage ?? "";
-      emits("update:noti", `${props.label} không được để trống`);
+      refInput.value.placeholder = props.autoFillMessage
+        ? t(props.autoFillMessage)
+        : "";
+      emits(
+        "update:noti",
+        `${t("error.isRequired", { field: t(props.label) })}`
+      );
     }
   }
   if (isNormalCharacterKey($event.key) && props.realTimeSearch) {

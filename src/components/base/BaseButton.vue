@@ -1,5 +1,5 @@
 <template>
-  <button ref="refBtn">{{ bname }}</button>
+  <button ref="refBtn">{{ bname ? $t(bname) : null }}</button>
 </template>
 
 <script setup>

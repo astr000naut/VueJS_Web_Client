@@ -9,8 +9,8 @@
     </div>
     <div class="form__wrapper" v-show="formDialog.isShow">
       <BaseDialog
-        title="Lưu lại thay đổi"
-        message="Dữ liệu đã bị thay đổi. Bạn có muốn cất không ?"
+        title="dialog.savingChanges.title"
+        message="dialog.savingChanges.message"
         :close-on-click="formDialogCloseBtnOnClick"
         :no-on-click="formDialogNoBtnOnClick"
       />
@@ -46,12 +46,8 @@
           </div>
         </div>
         <div class="header__right">
-          <BaseButton bname="" class="mi-36 btn--help" />
-          <BaseButton
-            bname=""
-            class="mi-36 btn--close"
-            @click="btnCloseOnClick"
-          />
+          <BaseButton class="mi-36 btn--help" />
+          <BaseButton class="mi-36 btn--close" @click="btnCloseOnClick" />
         </div>
       </div>
       <div class="form__body">
@@ -60,9 +56,9 @@
             <div class="fu__left__top">
               <div class="fu__index">
                 <BaseTextfield
-                  pholder=""
-                  autoFillMessage="Shift + F8 để tự tạo mã"
-                  label="Mã"
+                  autoFillMessage="textfield.empCode.autofillMessage"
+                  tooltip="empty"
+                  label="textfield.empCode.label"
                   :isrequired="true"
                   :autoFill="generateEmpCode"
                   v-model:text="employee.employeeCode"
@@ -73,8 +69,8 @@
               </div>
               <div class="fu__name">
                 <BaseTextfield
-                  pholder=""
-                  label="Tên"
+                  label="textfield.empName.label"
+                  tooltip="empty"
                   :isrequired="true"
                   v-model:text="employee.fullName"
                   v-model:noti="formNoti.empFullName"
@@ -85,7 +81,7 @@
             <div class="fu__left__mid">
               <div class="fu__unit">
                 <BaseCombobox
-                  label="Đơn vị"
+                  label="combobox.empDepart.label"
                   :isrequired="true"
                   :option-list="departmentList"
                   :add-new-item="addNewDepartment"
@@ -99,8 +95,8 @@
             <div class="fu__left__bot">
               <div class="fu__position">
                 <BaseTextfield
-                  pholder=""
-                  label="Chức danh"
+                  label="textfield.empPos.label"
+                  tooltip="empty"
                   v-model:text="employee.positionName"
                   noti=""
                 />
@@ -111,17 +107,17 @@
             <div class="fu__right__top">
               <div class="fu__dob">
                 <BaseDatepicker
-                  label="Ngày sinh"
+                  label="datepicker.empDob.label"
                   v-model:inputText="employee.dateOfBirth"
                 />
               </div>
               <div class="fu__gender">
                 <BaseRadiogroup
-                  label="Giới tính"
+                  label="radioGroup.empGender.label"
                   :options="[
-                    { text: 'Nam', value: 0 },
-                    { text: 'Nữ', value: 1 },
-                    { text: 'Khác', value: 2 },
+                    { text: 'male', value: 0 },
+                    { text: 'female', value: 1 },
+                    { text: 'other', value: 2 },
                   ]"
                   v-model:radioValue="employee.gender"
                 />
@@ -130,17 +126,16 @@
             <div class="fu__right__mid">
               <div class="fu__cmnd">
                 <BaseTextfield
-                  pholder=""
-                  label="Số CMND"
+                  label="textfield.empIdentity.label"
                   v-model:text="employee.identityNumber"
                   v-model:noti="formNoti.empIdentityNumber"
-                  tooltip="Số chứng minh nhân dân"
+                  tooltip="textfield.empIdentity.tooltip"
                   ref="empIdentitiNumberRef"
                 />
               </div>
               <div class="fu__cmnddate">
                 <BaseDatepicker
-                  label="Ngày cấp"
+                  label="datepicker.empIdentityDate.label"
                   v-model:inputText="employee.identityDate"
                 />
               </div>
@@ -148,8 +143,8 @@
             <div class="fu__right__bot">
               <div class="fu__cmndpos">
                 <BaseTextfield
-                  pholder=""
-                  label="Nơi cấp"
+                  label="textfield.empIdentityPlace.label"
+                  tooltip="empty"
                   noti=""
                   v-model:text="employee.identityPlace"
                 />
@@ -162,8 +157,8 @@
           <div class="fl__top">
             <div class="fl__address">
               <BaseTextfield
-                pholder=""
-                label="Địa chỉ"
+                label="textfield.empAddress.label"
+                tooltip="empty"
                 noti=""
                 v-model:text="employee.address"
               />
@@ -172,26 +167,24 @@
           <div class="fl__mid">
             <div class="fl__phone">
               <BaseTextfield
-                pholder=""
-                label="ĐT di động"
-                tooltip="Số điện thoại di động"
+                label="textfield.empPhone.label"
+                tooltip="textfield.empPhone.tooltip"
                 noti=""
                 v-model:text="employee.phoneNumber"
               />
             </div>
             <div class="fl__homephone">
               <BaseTextfield
-                pholder=""
-                label="ĐT cố định"
-                tooltip="Số điện thoại cố định"
+                label="textfield.empLandline.label"
+                tooltip="textfield.empLandline.tooltip"
                 noti=""
                 v-model:text="employee.landlineNumber"
               />
             </div>
             <div class="fl__email">
               <BaseTextfield
-                pholder=""
-                label="Email"
+                label="textfield.empEmail.label"
+                tooltip="empty"
                 noti=""
                 v-model:text="employee.email"
               />
@@ -200,16 +193,16 @@
           <div class="fl__bot">
             <div class="fl__bankacc">
               <BaseTextfield
-                pholder=""
-                label="Tài khoản ngân hàng"
+                label="textfield.empBankAcc.label"
+                tooltip="empty"
                 noti=""
                 v-model:text="employee.bankAccount"
               />
             </div>
             <div class="fl__bankname">
               <BaseTextfield
-                pholder=""
-                label="Tên ngân hàng"
+                label="textfield.empBankName.label"
+                tooltip="empty"
                 noti=""
                 v-model:text="employee.bankName"
                 ref="empBankNameRef"
@@ -217,8 +210,8 @@
             </div>
             <div class="fl__bankarea">
               <BaseTextfield
-                pholder=""
-                label="Chi nhánh"
+                label="textfield.empBankBranch.label"
+                tooltip="empty"
                 v-model:text="employee.bankBranch"
                 ref="bankBranchInputRef"
                 noti=""
@@ -234,7 +227,7 @@
         <div class="footer__left">
           <BaseButton
             ref="cancelBtnRef"
-            bname="Hủy"
+            bname="button.cancel"
             class="btn--secondary"
             @keydown.tab.prevent="cancelBtnOnTabKeydown"
             @keydown.shift.tab.prevent="cancelBtnOnShiftTabKeydown"
@@ -243,14 +236,14 @@
         </div>
         <div class="footer__right">
           <BaseButton
-            bname="Cất"
+            bname="button.save"
             class="btn--secondary"
             ref="saveBtnRef"
             @click="btnSaveOnClick(true)"
             @keydown.shift.tab.prevent="saveBtnOnShiftTabKeydown"
           />
           <BaseButton
-            bname="Cất và Thêm"
+            bname="button.saveAndAdd"
             class="btn--primary"
             ref="saveAndAddBtnRef"
             @keydown.tab.prevent="saveAndAddBtnOnTabKeydown"

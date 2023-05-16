@@ -9,7 +9,11 @@
     </div>
     <hr />
     <div class="notibox__footer">
-      <BaseButton bname="Đồng ý" class="btn--primary" @click="yesOnClick" />
+      <BaseButton
+        bname="button.agree"
+        class="btn--primary"
+        @click="yesOnClick"
+      />
     </div>
   </div>
 </template>

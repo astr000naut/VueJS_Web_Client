@@ -6,7 +6,7 @@
       noti.length > 0 ? 'error-noti' : '',
     ]"
   >
-    <div class="cbox__label label">{{ label }}</div>
+    <div class="cbox__label label">{{ $t(label) }}</div>
     <div class="cbox__select">
       <div class="select__box">
         <div class="select__input">
@@ -72,7 +72,8 @@
             @click="addingItemOnClick"
           >
             <div class="option__text">
-              Thêm mới <strong>{{ cbox.suggestAddingItem }}</strong>
+              {{ $t("combobox.addNew") }}
+              <strong> {{ cbox.suggestAddingItem }}</strong>
             </div>
           </div>
         </div>
@@ -85,6 +86,8 @@
 <script setup>
 import { ref } from "vue";
 import BaseLoader from "./BaseLoader.vue";
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 // Luu cac bien setTimeout
 const typingTimers = [];
 const timeoutVal = 500;
@@ -185,7 +188,10 @@ function inputKeyupHandler($event) {
   // Nếu combobox là requied thì khi xóa hết text sẽ thông báo lỗi
   if (props.isrequired) {
     if (props.text.length == 0 && $event.key == "Backspace") {
-      emits("update:noti", `${props.label} không được để trống`);
+      emits(
+        "update:noti",
+        `${t("error.isRequired", { field: t(props.label) })}`
+      );
     } else {
       // Khi typing thì tắt thông báo lỗi
       emits("update:noti", "");

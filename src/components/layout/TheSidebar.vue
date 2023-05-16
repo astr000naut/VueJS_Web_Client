@@ -18,7 +18,7 @@
         >
           <div class="item__icon mi mi-24" :class="item.icon"></div>
           <div v-show="isSidebarBig" class="item__text">
-            {{ item.name }}
+            {{ $t(`sidebar_items.${item.name}`) }}
           </div>
           <div
             v-show="item.displayLabel"
@@ -26,7 +26,9 @@
             class="item__hoverbox"
           >
             <div class="hover__arrow"></div>
-            <div class="hover__text">{{ item.name }}</div>
+            <div class="hover__text">
+              {{ $t(`sidebar_items.${item.name}`) }}
+            </div>
           </div>
         </div>
       </router-link>

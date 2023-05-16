@@ -1,15 +1,15 @@
 <template>
   <div class="dialog">
     <div class="dialog__bar">
-      <div class="dialog__heading">{{ title }}</div>
-      <BaseButton bname="" class="mi-36 btn--close" @click="closeOnClick" />
+      <div class="dialog__heading">{{ title ? $t(title) : null }}</div>
+      <BaseButton class="mi-36 btn--close" @click="closeOnClick" />
     </div>
     <div class="dialog__content">
-      {{ message }}
+      {{ message ? $t(message) : null }}
     </div>
     <div class="dialog__footer">
-      <BaseButton bname="Không" class="btn--secondary" @click="noOnClick" />
-      <BaseButton bname="Có" class="btn--primary" @click="yesOnClick" />
+      <BaseButton bname="button.no" class="btn--secondary" @click="noOnClick" />
+      <BaseButton bname="button.yes" class="btn--primary" @click="yesOnClick" />
     </div>
   </div>
 </template>
