@@ -8,7 +8,7 @@ export class Employee {
   email;
   employeeCode;
   employeeId;
-  fullName;
+  employeeFullName;
   gender;
   genderName;
   identityDate;
@@ -29,32 +29,32 @@ export class Employee {
    * Author: Dũng (11/05/2023)
    */
   constructor(e) {
-    this.address = e.Address ?? "";
-    this.dateOfBirth = e.DateOfBirth
-      ? $formatter.changeFormat(e.DateOfBirth)
+    this.address = e.address ?? "";
+    this.dateOfBirth = e.dateOfBirth
+      ? $formatter.changeFormat(e.dateOfBirth)
       : "";
-    this.departmentCode = e.DepartmentCode ?? "";
-    this.departmentId = e.DepartmentId ?? "";
-    this.departmentName = e.DepartmentName ?? "";
-    this.email = e.Email ?? "";
-    this.employeeCode = e.EmployeeCode ?? "";
-    this.employeeId = e.EmployeeId ?? "";
-    this.fullName = e.FullName ?? "";
-    this.gender = e.Gender ?? -1;
-    this.genderName = e.GenderName ?? "";
+    this.departmentCode = e.departmentCode ?? "";
+    this.departmentId = e.departmentId ?? "";
+    this.departmentName = e.departmentName ?? "";
+    this.email = e.email ?? "";
+    this.employeeCode = e.employeeCode ?? "";
+    this.employeeId = e.employeeId ?? "";
+    this.employeeFullName = e.employeeFullName ?? "";
+    this.gender = e.gender ?? -1;
+    this.genderName = e.genderName ?? "";
     this.identityDate = e.identityDate
-      ? $formatter.changeFormat(e.IdentityDate)
+      ? $formatter.changeFormat(e.identityDate)
       : "";
-    this.identityNumber = e.IdentityNumber ?? "";
-    this.identityPlace = e.IdentityPlace ?? "";
-    this.phoneNumber = e.PhoneNumber ?? "";
-    this.landlineNumber = e.LandlineNumber ?? "";
-    this.positionName = e.PositionName ?? "";
-    this.positionId = e.PositionId ?? "";
-    this.positionCode = e.PositionCode ?? "";
-    this.bankAccount = e.BankAccount ?? "";
-    this.bankName = e.BankName ?? "";
-    this.bankBranch = e.BankBranch ?? "";
+    this.identityNumber = e.identityNumber ?? "";
+    this.identityPlace = e.identityPlace ?? "";
+    this.phoneNumber = e.phoneNumber ?? "";
+    this.landlineNumber = e.landlineNumber ?? "";
+    this.positionName = e.positionName ?? "";
+    this.positionId = e.positionId ?? "";
+    this.positionCode = e.positionCode ?? "";
+    this.bankAccount = e.bankAccount ?? "";
+    this.bankName = e.bankName ?? "";
+    this.bankBranch = e.bankBranch ?? "";
   }
 
   /**
@@ -66,7 +66,7 @@ export class Employee {
   convertToApiFormat(isEditApi) {
     let obj = {
       employeeCode: this.employeeCode,
-      fullName: this.fullName,
+      employeeFullName: this.employeeFullName,
       departmentId: this.departmentId,
       departmentName: this.departmentName,
       positionName: this.positionName,

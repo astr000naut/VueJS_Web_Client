@@ -428,14 +428,15 @@ async function loadEmployeeData() {
     isLoadingData.value = true;
     const response = await $axios.get($api.employee.filter, {
       params: {
-        pageSize: pagingData.value.pageSize,
-        pageNumber: pagingData.value.pageNumber,
-        employeeFilter: cache.value.empSearchPattern,
+        skip: pagingData.value.pageSize * (pagingData.value.pageNumber - 1),
+        take: pagingData.value.pageSize,
+        keySearch: cache.value.empSearchPattern,
       },
     });
     rowList.value = [];
-    if (response.data.Data) {
-      for (const emp of response.data.Data) {
+    console.log(response.data);
+    if (response.data.filteredList) {
+      for (const emp of response.data.filteredList) {
         rowList.value.push({
           active: false,
           selected: false,
@@ -443,8 +444,8 @@ async function loadEmployeeData() {
         });
       }
     }
-    pagingData.value.curAmount = response.data.CurrentPageRecords ?? 0;
-    pagingData.value.totalRecord = response.data.TotalRecord ?? 0;
+    pagingData.value.curAmount = response.data.filteredList.length ?? 0;
+    pagingData.value.totalRecord = response.data.totalRecord ?? 0;
     isLoadingData.value = false;
   } catch (error) {
     console.log("LOAD FAILED");

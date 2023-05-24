@@ -99,7 +99,7 @@
               <div class="text-left">{{ emp.employeeCode }}</div>
             </td>
             <td>
-              <div class="text-left">{{ emp.fullName }}</div>
+              <div class="text-left">{{ emp.employeeFullName }}</div>
             </td>
             <td>
               <div class="text-left">{{ emp.genderName }}</div>
