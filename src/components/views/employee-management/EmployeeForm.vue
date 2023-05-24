@@ -375,9 +375,12 @@ async function isEmpCodeExist(empCode, empId) {
  */
 async function getDepartmentList() {
   try {
-    const departmentApiResponse = await $axios.get($api.department.index);
+    const departmentApiResponse = await $axios.get($api.department.filter, {
+      skip: 0,
+    });
     departmentList.value = [];
-    for (const department of departmentApiResponse.data) {
+    console.log(departmentApiResponse);
+    for (const department of departmentApiResponse.data.filteredList) {
       departmentList.value.push(new Department(department));
     }
   } catch (error) {

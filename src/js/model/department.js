@@ -9,9 +9,9 @@ export class Department {
    * Author: Dũng (12/05/2023)
    */
   constructor(e) {
-    this.departmentCode = e.DepartmentCode;
-    this.departmentId = e.DepartmentId;
-    this.departmentName = e.DepartmentName;
+    this.departmentCode = e.departmentCode;
+    this.departmentId = e.departmentId;
+    this.departmentName = e.departmentName;
   }
 
   /**

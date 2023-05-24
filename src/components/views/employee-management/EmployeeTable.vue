@@ -118,9 +118,15 @@
             <td>
               <div class="text-left">{{ emp.departmentName }}</div>
             </td>
-            <td><div class="text-right">231239485923</div></td>
-            <td><div class="text-left">BIDV</div></td>
-            <td><div class="text-left">Cầu Giấy</div></td>
+            <td>
+              <div class="text-right">{{ emp.bankAccount }}</div>
+            </td>
+            <td>
+              <div class="text-left">{{ emp.bankName }}</div>
+            </td>
+            <td>
+              <div class="text-left">{{ emp.bankBranch }}</div>
+            </td>
             <td
               :class="[table.expandEmpId == emp.employeeId ? 'above' : '']"
               class="tdn--sticky"

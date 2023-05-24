@@ -4,7 +4,7 @@ const employeeApi = (baseUrl) => {
     index: baseUrl + controller,
     newCode: baseUrl + controller + "/NewEmployeeCode",
     one: (id) => baseUrl + controller + `/${id}`,
-    filter: baseUrl + controller + "/filter",
+    filter: baseUrl + controller + "/Filter",
   };
 };
 
