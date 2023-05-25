@@ -13,6 +13,7 @@
         message="Dữ liệu đã bị thay đổi. Bạn có muốn cất không ?"
         :close-on-click="formDialogCloseBtnOnClick"
         :no-on-click="formDialogNoBtnOnClick"
+        :yes-on-click="btnSaveOnClick"
       />
     </div>
     <div class="form__loader" v-show="form.isLoading">
