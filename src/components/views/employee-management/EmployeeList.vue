@@ -340,18 +340,26 @@ async function deleteEmployee() {
  */
 async function deleteBatchEmployee() {
   try {
+    let deletedSucess = 0;
+    let idList = [];
+    let batchAmount = 0;
     isLoadingPage.value = true;
-    const promiseList = [];
-    for (const id of selectedEmpIds.value) {
-      promiseList.push($axios.delete($api.employee.one(id)));
+
+    while (selectedEmpIds.value.length) {
+      batchAmount = Math.min(20, selectedEmpIds.value.length);
+      idList = [];
+      for (let i = 0; i < batchAmount; ++i)
+        idList.push(selectedEmpIds.value[i]);
+      await $axios.post($api.employee.deleteMultiple, idList);
+      deletedSucess += batchAmount;
+      selectedEmpIds.value.splice(0, batchAmount);
     }
-    await Promise.all(promiseList);
-    selectedEmpIds.value = [];
     await loadEmployeeData();
+
     isLoadingPage.value = false;
     pushToast({
       type: "success",
-      message: "Xóa hàng loạt thành công.",
+      message: `Xóa thành công ${deletedSucess} nhân viên`,
       timeToLive: 3000,
     });
   } catch (error) {

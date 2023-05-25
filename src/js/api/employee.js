@@ -5,6 +5,7 @@ const employeeApi = (baseUrl) => {
     newCode: baseUrl + controller + "/NewEmployeeCode",
     one: (id) => baseUrl + controller + `/${id}`,
     filter: baseUrl + controller + "/Filter",
+    deleteMultiple: baseUrl + controller + "/DeleteMultiple",
   };
 };
 
