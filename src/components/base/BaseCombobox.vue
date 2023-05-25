@@ -168,9 +168,10 @@ function selectButtonOnClick() {
  * Author: Dũng (08/05/2023)
  */
 async function addingItemOnClick() {
-  await props.addNewItem(cbox.value.suggestAddingItem);
+  // await props.addNewItem(cbox.value.suggestAddingItem);
   cbox.value.isOptionboxOpen = false;
   cbox.value.suggestAddingItem = "";
+  optionIdHide.value = [];
 }
 
 /**
