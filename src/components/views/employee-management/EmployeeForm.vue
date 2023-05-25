@@ -277,6 +277,7 @@ import { Employee } from "../../../js/model/employee";
 const $axios = inject("$axios");
 import $api from "../../../js/api/index";
 import { Department } from "@/js/model/department";
+import $formatter from "../../../js/common/formater";
 
 const emits = defineEmits(["updateEmplist"]);
 const router = useRouter();
@@ -314,11 +315,31 @@ const departmentList = ref([]);
 resetFormState();
 
 onMounted(async () => {
-  form.value.isLoading = true;
-  await getDataFromApi();
-  form.value.isLoading = false;
-  empCodeRef.value.refInput.focus();
+  try {
+    form.value.isLoading = true;
+    await getDataFromApi();
+    form.value.isLoading = false;
+    empCodeRef.value.refInput.focus();
+  } catch (error) {
+    console.log(error);
+    form.value.isLoading = false;
+    handleResponseStatusCode(error.response.status);
+  }
 });
+
+/**
+ * Quản lý các mã HTTP Code trả về sau khi gọi API
+ * @param {code}
+ * Author: Dũng (08/05/2023)
+ */
+function handleResponseStatusCode(code) {
+  if (code == 400) {
+    formNoti.value.notiboxType = "alert";
+    formNoti.value.notiboxMessage =
+      "Dữ liệu đầu vào không hợp lệ, vui lòng kiểm tra lại";
+    formNoti.value.showNotibox = true;
+  }
+}
 
 /**
  * Reset giá trị employee và trạng thái form
@@ -374,17 +395,13 @@ async function isEmpCodeExist(empCode, empId) {
  * Author:  Dux (08/05/2023)
  */
 async function getDepartmentList() {
-  try {
-    const departmentApiResponse = await $axios.get($api.department.filter, {
-      skip: 0,
-    });
-    departmentList.value = [];
-    console.log(departmentApiResponse);
-    for (const department of departmentApiResponse.data.filteredList) {
-      departmentList.value.push(new Department(department));
-    }
-  } catch (error) {
-    console.log(error);
+  const departmentApiResponse = await $axios.get($api.department.filter, {
+    skip: 0,
+  });
+  departmentList.value = [];
+  console.log(departmentApiResponse);
+  for (const department of departmentApiResponse.data.filteredList) {
+    departmentList.value.push(new Department(department));
   }
 }
 
@@ -418,19 +435,15 @@ function updateDepartmentInfo() {
  * Author: Dũng (08/05/2023)
  */
 async function getDataFromApi() {
-  try {
-    // Fetch Department List
-    await getDepartmentList();
-    if (form.value.type == $enum.form.createType) {
-      // Fetch new employee code
-      await fetchNewEmployeeCode();
-    } else {
-      // Fetch employee information
-      await getEmployee(form.value.empId);
-      updateDepartmentInfo();
-    }
-  } catch (error) {
-    console.log(error);
+  // Fetch Department List
+  await getDepartmentList();
+  if (form.value.type == $enum.form.createType) {
+    // Fetch new employee code
+    await fetchNewEmployeeCode();
+  } else {
+    // Fetch employee information
+    await getEmployee(form.value.empId);
+    updateDepartmentInfo();
   }
 }
 
@@ -440,13 +453,21 @@ async function getDataFromApi() {
  * Author: Dũng (08/05/2023)
  */
 async function validateData() {
-  try {
-    // Giá trị text lỗi của ô bị lỗi đầu tiên
-    let firstMessage = "";
-    // Validate mã nhân viên
-    if (employee.value.employeeCode.trim() == "") {
-      employee.value.employeeCode = "";
-      formNoti.value.empCode = "Mã không được để trống";
+  // Giá trị text lỗi của ô bị lỗi đầu tiên
+  let firstMessage = "";
+
+  // Validate mã nhân viên
+  // Mã trống
+  if (employee.value.employeeCode.trim() == "") {
+    employee.value.employeeCode = "";
+    formNoti.value.empCode = "Mã không được để trống";
+    if (firstMessage == "") {
+      firstMessage = formNoti.value.empCode;
+    }
+  } else {
+    // Mã quá dài
+    if (employee.value.employeeCode.length > 50) {
+      formNoti.value.empCode = `Mã nhân viên không quá 50 kí tự`;
       if (firstMessage == "") {
         firstMessage = formNoti.value.empCode;
       }
@@ -463,54 +484,109 @@ async function validateData() {
         }
       }
     }
-    // Kiểm tra tên nhân viên
-    if (employee.value.employeeFullName == "") {
-      formNoti.value.empFullName = "Tên không được để trống";
+  }
+  // Kiểm tra tên nhân viên
+  // Tên bị trống
+  if (employee.value.employeeFullName.trim() == "") {
+    formNoti.value.empFullName = "Tên không được để trống";
+    if (firstMessage == "") {
+      firstMessage = formNoti.value.empFullName;
+    }
+  } else {
+    // Tên quá dài
+    if (employee.value.employeeFullName.length > 100) {
+      formNoti.value.empFullName = `Tên nhân viên không quá 100 kí tự`;
       if (firstMessage == "") {
         firstMessage = formNoti.value.empFullName;
       }
     }
-    // Kiểm tra thông tin đơn vị
-    if (employee.value.departmentName == "") {
-      formNoti.value.empDepartmentName = "Đơn vị không được để trống";
+  }
+  // Kiểm tra thông tin đơn vị
+  if (employee.value.departmentName.trim() == "") {
+    formNoti.value.empDepartmentName = "Đơn vị không được để trống";
+    if (firstMessage == "") {
+      firstMessage = formNoti.value.empDepartmentName;
+    }
+  } else {
+    // Đơn vị không có trong danh mục
+    let isDepartmentInDepartmentList = false;
+    for (let i = 0; i < departmentList.value.length; ++i) {
+      if (departmentList.value[i].departmentId == employee.value.departmentId) {
+        isDepartmentInDepartmentList = true;
+        break;
+      }
+    }
+    if (!isDepartmentInDepartmentList) {
+      formNoti.value.empDepartmentName =
+        "Vui lòng chọn Đơn vị có trong danh mục";
       if (firstMessage == "") {
         firstMessage = formNoti.value.empDepartmentName;
       }
-    } else {
-      let isDepartmentInDepartmentList = false;
-      for (let i = 0; i < departmentList.value.length; ++i) {
-        if (
-          departmentList.value[i].departmentId == employee.value.departmentId
-        ) {
-          isDepartmentInDepartmentList = true;
-          break;
-        }
-      }
-      if (!isDepartmentInDepartmentList) {
-        formNoti.value.empDepartmentName =
-          "Vui lòng chọn Đơn vị có trong danh mục";
-        if (firstMessage == "") {
-          firstMessage = formNoti.value.empDepartmentName;
-        }
-      }
     }
-    // Kiểm tra thông tin CMND
-    if (!/^$|^\d{9}$|^\d{12}$/.test(employee.value.identityNumber)) {
-      formNoti.value.empIdentityNumber = "Số CMND không đúng định dạng";
-      if (firstMessage == "") {
-        firstMessage = formNoti.value.empIdentityNumber;
-      }
+  }
+  // Kiểm tra thông tin CMND
+  if (!/^$|^\d{9}$|^\d{12}$/.test(employee.value.identityNumber)) {
+    formNoti.value.empIdentityNumber = "Số CMND không đúng định dạng";
+    if (firstMessage == "") {
+      firstMessage = formNoti.value.empIdentityNumber;
     }
+  }
 
-    if (firstMessage != "") {
-      // Update notibox value
-      formNoti.value.notiboxType = "alert";
-      formNoti.value.notiboxMessage = firstMessage;
-    } else {
-      formNoti.value.notiboxMessage = "";
+  // Kiểm tra ngày sinh
+  if (!$formatter.isValidDate(employee.value.dateOfBirth)) {
+    if (firstMessage == "") {
+      firstMessage = "Sai định dạng ngày sinh";
     }
-  } catch (error) {
-    console.log(error);
+  }
+
+  // Kiểm tra ngày cấp CMND
+  if (!$formatter.isValidDate(employee.value.identityDate)) {
+    if (firstMessage == "") {
+      firstMessage = "Sai định dạng ngày cấp CMND";
+    }
+  }
+
+  // Kiểm tra số điện thoại di động
+  if (!/^$|^\+?\d{0,50}$/.test(employee.value.phoneNumber)) {
+    if (firstMessage == "") {
+      firstMessage = "Sai định dạng số điện thoại di động";
+    }
+  }
+
+  // Kiểm tra số điện thoại cố định
+  if (!/^$|^\+?\d{0,50}$/.test(employee.value.landlineNumber)) {
+    if (firstMessage == "") {
+      firstMessage = "Sai định dạng số điện thoại cố định";
+    }
+  }
+  // Kiểm tra Email
+  // Email đúng định dạng
+  if (!/^$|^\w+@\w+\..*\w$/.test(employee.value.email)) {
+    if (firstMessage == "") {
+      firstMessage = "Sai định dạng Email";
+    }
+  }
+
+  // Email quá dài
+  if (employee.value.email.length > 50) {
+    if (firstMessage == "") {
+      firstMessage = "Địa chỉ email dài quá 50 kí tự";
+    }
+  }
+
+  // Kiểm tra số tài khoản ngân hàng
+  if (!/^$|^\d{0,50}$/.test(employee.value.bankAccount)) {
+    if (firstMessage == "") {
+      firstMessage = "Sai định dạng số tài khoản ngân hàng";
+    }
+  }
+
+  if (firstMessage != "") {
+    // Update notibox value
+    formNoti.value.notiboxType = "alert";
+    formNoti.value.notiboxMessage = firstMessage;
+  } else {
+    formNoti.value.notiboxMessage = "";
   }
 }
 
@@ -531,10 +607,11 @@ async function addNewDepartment(name) {
     });
     console.log(response);
     await getDepartmentList();
+    form.value.isLoading = false;
   } catch (error) {
     console.log(error);
-  } finally {
     form.value.isLoading = false;
+    handleResponseStatusCode(error.response.status);
   }
 }
 
@@ -544,7 +621,7 @@ async function addNewDepartment(name) {
  * Author: Dũng (08/05/2023)
  */
 async function callCreateEmployeeApi() {
-  const requestBody = employee.value.convertToApiFormat(false);
+  const requestBody = employee.value.convertToApiFormat();
   // console.log(requestBody);
   await $axios.post($api.employee.index, requestBody);
 }
@@ -555,7 +632,7 @@ async function callCreateEmployeeApi() {
  * Author: Dũng (08/05/2023)
  */
 async function callEditEmployeeApi() {
-  const requestBody = employee.value.convertToApiFormat(true);
+  const requestBody = employee.value.convertToApiFormat();
   // console.log(requestBody);
   await $axios.put($api.employee.one(form.value.empId), requestBody);
 }
@@ -589,6 +666,8 @@ async function btnSaveOnClick() {
     }
   } catch (error) {
     console.log(error);
+    form.value.isLoading = false;
+    handleResponseStatusCode(error.response.status);
   }
 }
 
@@ -624,6 +703,8 @@ async function btnSaveAndAddOnClick() {
     }
   } catch (error) {
     console.log(error);
+    form.value.isLoading = false;
+    handleResponseStatusCode(error.response.status);
   }
 }
 
@@ -745,13 +826,9 @@ function saveAndAddBtnOnTabKeydown() {
  * Author: Dũng (08/05/2023)
  */
 async function getEmployee(empId) {
-  try {
-    const response = await $axios.get($api.employee.one(empId));
-    const empFromApi = response.data;
-    employee.value = new Employee(empFromApi);
-  } catch (error) {
-    console.log(error);
-  }
+  const response = await $axios.get($api.employee.one(empId));
+  const empFromApi = response.data;
+  employee.value = new Employee(empFromApi);
 }
 /**
  * Sự kiện click vào nút đóng form

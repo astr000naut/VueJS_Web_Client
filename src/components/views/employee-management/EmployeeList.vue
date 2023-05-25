@@ -310,6 +310,13 @@ function showBatchDeleteConfirmDialog() {
   };
 }
 
+function handleApiErrorResponse(message) {
+  pushToast({
+    type: "fail",
+    message: message,
+  });
+}
+
 /**
  * Gọi API xóa nhân viên
  * Author: Dũng (08/05/2023)
@@ -331,6 +338,8 @@ async function deleteEmployee() {
     });
   } catch (error) {
     console.log(error);
+    isLoadingPage.value = false;
+    handleApiErrorResponse(error.response.data.UserMessage);
   }
 }
 
@@ -363,7 +372,8 @@ async function deleteBatchEmployee() {
       timeToLive: 3000,
     });
   } catch (error) {
-    console.log(error);
+    isLoadingPage.value = false;
+    handleApiErrorResponse(error.response.data.UserMessage);
   }
 }
 
@@ -458,11 +468,8 @@ async function loadEmployeeData() {
     isLoadingData.value = false;
   } catch (error) {
     console.log("LOAD FAILED");
-    pushToast({
-      type: "fail",
-      message: "Không thể tải dữ liệu. Vui lòng kiểm tra lại kết nối Internet.",
-    });
-    console.log(error);
+    isLoadingData.value = false;
+    handleApiErrorResponse(error.response.data.UserMessage);
   }
 }
 
