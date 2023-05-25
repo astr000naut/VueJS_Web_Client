@@ -22,6 +22,8 @@
         class="txtfield__input"
         type="text"
         :placeholder="pholder"
+        @focus="inputOnFocus"
+        @blur="inputOnBlur"
         :value="text"
         ref="refInput"
         @input="$emit('update:text', $event.target.value)"
@@ -57,6 +59,24 @@ const emits = defineEmits(["update:text", "update:noti"]);
 defineExpose({ refInput });
 
 /**
+ * Sự kiện focus vào ô input
+ *
+ * Author: Dũng(25/05/2023)
+ */
+function inputOnFocus() {
+  refInput.value.placeholder = props.autoFillMessage ?? "";
+}
+
+/**
+ * Sự kiện blur ô input
+ *
+ * Author: Dũng(25/05/2023)
+ */
+function inputOnBlur() {
+  refInput.value.placeholder = props.pholder;
+}
+
+/**
  * Kiểm tra keypress có là ký tự text bình thường không
  * @param {String} key là $event.key
  *
@@ -77,7 +97,6 @@ function inputKeyupHandler($event) {
   emits("update:noti", "");
   if (props.isrequired) {
     if (props.text.length == 0 && $event.key == "Backspace") {
-      refInput.value.placeholder = props.autoFillMessage ?? "";
       emits("update:noti", `${props.label} không được để trống`);
     }
   }
