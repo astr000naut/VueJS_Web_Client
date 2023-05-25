@@ -481,10 +481,17 @@ async function loadEmployeeData() {
  */
 async function employeeOnUpdate(type, data) {
   console.log("Employee list updated");
+  console.log(type);
   console.log(data);
   switch (type) {
     case "create":
       pagingData.value.totalRecord += 1;
+      pagingData.value.curAmount += 1;
+      rowList.value.unshift({
+        active: false,
+        selected: false,
+        emp: data,
+      });
       pushToast({
         type: "success",
         message: "Thêm mới nhân viên thành công.",
@@ -492,6 +499,12 @@ async function employeeOnUpdate(type, data) {
       });
       break;
     case "edit":
+      for (const row of rowList.value) {
+        if (row.emp.employeeId == data.employeeId) {
+          row.emp = data;
+          break;
+        }
+      }
       pushToast({
         type: "success",
         message: "Sửa thông tin nhân viên thành công.",
@@ -501,7 +514,7 @@ async function employeeOnUpdate(type, data) {
     default:
       break;
   }
-  await loadEmployeeData();
+  // await loadEmployeeData();
 }
 /**
  * Sự kiện click vào nút thêm

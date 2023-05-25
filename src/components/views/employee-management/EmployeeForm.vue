@@ -629,7 +629,8 @@ async function addNewDepartment(name) {
 async function callCreateEmployeeApi() {
   const requestBody = employee.value.convertToApiFormat();
   // console.log(requestBody);
-  await $axios.post($api.employee.index, requestBody);
+  const response = await $axios.post($api.employee.index, requestBody);
+  return response.data;
 }
 
 /**
@@ -660,12 +661,13 @@ async function btnSaveOnClick() {
     } else {
       if (form.value.type == $enum.form.createType) {
         // create employee
-        await callCreateEmployeeApi();
-        emits("updateEmplist", "create", {});
+        const newEmployeeId = await callCreateEmployeeApi();
+        employee.value.employeeId = newEmployeeId;
+        emits("updateEmplist", "create", employee.value);
       } else {
         // edit employee
         await callEditEmployeeApi();
-        emits("updateEmplist", "edit", {});
+        emits("updateEmplist", "edit", employee.value);
       }
       form.value.isLoading = false;
       router.replace("/employee");
@@ -693,12 +695,13 @@ async function btnSaveAndAddOnClick() {
     } else {
       if (form.value.type == $enum.form.createType) {
         // create employee
-        await callCreateEmployeeApi();
-        emits("updateEmplist", "create", {});
+        const newEmployeeId = await callCreateEmployeeApi();
+        employee.value.employeeId = newEmployeeId;
+        emits("updateEmplist", "create", employee.value);
       } else {
         // edit employee
         await callEditEmployeeApi();
-        emits("updateEmplist", "edit", {});
+        emits("updateEmplist", "edit", employee.value);
       }
       form.value.isLoading = false;
       // Reset anything
