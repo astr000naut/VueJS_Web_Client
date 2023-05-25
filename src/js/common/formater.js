@@ -47,7 +47,7 @@ const $formatter = {
   changeFormat: (inputDate) => {
     if (!inputDate) return "";
     const date = moment(new Date(inputDate));
-    return date.format("DD/MM/YYYY");
+    return date.format(dateFormat);
   },
   /**
    * Hàm format từ ngày dạng string sang dạng số
