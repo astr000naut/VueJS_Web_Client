@@ -12,7 +12,7 @@
             <div class="align-center mw-40">
               <div
                 class="t__checkbox mi-24"
-                :class="[selectedEmpIds.length > 0 ? 'selected' : '']"
+                :class="[selectedAmountInPage > 1 ? 'selected' : '']"
                 @click="thCheckboxOnClick"
               >
                 <i class="fas fa-minus"></i>
@@ -272,6 +272,7 @@ const props = defineProps({
   pagingNextPage: Function,
   pagingPrevPage: Function,
   selectedEmpIds: Array,
+  selectedAmountInPage: Number,
 });
 
 const emits = defineEmits(["updatePagingData", "updateRowStatus"]);
@@ -289,7 +290,7 @@ const tooltip = ref({
 
 function thCheckboxOnClick() {
   emits("updateRowStatus", {
-    type: "toggleAll",
+    type: "toggleAllPage",
     rowIndex: "",
   });
 }

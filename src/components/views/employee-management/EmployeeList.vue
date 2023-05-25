@@ -31,24 +31,6 @@
     </div>
     <div class="pcontent__container">
       <div class="pcontent__searchbar">
-        <div class="searchbar__left">
-          <BaseButton
-            bname="Thực hiện hàng loạt"
-            class="btn--secondary"
-            @click="batchBtnOnClick"
-            v-show="selectedEmpIds.length > 1"
-          />
-          <div
-            class="left__option"
-            v-show="batchOperator.showMenu"
-            @mouseleave="batchMenuOnMouseLeave"
-          >
-            <div class="option__item" @click="showBatchDeleteConfirmDialog">
-              Xóa
-            </div>
-            <div class="option__item">Gộp</div>
-          </div>
-        </div>
         <div class="searchbar__right">
           <BaseTextfield
             pholder="Tìm kiếm nhân viên"
@@ -64,6 +46,17 @@
             <div class="hover__text">Tải lại dữ liệu</div>
           </div>
         </div>
+        <div class="searchbar__left" v-show="selectedEmpIds.length > 1">
+          <div class="left__info">
+            Đã chọn: <strong>{{ selectedEmpIds.length }}</strong>
+          </div>
+          <div class="left__cancel" @click="cancelSelectOnClick">Bỏ chọn</div>
+          <BaseButton
+            bname="Xóa hàng loạt"
+            class="btn--secondary"
+            @click="showBatchDeleteConfirmDialog"
+          />
+        </div>
       </div>
       <EmployeeTable
         :is-loading-data="isLoadingData"
@@ -71,6 +64,7 @@
         :key="tableKey"
         :delete-employee-function="deleteEmployeeOnClick"
         :selected-emp-ids="selectedEmpIds"
+        :selected-amount-in-page="selectedAmountInPage"
         v-model:pagingData="pagingData"
         :paging-next-page="pagingNextPage"
         :paging-prev-page="pagingPrevPage"
@@ -114,11 +108,8 @@ const cache = ref({
   empDeleteIndex: "",
   empSearchPattern: "",
 });
-const batchOperator = ref({
-  showMenu: false,
-});
 const selectedEmpIds = ref([]);
-
+const selectedAmountInPage = ref(0);
 const toastList = ref([]);
 var toastId = 0;
 
@@ -187,24 +178,6 @@ function setToastTimeToLive(id, timeToLive) {
 }
 
 /**
- * Sự kiện mouseLeave của menu thực hiện hàng loạt
- *
- * Author: Dũng (10/05/2023)
- */
-function batchMenuOnMouseLeave() {
-  batchOperator.value.showMenu = false;
-}
-
-/**
- * Sự kiện click vào nút thực hiện hàng loạt
- *
- * Author: Dũng (10/05/2023)
- */
-function batchBtnOnClick() {
-  batchOperator.value.showMenu = !batchOperator.value.showMenu;
-}
-
-/**
  * Sự kiện khi cập nhật trạng thái của nhân viên (select, active, toggleAll)
  * @param {Object} data object thông báo
  *
@@ -212,10 +185,11 @@ function batchBtnOnClick() {
  */
 function rowStatusOnUpdate(data) {
   const { type, rowIndex } = data;
-  if (type == "toggleAll") {
+  if (type == "toggleAllPage") {
     // Nếu không có employee nào đang được chọn
-    if (selectedEmpIds.value.length == 0) {
+    if (selectedAmountInPage.value == 0) {
       // Chọn tất cả
+      selectedAmountInPage.value = rowList.value.length;
       for (const row of rowList.value) {
         row.selected = true;
         row.active = true;
@@ -224,10 +198,12 @@ function rowStatusOnUpdate(data) {
     } else {
       // Nếu có ít nhất một employee đang được chọn
       // Hủy chọn tất cả
+      selectedAmountInPage.value = 0;
       for (const row of rowList.value) {
         row.selected = false;
         row.active = false;
-        selectedEmpIds.value = [];
+        const index = selectedEmpIds.value.indexOf(row.emp.employeeId);
+        if (index > -1) selectedEmpIds.value.splice(index, 1);
       }
     }
     return;
@@ -239,6 +215,7 @@ function rowStatusOnUpdate(data) {
 
     // Nếu selected true thì thêm vào selectedEmpIds và bật active
     if (rowList.value[rowIndex].selected) {
+      ++selectedAmountInPage.value;
       selectedEmpIds.value.push(rowList.value[rowIndex].emp.employeeId);
       rowList.value[rowIndex].active = true;
       // Tắt active của những ô khác mà không được selected
@@ -250,6 +227,7 @@ function rowStatusOnUpdate(data) {
           row.active = false;
       }
     } else {
+      --selectedAmountInPage.value;
       // Nếu seleted của employee này false
       // Xóa khỏi selectedEmpIds và tắt active
       selectedEmpIds.value.splice(
@@ -277,6 +255,20 @@ function rowStatusOnUpdate(data) {
           row.active = false;
       }
     }
+  }
+}
+
+/**
+ * Sự kiện click vào nút bỏ chọn
+ *
+ * Author: Dũng (25/05/2023)
+ */
+function cancelSelectOnClick() {
+  for (const row of rowList.value) {
+    selectedAmountInPage.value = 0;
+    row.selected = false;
+    row.active = false;
+    selectedEmpIds.value = [];
   }
 }
 
@@ -425,6 +417,7 @@ async function pagingPrevPage() {
  */
 async function loadEmployeeData() {
   try {
+    selectedAmountInPage.value = 0;
     isLoadingData.value = true;
     await new Promise((resolve) => setTimeout(resolve, 800));
     const response = await $axios.get($api.employee.filter, {
@@ -438,10 +431,15 @@ async function loadEmployeeData() {
     // console.log(response.data);
     if (response.data.filteredList) {
       for (const emp of response.data.filteredList) {
+        const empConverted = new Employee(emp);
+        const isSelected = selectedEmpIds.value.includes(
+          empConverted.employeeId
+        );
+        if (isSelected) ++selectedAmountInPage.value;
         rowList.value.push({
-          active: false,
-          selected: false,
-          emp: new Employee(emp),
+          active: isSelected,
+          selected: isSelected,
+          emp: empConverted,
         });
       }
     }
@@ -546,6 +544,7 @@ function btnAddOnClick() {
 .pcontent__searchbar {
   display: flex;
   flex-shrink: 0;
+  flex-direction: row-reverse;
   justify-content: space-between;
   align-items: center;
   position: relative;
@@ -553,6 +552,19 @@ function btnAddOnClick() {
 
 .searchbar__left {
   position: relative;
+  display: flex;
+  align-items: center;
+  column-gap: 24px;
+}
+
+.left__info {
+  font-weight: 500;
+}
+
+.left__cancel {
+  font-weight: 500;
+  cursor: pointer;
+  color: red;
 }
 
 .left__option {
