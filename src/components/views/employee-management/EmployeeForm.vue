@@ -246,7 +246,7 @@
             bname="Cất"
             class="btn--secondary"
             ref="saveBtnRef"
-            @click="btnSaveOnClick(true)"
+            @click="btnSaveOnClick"
             @keydown.shift.tab.prevent="saveBtnOnShiftTabKeydown"
           />
           <BaseButton
@@ -566,7 +566,7 @@ async function callEditEmployeeApi() {
  *
  * Author: Dũng (08/05/2023)
  */
-async function btnSaveOnClick(goBackToEmployeeList) {
+async function btnSaveOnClick() {
   try {
     form.value.isLoading = true;
     await validateData();
@@ -585,7 +585,7 @@ async function btnSaveOnClick(goBackToEmployeeList) {
         emits("updateEmplist", "edit", {});
       }
       form.value.isLoading = false;
-      if (goBackToEmployeeList) router.replace("/employee");
+      router.replace("/employee");
     }
   } catch (error) {
     console.log(error);
@@ -599,11 +599,29 @@ async function btnSaveOnClick(goBackToEmployeeList) {
  */
 async function btnSaveAndAddOnClick() {
   try {
-    await btnSaveOnClick(false);
-    router.replace("/employee/create");
-    resetFormState();
-    await fetchNewEmployeeCode();
-    empCodeRef.value.refInput.focus();
+    form.value.isLoading = true;
+    await validateData();
+    if (formNoti.value.notiboxMessage != "") {
+      form.value.isLoading = false;
+      // show notibox
+      formNoti.value.showNotibox = true;
+    } else {
+      if (form.value.type == $enum.form.createType) {
+        // create employee
+        await callCreateEmployeeApi();
+        emits("updateEmplist", "create", {});
+      } else {
+        // edit employee
+        await callEditEmployeeApi();
+        emits("updateEmplist", "edit", {});
+      }
+      form.value.isLoading = false;
+      // Reset anything
+      router.replace("/employee/create");
+      resetFormState();
+      await fetchNewEmployeeCode();
+      empCodeRef.value.refInput.focus();
+    }
   } catch (error) {
     console.log(error);
   }
