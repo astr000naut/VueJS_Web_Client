@@ -426,6 +426,7 @@ async function pagingPrevPage() {
 async function loadEmployeeData() {
   try {
     isLoadingData.value = true;
+    await new Promise((resolve) => setTimeout(resolve, 800));
     const response = await $axios.get($api.employee.filter, {
       params: {
         skip: pagingData.value.pageSize * (pagingData.value.pageNumber - 1),
@@ -434,7 +435,7 @@ async function loadEmployeeData() {
       },
     });
     rowList.value = [];
-    console.log(response.data);
+    // console.log(response.data);
     if (response.data.filteredList) {
       for (const emp of response.data.filteredList) {
         rowList.value.push({
@@ -444,6 +445,8 @@ async function loadEmployeeData() {
         });
       }
     }
+    // console.log(1);
+    // console.log(rowList.value);
     pagingData.value.curAmount = response.data.filteredList.length ?? 0;
     pagingData.value.totalRecord = response.data.totalRecord ?? 0;
     isLoadingData.value = false;

@@ -1,4 +1,5 @@
 import $formatter from "../common/formater";
+
 export class Employee {
   address;
   dateOfBirth;
@@ -10,7 +11,6 @@ export class Employee {
   employeeId;
   employeeFullName;
   gender;
-  genderName;
   identityDate;
   identityNumber;
   identityPlace;
@@ -30,9 +30,7 @@ export class Employee {
    */
   constructor(e) {
     this.address = e.address ?? "";
-    this.dateOfBirth = e.dateOfBirth
-      ? $formatter.changeFormat(e.dateOfBirth)
-      : "";
+    this.dateOfBirth = $formatter.changeFormat(e.dateOfBirth);
     this.departmentCode = e.departmentCode ?? "";
     this.departmentId = e.departmentId ?? "";
     this.departmentName = e.departmentName ?? "";
@@ -41,10 +39,7 @@ export class Employee {
     this.employeeId = e.employeeId ?? "";
     this.employeeFullName = e.employeeFullName ?? "";
     this.gender = e.gender ?? -1;
-    this.genderName = e.genderName ?? "";
-    this.identityDate = e.identityDate
-      ? $formatter.changeFormat(e.identityDate)
-      : "";
+    this.identityDate = $formatter.changeFormat(e.identityDate);
     this.identityNumber = e.identityNumber ?? "";
     this.identityPlace = e.identityPlace ?? "";
     this.phoneNumber = e.phoneNumber ?? "";
@@ -76,7 +71,11 @@ export class Employee {
       identityDate: $formatter.formatDateToApiDate(this.identityDate),
       identityPlace: this.identityPlace,
       address: this.address,
+      bankAccount: this.bankAccount,
+      bankBranch: this.bankBranch,
+      bankName: this.bankName,
       phoneNumber: this.phoneNumber,
+      landlineNumber: this.landlineNumber,
       email: this.email,
     };
     // Nếu là api sửa thông tin nhân viên thì thêm trường employeeId

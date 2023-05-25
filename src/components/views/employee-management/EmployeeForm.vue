@@ -76,7 +76,7 @@
                   pholder=""
                   label="Tên"
                   :isrequired="true"
-                  v-model:text="employee.fullName"
+                  v-model:text="employee.employeeFullName"
                   v-model:noti="formNoti.empFullName"
                   ref="empFullNameRef"
                 />
@@ -359,11 +359,11 @@ async function generateEmpCode() {
 async function isEmpCodeExist(empCode, empId) {
   const response = await $axios.get($api.employee.filter, {
     params: {
-      employeeFilter: empCode,
+      keySearch: empCode,
     },
   });
   if (response.data == "") return false;
-  for (const emp of response.data.Data) {
+  for (const emp of response.data.filteredList) {
     if (emp.EmployeeCode == empCode && emp.EmployeeId != empId) return true;
   }
 }
@@ -464,7 +464,7 @@ async function validateData() {
       }
     }
     // Kiểm tra tên nhân viên
-    if (employee.value.fullName == "") {
+    if (employee.value.employeeFullName == "") {
       formNoti.value.empFullName = "Tên không được để trống";
       if (firstMessage == "") {
         firstMessage = formNoti.value.empFullName;

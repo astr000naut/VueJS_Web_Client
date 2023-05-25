@@ -22,8 +22,8 @@ const $formatter = {
    * Author: Dũng (08/05/2023)
    */
   formatDateToApiDate: (input) => {
-    let d = moment(input, dateFormat).toDate();
-    d.setTime(d.getTime() + 7 * 60 * 60 * 1000);
+    if (!input.length) return null;
+    let d = moment(input, dateFormat).format("YYYY-MM-DD");
     // console.log(d.toISOString());
     return d;
   },
@@ -44,9 +44,9 @@ const $formatter = {
    * @param {String} input ngày
    * Author: Dũng (08/05/2023)
    */
-  changeFormat: (input) => {
-    if (!input) return "";
-    const date = moment(new Date("2020/12/06"));
+  changeFormat: (inputDate) => {
+    if (!inputDate) return "";
+    const date = moment(new Date(inputDate));
     return date.format("DD/MM/YYYY");
   },
   /**

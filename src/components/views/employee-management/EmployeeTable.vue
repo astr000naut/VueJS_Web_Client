@@ -102,11 +102,21 @@
               <div class="text-left">{{ emp.employeeFullName }}</div>
             </td>
             <td>
-              <div class="text-left">{{ emp.genderName }}</div>
+              <div class="text-left">
+                {{
+                  emp.gender == 0
+                    ? "Nam"
+                    : emp.gender == 1
+                    ? "Nữ"
+                    : emp.gender == 2
+                    ? "Khác"
+                    : ""
+                }}
+              </div>
             </td>
             <td>
               <div class="text-left">
-                {{ $formatter.changeFormat(emp.dateOfBirth) }}
+                {{ emp.dateOfBirth }}
               </div>
             </td>
             <td>
@@ -252,7 +262,6 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import $formatter from "@/js/common/formater";
 const router = useRouter();
 
 const props = defineProps({
