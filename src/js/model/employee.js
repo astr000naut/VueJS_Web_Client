@@ -66,7 +66,7 @@ export class Employee {
       departmentName: this.departmentName,
       positionName: this.positionName,
       dateOfBirth: $formatter.formatDateToApiDate(this.dateOfBirth),
-      gender: this.gender,
+      gender: this.gender != -1 ? this.gender : null,
       identityNumber: this.identityNumber,
       identityDate: $formatter.formatDateToApiDate(this.identityDate),
       identityPlace: this.identityPlace,
