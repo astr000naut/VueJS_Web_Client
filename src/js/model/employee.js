@@ -58,7 +58,7 @@ export class Employee {
    *
    * Author: Dũng (11/05/2023)
    */
-  convertToApiFormat(isEditApi) {
+  convertToApiFormat() {
     let obj = {
       employeeCode: this.employeeCode,
       employeeFullName: this.employeeFullName,
@@ -78,10 +78,6 @@ export class Employee {
       landlineNumber: this.landlineNumber,
       email: this.email,
     };
-    // Nếu là api sửa thông tin nhân viên thì thêm trường employeeId
-    if (isEditApi) {
-      obj["employeeId"] = this.employeeId;
-    }
     return obj;
   }
 }
