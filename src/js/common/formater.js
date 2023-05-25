@@ -33,7 +33,6 @@ const $formatter = {
    * Author: Dũng (08/05/2023)
    */
   isValidDate: (inputDate) => {
-    if (inputDate.length == 0) return true;
     return moment(
       inputDate,
       common.dateFormat[common.defaultDateFormat],

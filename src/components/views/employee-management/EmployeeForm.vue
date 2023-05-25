@@ -533,14 +533,20 @@ async function validateData() {
   }
 
   // Kiểm tra ngày sinh
-  if (!$formatter.isValidDate(employee.value.dateOfBirth)) {
+  if (
+    employee.value.dateOfBirth.length > 0 &&
+    !$formatter.isValidDate(employee.value.dateOfBirth)
+  ) {
     if (firstMessage == "") {
       firstMessage = "Sai định dạng ngày sinh";
     }
   }
 
   // Kiểm tra ngày cấp CMND
-  if (!$formatter.isValidDate(employee.value.identityDate)) {
+  if (
+    employee.value.identityDate.length > 0 &&
+    !$formatter.isValidDate(employee.value.identityDate)
+  ) {
     if (firstMessage == "") {
       firstMessage = "Sai định dạng ngày cấp CMND";
     }
