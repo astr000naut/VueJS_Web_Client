@@ -12,7 +12,11 @@
             <div class="align-center mw-40">
               <div
                 class="t__checkbox mi-24"
-                :class="[selectedAmountInPage > 1 ? 'selected' : '']"
+                :class="[
+                  selectedAmountInPage > Math.min(1, rowList.length - 1)
+                    ? 'selected'
+                    : '',
+                ]"
                 @click="thCheckboxOnClick"
               >
                 <i class="fas fa-minus"></i>
