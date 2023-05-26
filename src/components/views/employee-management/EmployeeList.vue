@@ -310,11 +310,19 @@ function showBatchDeleteConfirmDialog() {
   };
 }
 
-function handleApiErrorResponse(message) {
-  pushToast({
-    type: "fail",
-    message: message,
-  });
+function handleApiErrorResponse(error) {
+  if (error.code == "ERR_NETWORK") {
+    pushToast({
+      type: "fail",
+      message:
+        "Xảy ra lỗi khi kết nối tới server, vui lòng liên hệ nhân viên hỗ trợ",
+    });
+  } else {
+    pushToast({
+      type: "fail",
+      message: error.response.data.UserMessage,
+    });
+  }
 }
 
 /**
@@ -339,7 +347,7 @@ async function deleteEmployee() {
   } catch (error) {
     console.log(error);
     isLoadingPage.value = false;
-    handleApiErrorResponse(error.response.data.UserMessage);
+    handleApiErrorResponse(error);
   }
 }
 
@@ -373,7 +381,7 @@ async function deleteBatchEmployee() {
     });
   } catch (error) {
     isLoadingPage.value = false;
-    handleApiErrorResponse(error.response.data.UserMessage);
+    handleApiErrorResponse(error);
   }
 }
 
@@ -468,8 +476,9 @@ async function loadEmployeeData() {
     isLoadingData.value = false;
   } catch (error) {
     console.log("LOAD FAILED");
+    console.log(error);
     isLoadingData.value = false;
-    handleApiErrorResponse(error.response.data.UserMessage);
+    handleApiErrorResponse(error);
   }
 }
 
