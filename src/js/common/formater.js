@@ -40,6 +40,23 @@ const $formatter = {
     ).isValid();
   },
   /**
+   * Kiểm tra xem string date có phải ngày ở quá khứ hay không
+   * @param {String} inputDate ngày
+   * Author: Dũng (08/05/2023)
+   */
+  isPastDate: (inputDate) => {
+    const parsedDate = moment(
+      inputDate,
+      common.dateFormat[common.defaultDateFormat],
+      true
+    );
+    const currentDate = moment().add(1, "day");
+    if (parsedDate.isValid()) {
+      return parsedDate.isBefore(currentDate, "day");
+    }
+    return false;
+  },
+  /**
    * Hàm format ngày sang định dạng dateFormat
    * @param {String} input ngày
    * Author: Dũng (08/05/2023)

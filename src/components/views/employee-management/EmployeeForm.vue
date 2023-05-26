@@ -536,12 +536,22 @@ async function validateData() {
   }
 
   // Kiểm tra ngày sinh
+  // Định dạng
   if (
     employee.value.dateOfBirth.length > 0 &&
     !$formatter.isValidDate(employee.value.dateOfBirth)
   ) {
     if (firstMessage == "") {
       firstMessage = "Sai định dạng ngày sinh";
+    }
+  }
+  // Ngày sinh ở tương lai
+  if (
+    employee.value.dateOfBirth.length > 0 &&
+    !$formatter.isPastDate(employee.value.dateOfBirth)
+  ) {
+    if (firstMessage == "") {
+      firstMessage = "Ngày sinh không hợp lệ";
     }
   }
 
@@ -552,6 +562,15 @@ async function validateData() {
   ) {
     if (firstMessage == "") {
       firstMessage = "Sai định dạng ngày cấp CMND";
+    }
+  }
+  // Ngày cấp ở tương lai
+  if (
+    employee.value.identityDate.length > 0 &&
+    !$formatter.isPastDate(employee.value.identityDate)
+  ) {
+    if (firstMessage == "") {
+      firstMessage = "Ngày cấp CMND không hợp lệ";
     }
   }
 
