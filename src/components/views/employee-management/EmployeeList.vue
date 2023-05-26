@@ -480,9 +480,9 @@ async function loadEmployeeData() {
  * Author: Dũng (08/05/2023)
  */
 async function employeeOnUpdate(type, data) {
-  console.log("Employee list updated");
-  console.log(type);
-  console.log(data);
+  // console.log("Employee list updated");
+  // console.log(type);
+  // console.log(data);
   switch (type) {
     case "create":
       pagingData.value.totalRecord += 1;
