@@ -6,6 +6,7 @@ const employeeApi = (baseUrl) => {
     one: (id) => baseUrl + controller + `/${id}`,
     filter: baseUrl + controller + "/Filter",
     deleteMultiple: baseUrl + controller + "/DeleteMultiple",
+    checkCodeExist: baseUrl + controller + "/CheckCodeExist",
   };
 };
 

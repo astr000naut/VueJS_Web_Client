@@ -324,7 +324,7 @@ onMounted(async () => {
   } catch (error) {
     console.log(error);
     form.value.isLoading = false;
-    handleResponseStatusCode(error.response.status);
+    handleResponseStatusCode(error.response.status, error);
   }
 });
 
@@ -333,11 +333,15 @@ onMounted(async () => {
  * @param {code}
  * Author: Dũng (08/05/2023)
  */
-function handleResponseStatusCode(code) {
+function handleResponseStatusCode(code, error) {
   if (code == 400) {
     formNoti.value.notiboxType = "alert";
     formNoti.value.notiboxMessage =
       "Dữ liệu đầu vào không hợp lệ, vui lòng kiểm tra lại";
+    formNoti.value.showNotibox = true;
+  } else {
+    formNoti.value.notiboxType = "alert";
+    formNoti.value.notiboxMessage = error.response.data.UserMessage;
     formNoti.value.showNotibox = true;
   }
 }
@@ -379,15 +383,13 @@ async function generateEmpCode() {
  * Author: Dux(09/05/2023)
  */
 async function isEmpCodeExist(empCode, empId) {
-  const response = await $axios.get($api.employee.filter, {
+  const response = await $axios.get($api.employee.checkCodeExist, {
     params: {
-      keySearch: empCode,
+      id: empId,
+      code: empCode,
     },
   });
-  if (response.data == "") return false;
-  for (const emp of response.data.filteredList) {
-    if (emp.EmployeeCode == empCode && emp.EmployeeId != empId) return true;
-  }
+  return response;
 }
 
 /**
@@ -400,7 +402,7 @@ async function getDepartmentList() {
     skip: 0,
   });
   departmentList.value = [];
-  console.log(departmentApiResponse);
+  // console.log(departmentApiResponse);
   for (const department of departmentApiResponse.data.filteredList) {
     departmentList.value.push(new Department(department));
   }
@@ -477,7 +479,7 @@ async function validateData() {
       const isCodeExist = await isEmpCodeExist(
         employee.value.employeeCode,
         form.value.empId
-      );
+      ).data;
       if (isCodeExist) {
         formNoti.value.empCode = `Mã nhân viên đã tồn tại`;
         if (firstMessage == "") {
@@ -618,7 +620,7 @@ async function addNewDepartment(name) {
   } catch (error) {
     console.log(error);
     form.value.isLoading = false;
-    handleResponseStatusCode(error.response.status);
+    handleResponseStatusCode(error.response.status, error);
   }
 }
 
@@ -676,7 +678,7 @@ async function btnSaveOnClick() {
   } catch (error) {
     console.log(error);
     form.value.isLoading = false;
-    handleResponseStatusCode(error.response.status);
+    handleResponseStatusCode(error.response.status, error);
   }
 }
 
@@ -714,7 +716,7 @@ async function btnSaveAndAddOnClick() {
   } catch (error) {
     console.log(error);
     form.value.isLoading = false;
-    handleResponseStatusCode(error.response.status);
+    handleResponseStatusCode(error.response.status, error);
   }
 }
 
