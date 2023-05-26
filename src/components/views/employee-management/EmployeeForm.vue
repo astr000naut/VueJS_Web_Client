@@ -337,7 +337,7 @@ function handleResponseStatusCode(code, error) {
   if (code == 400) {
     formNoti.value.notiboxType = "alert";
     formNoti.value.notiboxMessage =
-      "Dữ liệu đầu vào không hợp lệ, vui lòng kiểm tra lại";
+      "Dữ liệu nhập vào không hợp lệ, vui lòng kiểm tra lại";
     formNoti.value.showNotibox = true;
   } else {
     formNoti.value.notiboxType = "alert";
@@ -527,6 +527,14 @@ async function validateData() {
       }
     }
   }
+
+  // Kiểm tra thông tin chức danh
+  if (employee.value.positionName.length > 255) {
+    if (firstMessage == "") {
+      firstMessage = "Độ dài Chức danh không quá 255 kí tự";
+    }
+  }
+
   // Kiểm tra thông tin CMND
   if (!/^$|^\d{9}$|^\d{12}$/.test(employee.value.identityNumber)) {
     formNoti.value.empIdentityNumber = "Số CMND không đúng định dạng";
@@ -561,7 +569,7 @@ async function validateData() {
     !$formatter.isValidDate(employee.value.identityDate)
   ) {
     if (firstMessage == "") {
-      firstMessage = "Sai định dạng ngày cấp CMND";
+      firstMessage = "Sai định dạng Ngày cấp CMND";
     }
   }
   // Ngày cấp ở tương lai
@@ -577,14 +585,14 @@ async function validateData() {
   // Kiểm tra số điện thoại di động
   if (!/^$|^\+?\d{0,50}$/.test(employee.value.phoneNumber)) {
     if (firstMessage == "") {
-      firstMessage = "Sai định dạng số điện thoại di động";
+      firstMessage = "Sai định dạng Số điện thoại di động";
     }
   }
 
   // Kiểm tra số điện thoại cố định
   if (!/^$|^\+?\d{0,50}$/.test(employee.value.landlineNumber)) {
     if (firstMessage == "") {
-      firstMessage = "Sai định dạng số điện thoại cố định";
+      firstMessage = "Sai định dạng Số điện thoại cố định";
     }
   }
   // Kiểm tra Email
@@ -598,14 +606,28 @@ async function validateData() {
   // Email quá dài
   if (employee.value.email.length > 50) {
     if (firstMessage == "") {
-      firstMessage = "Địa chỉ email dài quá 50 kí tự";
+      firstMessage = "Địa chỉ Email dài quá 50 kí tự";
     }
   }
 
   // Kiểm tra số tài khoản ngân hàng
   if (!/^$|^\d{0,50}$/.test(employee.value.bankAccount)) {
     if (firstMessage == "") {
-      firstMessage = "Sai định dạng số tài khoản ngân hàng";
+      firstMessage = "Sai định dạng Số tài khoản ngân hàng";
+    }
+  }
+
+  // Kiểm tra tên ngân hàng
+  if (employee.value.bankName.length > 255) {
+    if (firstMessage == "") {
+      firstMessage = "Tên ngân hàng không được dài quá 255 kí tự";
+    }
+  }
+
+  // Kiểm tra chi nhánh ngân hàng
+  if (employee.value.bankBranch.length > 255) {
+    if (firstMessage == "") {
+      firstMessage = "Chi nhánh không được dài quá 255 kí tự";
     }
   }
 
