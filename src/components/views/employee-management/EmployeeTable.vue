@@ -13,6 +13,7 @@
               <div
                 class="t__checkbox mi-24"
                 :class="[
+                  selectedAmountInPage &&
                   selectedAmountInPage > Math.min(1, rowList.length - 1)
                     ? 'selected'
                     : '',
@@ -188,7 +189,10 @@
         </template>
       </tbody>
     </table>
-    <div class="table__notification" v-show="!haveDataAfterCallApi">
+    <div
+      class="table__notification"
+      v-show="!haveDataAfterCallApi && !isLoadingData"
+    >
       <div class="noti__img"></div>
       <div class="noti__text">Không có dữ liệu</div>
     </div>

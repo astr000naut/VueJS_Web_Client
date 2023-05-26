@@ -38,7 +38,7 @@
             noti=""
             v-model:text="cache.empSearchPattern"
             :realTimeSearch="true"
-            :doSearch="loadEmployeeData"
+            :doSearch="doSearchEmployee"
           />
           <BaseButton class="mi mi-36 mi-refresh" @click="loadEmployeeData" />
           <div class="button__hoverbox">
@@ -128,6 +128,15 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   $emitter.off("rerenderTable");
 });
+
+/**
+ * Tìm kiếm nhân viên khi nhập vào ô tìm kiếm
+ * Author: Dũng (26/05/2023)
+ */
+async function doSearchEmployee() {
+  pagingData.value.pageNumber = 1;
+  await loadEmployeeData();
+}
 
 /**
  * Tạo toast message mới và đẩy vào toastList
