@@ -184,6 +184,10 @@
         </template>
       </tbody>
     </table>
+    <div class="table__notification" v-show="!haveDataAfterCallApi">
+      <div class="noti__img"></div>
+      <div class="noti__text">Không có dữ liệu</div>
+    </div>
     <div class="table__pag">
       <div class="pag__leftside">
         <span
@@ -273,6 +277,7 @@ const props = defineProps({
   pagingPrevPage: Function,
   selectedEmpIds: Array,
   selectedAmountInPage: Number,
+  haveDataAfterCallApi: Boolean,
 });
 
 const emits = defineEmits(["updatePagingData", "updateRowStatus"]);
@@ -714,5 +719,19 @@ td:has(.loading-item) {
 
 .zindex--3 {
   z-index: 3;
+}
+
+.table__notification {
+  padding: 18px 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 8px;
+}
+
+.noti__img {
+  background: url(../../../assets/img/nodata.svg) no-repeat 0px 0px;
+  width: 132px;
+  height: 76px;
 }
 </style>

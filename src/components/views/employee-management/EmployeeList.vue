@@ -65,6 +65,7 @@
         :delete-employee-function="deleteEmployeeOnClick"
         :selected-emp-ids="selectedEmpIds"
         :selected-amount-in-page="selectedAmountInPage"
+        :have-data-after-call-api="haveDataAfterCallApi"
         v-model:pagingData="pagingData"
         :paging-next-page="pagingNextPage"
         :paging-prev-page="pagingPrevPage"
@@ -92,6 +93,7 @@ const isLoadingData = ref(true);
 const isLoadingPage = ref(false);
 const $axios = inject("$axios");
 const tableKey = ref(0);
+const haveDataAfterCallApi = ref(true);
 const pagingData = ref({
   totalRecord: 0,
   curAmount: 0,
@@ -473,6 +475,7 @@ async function loadEmployeeData() {
     // console.log(rowList.value);
     pagingData.value.curAmount = response.data.filteredList.length ?? 0;
     pagingData.value.totalRecord = response.data.totalRecord ?? 0;
+    haveDataAfterCallApi.value = pagingData.value.totalRecord != 0;
     isLoadingData.value = false;
   } catch (error) {
     console.log("LOAD FAILED");
