@@ -708,7 +708,7 @@ async function btnSaveAndAddOnClick() {
       }
       form.value.isLoading = false;
       // Reset anything
-      router.replace("/employee/create");
+      await router.replace("/employee/create");
       resetFormState();
       await fetchNewEmployeeCode();
       empCodeRef.value.refInput.focus();
