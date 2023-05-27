@@ -491,7 +491,7 @@ async function validateData() {
         form.value.empId
       );
       if (isCodeExist) {
-        formNoti.value.empCode = `Mã nhân viên <${employee.value.employeeCode}>đã tồn tại trong hệ thống, vui lòng kiểm tra lại.`;
+        formNoti.value.empCode = `Mã nhân viên đã tồn tại`;
         if (firstMessage == "") {
           firstMessage = formNoti.value.empCode;
         }
