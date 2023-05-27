@@ -399,7 +399,7 @@ async function isEmpCodeExist(empCode, empId) {
       code: empCode,
     },
   });
-  return response;
+  return response.data;
 }
 
 /**
@@ -489,7 +489,7 @@ async function validateData() {
       const isCodeExist = await isEmpCodeExist(
         employee.value.employeeCode,
         form.value.empId
-      ).data;
+      );
       if (isCodeExist) {
         formNoti.value.empCode = `Mã nhân viên <${employee.value.employeeCode}>đã tồn tại trong hệ thống, vui lòng kiểm tra lại.`;
         if (firstMessage == "") {

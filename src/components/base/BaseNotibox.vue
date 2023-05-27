@@ -55,6 +55,7 @@ defineProps({
 }
 
 .logo--alert {
+  flex-shrink: 0;
   background-image: url("../../assets/img/Sprites.64af8f61.svg");
   background-position: -752px -462px;
 }
