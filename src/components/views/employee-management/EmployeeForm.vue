@@ -13,7 +13,7 @@
         message="Dữ liệu đã bị thay đổi. Bạn có muốn cất không ?"
         :close-on-click="formDialogCloseBtnOnClick"
         :no-on-click="formDialogNoBtnOnClick"
-        :yes-on-click="btnSaveOnClick"
+        :yes-on-click="formDialogYesBtnOnClick"
       />
     </div>
     <div class="form__loader" v-show="form.isLoading">
@@ -327,6 +327,16 @@ onMounted(async () => {
     handleResponseStatusCode(error.response.status, error);
   }
 });
+
+/**
+ * Sự kiện click vào btn yes khi đóng dialog
+ *
+ * Author: Dũng (27/05/2023)
+ */
+async function formDialogYesBtnOnClick() {
+  formDialog.value.isShow = false;
+  await btnSaveOnClick();
+}
 
 /**
  * Quản lý các mã HTTP Code trả về sau khi gọi API
@@ -698,7 +708,8 @@ async function btnSaveOnClick() {
   try {
     form.value.isLoading = true;
     await validateData();
-    if (formNoti.value.notiboxMessage != "") {
+    // check null ?
+    if (formNoti.value.notiboxMessage.length) {
       form.value.isLoading = false;
       // show notibox
       formNoti.value.showNotibox = true;

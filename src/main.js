@@ -12,6 +12,7 @@ const emitter = new Emitter();
 
 const app = createApp(App);
 
+// NEED Refactor - tach ra file rieng
 app.component("BaseButton", BaseButton);
 app.component("BaseTextfield", BaseTextfield);
 
