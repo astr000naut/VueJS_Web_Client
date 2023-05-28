@@ -279,6 +279,7 @@ const $axios = inject("$axios");
 import $api from "../../../js/api/index";
 import { Department } from "@/js/model/department";
 import $formatter from "../../../js/common/formater";
+import $error from "../../../assets/resources/error";
 
 const emits = defineEmits(["updateEmplist"]);
 const router = useRouter();
@@ -346,8 +347,7 @@ async function formDialogYesBtnOnClick() {
 function handleResponseStatusCode(code, error) {
   if (code == 400) {
     formNoti.value.notiboxType = "alert";
-    formNoti.value.notiboxMessage =
-      "Dữ liệu nhập vào không hợp lệ, vui lòng kiểm tra lại";
+    formNoti.value.notiboxMessage = $error.invalidInput;
     formNoti.value.showNotibox = true;
   } else {
     formNoti.value.notiboxType = "alert";
@@ -473,14 +473,14 @@ async function validateData() {
   // Mã trống
   if (employee.value.employeeCode.trim() == "") {
     employee.value.employeeCode = "";
-    formNoti.value.empCode = "Mã không được để trống";
+    formNoti.value.empCode = $error.employeeCodeEmpty;
     if (firstMessage == "") {
       firstMessage = formNoti.value.empCode;
     }
   } else {
     // Mã quá dài
     if (employee.value.employeeCode.length > 50) {
-      formNoti.value.empCode = `Mã nhân viên không quá 50 kí tự`;
+      formNoti.value.empCode = $error.employeeCodeTooLong;
       if (firstMessage == "") {
         firstMessage = formNoti.value.empCode;
       }
@@ -491,7 +491,7 @@ async function validateData() {
         form.value.empId
       );
       if (isCodeExist) {
-        formNoti.value.empCode = `Mã nhân viên đã tồn tại`;
+        formNoti.value.empCode = $error.employeeCodeHasExist;
         if (firstMessage == "") {
           firstMessage = formNoti.value.empCode;
         }
@@ -501,14 +501,14 @@ async function validateData() {
   // Kiểm tra tên nhân viên
   // Tên bị trống
   if (employee.value.employeeFullName.trim() == "") {
-    formNoti.value.empFullName = "Tên không được để trống";
+    formNoti.value.empFullName = $error.employeeNameEmpty;
     if (firstMessage == "") {
       firstMessage = formNoti.value.empFullName;
     }
   } else {
     // Tên quá dài
     if (employee.value.employeeFullName.length > 100) {
-      formNoti.value.empFullName = `Tên nhân viên không quá 100 kí tự`;
+      formNoti.value.empFullName = $error.employeeNameTooLong;
       if (firstMessage == "") {
         firstMessage = formNoti.value.empFullName;
       }
@@ -516,7 +516,7 @@ async function validateData() {
   }
   // Kiểm tra thông tin đơn vị
   if (employee.value.departmentName.trim() == "") {
-    formNoti.value.empDepartmentName = "Đơn vị không được để trống";
+    formNoti.value.empDepartmentName = $error.departmentEmpty;
     if (firstMessage == "") {
       firstMessage = formNoti.value.empDepartmentName;
     }
@@ -530,8 +530,7 @@ async function validateData() {
       }
     }
     if (!isDepartmentInDepartmentList) {
-      formNoti.value.empDepartmentName =
-        "Vui lòng chọn Đơn vị có trong danh mục";
+      formNoti.value.empDepartmentName = $error.departmentNotInList;
       if (firstMessage == "") {
         firstMessage = formNoti.value.empDepartmentName;
       }
@@ -541,13 +540,13 @@ async function validateData() {
   // Kiểm tra thông tin chức danh
   if (employee.value.positionName.length > 255) {
     if (firstMessage == "") {
-      firstMessage = "Độ dài Chức danh không quá 255 kí tự";
+      firstMessage = $error.positionNameTooLong;
     }
   }
 
   // Kiểm tra thông tin CMND
   if (!/^$|^\d{9}$|^\d{12}$/.test(employee.value.identityNumber)) {
-    formNoti.value.empIdentityNumber = "Số CMND không đúng định dạng";
+    formNoti.value.empIdentityNumber = $error.identityNumberWrongFormat;
     if (firstMessage == "") {
       firstMessage = formNoti.value.empIdentityNumber;
     }
@@ -560,7 +559,7 @@ async function validateData() {
     !$formatter.isValidDate(employee.value.dateOfBirth)
   ) {
     if (firstMessage == "") {
-      firstMessage = "Sai định dạng ngày sinh";
+      firstMessage = $error.dateOfBirthWrongFormat;
     }
   }
   // Ngày sinh ở tương lai
@@ -569,7 +568,7 @@ async function validateData() {
     !$formatter.isPastDate(employee.value.dateOfBirth)
   ) {
     if (firstMessage == "") {
-      firstMessage = "Ngày sinh không hợp lệ";
+      firstMessage = $error.dateOfBirthInvalid;
     }
   }
 
@@ -579,7 +578,7 @@ async function validateData() {
     !$formatter.isValidDate(employee.value.identityDate)
   ) {
     if (firstMessage == "") {
-      firstMessage = "Sai định dạng Ngày cấp CMND";
+      firstMessage = $error.identityDateWrongFormat;
     }
   }
   // Ngày cấp ở tương lai
@@ -588,56 +587,56 @@ async function validateData() {
     !$formatter.isPastDate(employee.value.identityDate)
   ) {
     if (firstMessage == "") {
-      firstMessage = "Ngày cấp CMND không hợp lệ";
+      firstMessage = $error.identityDateInvalid;
     }
   }
 
   // Kiểm tra số điện thoại di động
   if (!/^$|^\+?\d{0,50}$/.test(employee.value.phoneNumber)) {
     if (firstMessage == "") {
-      firstMessage = "Sai định dạng Số điện thoại di động";
+      firstMessage = $error.phoneNumberWrongFormat;
     }
   }
 
   // Kiểm tra số điện thoại cố định
   if (!/^$|^\+?\d{0,50}$/.test(employee.value.landlineNumber)) {
     if (firstMessage == "") {
-      firstMessage = "Sai định dạng Số điện thoại cố định";
+      firstMessage = $error.landlineNumberWrongFormat;
     }
   }
   // Kiểm tra Email
   // Email đúng định dạng
   if (!/^$|^\w+@\w+\..*\w$/.test(employee.value.email)) {
     if (firstMessage == "") {
-      firstMessage = "Sai định dạng Email";
+      firstMessage = $error.emailWrongFormat;
     }
   }
 
   // Email quá dài
   if (employee.value.email.length > 50) {
     if (firstMessage == "") {
-      firstMessage = "Địa chỉ Email dài quá 50 kí tự";
+      firstMessage = $error.emailTooLong;
     }
   }
 
   // Kiểm tra số tài khoản ngân hàng
   if (!/^$|^\d{0,50}$/.test(employee.value.bankAccount)) {
     if (firstMessage == "") {
-      firstMessage = "Sai định dạng Số tài khoản ngân hàng";
+      firstMessage = $error.bankAccountWrongFormat;
     }
   }
 
   // Kiểm tra tên ngân hàng
   if (employee.value.bankName.length > 255) {
     if (firstMessage == "") {
-      firstMessage = "Tên ngân hàng không được dài quá 255 kí tự";
+      firstMessage = $error.bankNameTooLong;
     }
   }
 
   // Kiểm tra chi nhánh ngân hàng
   if (employee.value.bankBranch.length > 255) {
     if (firstMessage == "") {
-      firstMessage = "Chi nhánh không được dài quá 255 kí tự";
+      firstMessage = $error.bankBranchTooLong;
     }
   }
 

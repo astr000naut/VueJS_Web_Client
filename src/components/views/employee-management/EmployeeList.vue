@@ -85,6 +85,8 @@ import BaseDialog from "@/components/base/BaseDialog.vue";
 import BaseToastbox from "@/components/base/BaseToastbox.vue";
 import $api from "@/js/api";
 import { Employee } from "@/js/model/employee";
+import $error from "@/assets/resources/error";
+import $message from "@/assets/resources/message";
 
 const router = useRouter();
 const $emitter = inject("$emitter");
@@ -299,7 +301,7 @@ function dialogCloseOnClick() {
  * Author: Dũng (08/05/2023)
  */
 function showDeleteOneConfirmDialog(empCode) {
-  dialog.value.message = `Bạn có muốn xóa Nhân viên <${empCode}>`;
+  dialog.value.message = $message.employeeDeleteConfirm(empCode);
   dialog.value.action = async () => {
     dialog.value.isDisplay = false;
     await deleteEmployee();
@@ -313,7 +315,9 @@ function showDeleteOneConfirmDialog(empCode) {
  * Author: Dũng (08/05/2023)
  */
 function showBatchDeleteConfirmDialog() {
-  dialog.value.message = `Bạn có chắc chắn muốn xóa ${selectedEmpIds.value.length} Nhân viên`;
+  dialog.value.message = $message.employeeMultipleDeleteConfirm(
+    selectedEmpIds.value.length
+  );
   dialog.value.isDisplay = true;
   dialog.value.action = async () => {
     dialog.value.isDisplay = false;
@@ -325,8 +329,7 @@ function handleApiErrorResponse(error) {
   if (error.code == "ERR_NETWORK") {
     pushToast({
       type: "fail",
-      message:
-        "Xảy ra lỗi khi kết nối tới server, vui lòng liên hệ nhân viên hỗ trợ",
+      message: $error.serverDisconnected,
     });
   } else {
     pushToast({
@@ -352,8 +355,8 @@ async function deleteEmployee() {
     // NEED REFACTOR
     pushToast({
       type: "success",
-      message: "Nhân viên đã bị xóa khỏi hệ thống.",
-      timeToLive: 3000,
+      message: $message.employeeDeleted,
+      timeToLive: 1500,
     });
   } catch (error) {
     console.log(error);
@@ -387,8 +390,8 @@ async function deleteBatchEmployee() {
     isLoadingPage.value = false;
     pushToast({
       type: "success",
-      message: `Xóa thành công ${deletedSucess} nhân viên`,
-      timeToLive: 3000,
+      message: $message.employeeMultipeDeleted(deletedSucess),
+      timeToLive: 1500,
     });
   } catch (error) {
     isLoadingPage.value = false;
@@ -515,8 +518,8 @@ async function employeeOnUpdate(type, data) {
       });
       pushToast({
         type: "success",
-        message: "Thêm mới nhân viên thành công.",
-        timeToLive: 3000,
+        message: $message.employeeCreated,
+        timeToLive: 1500,
       });
       break;
     case "edit":
@@ -528,8 +531,8 @@ async function employeeOnUpdate(type, data) {
       }
       pushToast({
         type: "success",
-        message: "Sửa thông tin nhân viên thành công.",
-        timeToLive: 3000,
+        message: $message.employeeUpdated,
+        timeToLive: 1500,
       });
       break;
     default:
