@@ -134,7 +134,7 @@
                   pholder=""
                   label="Số CMND"
                   v-model:text="employee.identityNumber"
-                  v-model:noti="formNoti.empIdentityNumber"
+                  noti=""
                   tooltip="Số chứng minh nhân dân"
                   ref="empIdentitiNumberRef"
                 />
@@ -299,7 +299,6 @@ const formNoti = ref({
   empCode: "",
   empFullName: "",
   empDepartmentName: "",
-  empIdentityNumber: "",
 });
 const empCodeRef = ref(null);
 const formDialog = ref({
@@ -546,9 +545,8 @@ async function validateData() {
 
   // Kiểm tra thông tin CMND
   if (!/^$|^\d{9}$|^\d{12}$/.test(employee.value.identityNumber)) {
-    formNoti.value.empIdentityNumber = $error.identityNumberWrongFormat;
     if (firstMessage == "") {
-      firstMessage = formNoti.value.empIdentityNumber;
+      firstMessage = $error.identityNumberWrongFormat;
     }
   }
 
@@ -787,10 +785,6 @@ function focusOnFirstErrorInput() {
   }
   if (formNoti.value.empDepartmentName != "") {
     empDepartmentNameRef.value.refInput.focus();
-    return;
-  }
-  if (formNoti.value.empIdentityNumber != "") {
-    empIdentitiNumberRef.value.refInput.focus();
     return;
   }
 }
