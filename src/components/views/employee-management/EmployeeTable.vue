@@ -260,12 +260,14 @@
         </div>
         <div
           class="pag__prev minc mi-24 mi-arrowleft"
-          :class="[pagingData.pageNumber <= 1 ? 'disabled' : '']"
+          :class="[
+            !isLoadingData && pagingData.pageNumber <= 1 ? 'disabled' : '',
+          ]"
           @click="prevPageOnClick"
         ></div>
         <div
           class="pag__next minc mi-24 mi-arrowright"
-          :class="[isLastPage ? 'disabled' : '']"
+          :class="[!isLoadingData && isLastPage ? 'disabled' : '']"
           @click="nextPageOnClick"
         ></div>
       </div>
