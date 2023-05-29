@@ -28,7 +28,7 @@
           <th><div class="text-left mw-200">Tên nhân viên</div></th>
           <th><div class="text-left mw-70">Giới tính</div></th>
           <th><div class="text-left mw-80">Ngày sinh</div></th>
-          <th class="zindex--3">
+          <th class="zindex--8">
             <div class="text-left mw-120">
               <span
                 class="text"
@@ -46,7 +46,7 @@
           <th><div class="text-left mw-200">Tên đơn vị</div></th>
           <th><div class="text-left mw-150">Số tài khoản</div></th>
           <th><div class="text-left mw-150">Tên ngân hàng</div></th>
-          <th class="zindex--3">
+          <th class="zindex--8">
             <div class="text-left mw-200">
               <span
                 class="text"
@@ -497,7 +497,7 @@ th {
   background-color: #e5e8ec;
   position: sticky;
   top: -1px;
-  z-index: 2;
+  z-index: 6;
 }
 
 tbody tr {
@@ -507,7 +507,7 @@ tbody tr {
 .th1--sticky {
   position: sticky;
   left: -1px;
-  z-index: 5;
+  z-index: 9;
 }
 
 .thn--sticky {
@@ -550,7 +550,7 @@ tbody tr {
   width: 130px;
   right: 5px;
   background-color: #fff;
-  z-index: 30;
+  /* z-index: 5; */
 }
 
 .action-list--top {
@@ -565,7 +565,7 @@ tbody tr {
 }
 
 .above {
-  z-index: 8;
+  z-index: 5;
 }
 
 .btn__expand {
@@ -732,9 +732,9 @@ td:has(.loading-item) {
 
 .th__tooltip {
   position: absolute;
-  top: 36px;
+  bottom: 28px;
   left: -8px;
-  padding: 2px;
+  padding: 1px;
   border-radius: 4px;
   width: max-content;
   color: #fff;
@@ -742,8 +742,8 @@ td:has(.loading-item) {
   font-weight: 400;
 }
 
-.zindex--3 {
-  z-index: 3;
+.zindex--8 {
+  z-index: 8;
 }
 
 .table__notification {
