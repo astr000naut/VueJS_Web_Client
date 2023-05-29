@@ -11,16 +11,16 @@
       :yes-on-click="dialog.action"
     />
   </div>
+  <BaseToastbox
+    class="toastbox__position"
+    :toast-list="toastList"
+    :remove-toast="removeToast"
+  />
   <router-view
     name="EmployeeForm"
     @update-emplist="employeeOnUpdate"
   ></router-view>
   <div class="pcontent">
-    <BaseToastbox
-      class="toastbox__position"
-      :toast-list="toastList"
-      :remove-toast="removeToast"
-    />
     <div class="pcontent__heading">
       <div class="pcontent__title">Nhân viên</div>
       <BaseButton
@@ -694,8 +694,8 @@ function btnAddOnClick() {
 
 .toastbox__position {
   position: absolute;
-  top: 14px;
-  left: 25vw;
-  z-index: 20;
+  top: 50px;
+  left: 40vw;
+  z-index: 51;
 }
 </style>
