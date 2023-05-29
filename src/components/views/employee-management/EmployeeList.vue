@@ -348,6 +348,10 @@ async function deleteEmployee() {
     isLoadingPage.value = true;
     await $axios.delete($api.employee.one(cache.value.empDeleteId));
     rowList.value.splice(cache.value.empDeleteIndex, 1);
+
+    const index = selectedEmpIds.value.indexOf(cache.value.empDeleteId);
+    if (index > -1) selectedEmpIds.value.splice(index, 1);
+
     // Update pagingData
     pagingData.value.curAmount -= 1;
     pagingData.value.totalRecord -= 1;
