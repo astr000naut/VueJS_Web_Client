@@ -730,6 +730,8 @@ td:has(.loading-item) {
 }
 
 .table__notification {
+  position: sticky;
+  left: 0px;
   padding: 18px 0px;
   display: flex;
   flex-direction: column;
