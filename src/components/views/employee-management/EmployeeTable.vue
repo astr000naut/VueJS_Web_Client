@@ -259,11 +259,13 @@
           bản ghi
         </div>
         <div
-          class="pag__prev mi mi-24 mi-arrowleft"
+          class="pag__prev minc mi-24 mi-arrowleft"
+          :class="[pagingData.pageNumber <= 1 ? 'disabled' : '']"
           @click="prevPageOnClick"
         ></div>
         <div
-          class="pag__next mi mi-24 mi-arrowright"
+          class="pag__next minc mi-24 mi-arrowright"
+          :class="[isLastPage ? 'disabled' : '']"
           @click="nextPageOnClick"
         ></div>
       </div>
@@ -272,7 +274,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 
@@ -327,16 +329,23 @@ function thOnMouseEnter(name) {
 }
 
 /**
+ * Kiểm tra xem trang hiện tại có phải là trang cuối không
+ * Author: Dũng (28/05/2023)
+ */
+const isLastPage = computed(() => {
+  return (
+    (props.pagingData.pageNumber - 1) * props.pagingData.pageSize +
+      props.pagingData.curAmount >=
+    props.pagingData.totalRecord
+  );
+});
+
+/**
  * Click next chuyển trang
  * Author: Dũng (08/05/2023)
  */
 async function nextPageOnClick() {
-  if (
-    (props.pagingData.pageNumber - 1) * props.pagingData.pageSize +
-      props.pagingData.curAmount >=
-    props.pagingData.totalRecord
-  )
-    return;
+  if (isLastPage.value) return;
   await props.pagingNextPage();
 }
 
@@ -649,10 +658,18 @@ tbody tr {
 }
 
 .pag__prev {
+  cursor: pointer;
   border-radius: 4px;
 }
 .pag__next {
+  cursor: pointer;
   border-radius: 4px;
+}
+.pag__prev.disabled {
+  cursor: not-allowed;
+}
+.pag__next.disabled {
+  cursor: not-allowed;
 }
 
 /* Check box */
