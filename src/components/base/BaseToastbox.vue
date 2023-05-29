@@ -32,10 +32,12 @@
 </template>
 
 <script setup>
+//#region init
 defineProps({
   toastList: Array,
   removeToast: Function,
 });
+//#endregion
 </script>
 
 <style scoped>

@@ -38,7 +38,11 @@
 </template>
 
 <script setup>
+//#region import
 import { ref } from "vue";
+//#endregion
+
+//#region init
 const props = defineProps({
   pholder: String,
   label: String,
@@ -58,6 +62,23 @@ const showTooltip = ref(false);
 const emits = defineEmits(["update:text", "update:noti"]);
 defineExpose({ refInput });
 
+//#endregion
+
+//#region function
+
+/**
+ * Kiểm tra keypress có là ký tự text bình thường không
+ * @param {String} key là $event.key
+ *
+ * Author: Dũng(12/05/2023)
+ */
+function isNormalCharacterKey(key) {
+  return key.length == 1 || key == "Backspace" ? true : false;
+}
+
+//#endregion
+
+//#region handle event
 /**
  * Sự kiện focus vào ô input
  *
@@ -74,16 +95,6 @@ function inputOnFocus() {
  */
 function inputOnBlur() {
   refInput.value.placeholder = props.pholder;
-}
-
-/**
- * Kiểm tra keypress có là ký tự text bình thường không
- * @param {String} key là $event.key
- *
- * Author: Dũng(12/05/2023)
- */
-function isNormalCharacterKey(key) {
-  return key.length == 1 || key == "Backspace" ? true : false;
 }
 
 /**
@@ -147,6 +158,8 @@ function labelOnMouseEnter() {
 function labelOnMouseOut() {
   showTooltip.value = false;
 }
+
+//#endregion
 </script>
 
 <style scoped>

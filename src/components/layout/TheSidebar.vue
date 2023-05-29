@@ -46,10 +46,13 @@
 </template>
 
 <script setup>
+// #region import
 import { ref, inject } from "vue";
-
 const $common = inject("$common");
 const $emitter = inject("$emitter");
+// #endregion
+
+// #region init
 const sidebarItems = ref($common.sidebarItems);
 const isSidebarBig = ref(true);
 const itemSelected = ref("");
@@ -57,21 +60,43 @@ sidebarItems.value.forEach((item) => {
   item.displayLabel = false;
   item.labelPos = 0;
 });
+// #endregion
 
-function sidebarItemOnClick(itemName) {
-  itemSelected.value = itemName;
-}
-
-function sideBarItemOnMouseOver($event, item) {
-  item.labelPos = $event.currentTarget.getBoundingClientRect().y - 56;
-  item.displayLabel = !isSidebarBig.value & true;
-}
-
+// #region function
+/**
+ * Thay đổi kích cỡ sidebar
+ *
+ * Author: Dũng (27/05/2023)
+ */
 function resizeSidebar() {
   isSidebarBig.value = !isSidebarBig.value;
   $emitter.emit("resizeSidebar", isSidebarBig.value);
   $emitter.emit("rerenderTable");
 }
+// #endregion
+
+// #region handle event
+
+/**
+ * Sự kiện click vào sidebar item
+ *
+ * Author: Dũng (27/05/2023)
+ */
+function sidebarItemOnClick(itemName) {
+  itemSelected.value = itemName;
+}
+
+/**
+ * Sự kiện mouseover qua sidebar item
+ *
+ * Author: Dũng (27/05/2023)
+ */
+function sideBarItemOnMouseOver($event, item) {
+  item.labelPos = $event.currentTarget.getBoundingClientRect().y - 56;
+  item.displayLabel = !isSidebarBig.value & true;
+}
+
+// #endregion
 </script>
 
 <style scoped>

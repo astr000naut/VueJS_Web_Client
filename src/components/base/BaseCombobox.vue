@@ -83,8 +83,12 @@
 </template>
 
 <script setup>
+//#region import
 import { ref } from "vue";
 import BaseLoader from "./BaseLoader.vue";
+//#endregion
+
+//#region init
 // Luu cac bien setTimeout
 const typingTimers = [];
 const timeoutVal = 500;
@@ -116,6 +120,9 @@ const cbox = ref({
   hasScrollbar: false,
 });
 
+//#endregion
+
+//#region function
 /**
  * Kiểm tra keypress có là ký tự text bình thường không
  * @param {String} key là $event.key
@@ -125,6 +132,34 @@ const cbox = ref({
 function isNormalCharacterKey(key) {
   return key.length == 1 || key == "Backspace" ? true : false;
 }
+
+/**
+ * Hàm tìm kiếm đơn vị
+ * @param {String} input Tên đơn vị
+ *
+ * Author: Dũng (08/05/2023)
+ */
+function filterData(input) {
+  const IdHideList = [];
+  for (let i = 0; i < props.optionList.length; ++i) {
+    if (
+      !props.optionList[i].departmentName
+        .toLowerCase()
+        .includes(input.toLowerCase().trim())
+    ) {
+      IdHideList.push(i);
+    }
+  }
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(IdHideList);
+    }, 200);
+  });
+}
+
+//#endregion
+
+//#region handle event
 
 /**
  * Sự kiện click vào item trong danh sách combobox option
@@ -237,29 +272,7 @@ function inputKeyPressHandler($event) {
   }
 }
 
-/**
- * Hàm tìm kiếm đơn vị
- * @param {String} input Tên đơn vị
- *
- * Author: Dũng (08/05/2023)
- */
-function filterData(input) {
-  const IdHideList = [];
-  for (let i = 0; i < props.optionList.length; ++i) {
-    if (
-      !props.optionList[i].departmentName
-        .toLowerCase()
-        .includes(input.toLowerCase().trim())
-    ) {
-      IdHideList.push(i);
-    }
-  }
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(IdHideList);
-    }, 200);
-  });
-}
+//#endregion
 </script>
 
 <style scoped>

@@ -274,8 +274,12 @@
 </template>
 
 <script setup>
+// #region import
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
+// #endregion
+
+// #region init
 const router = useRouter();
 
 const props = defineProps({
@@ -303,6 +307,28 @@ const tooltip = ref({
   isShowBankPlace: false,
 });
 
+// #endregion
+
+// #region computed
+/**
+ * Kiểm tra xem trang hiện tại có phải là trang cuối không
+ * Author: Dũng (28/05/2023)
+ */
+const isLastPage = computed(() => {
+  return (
+    (props.pagingData.pageNumber - 1) * props.pagingData.pageSize +
+      props.pagingData.curAmount >=
+    props.pagingData.totalRecord
+  );
+});
+// #endregion
+
+// #region handle event
+
+/**
+ * Sự kiện click vào ô check all
+ * Author: Dũng (08/05/2023)
+ */
 function thCheckboxOnClick() {
   emits("updateRowStatus", {
     type: "toggleAllPage",
@@ -327,18 +353,6 @@ function thOnMouseLeave(name) {
 function thOnMouseEnter(name) {
   tooltip.value[name] = true;
 }
-
-/**
- * Kiểm tra xem trang hiện tại có phải là trang cuối không
- * Author: Dũng (28/05/2023)
- */
-const isLastPage = computed(() => {
-  return (
-    (props.pagingData.pageNumber - 1) * props.pagingData.pageSize +
-      props.pagingData.curAmount >=
-    props.pagingData.totalRecord
-  );
-});
 
 /**
  * Click next chuyển trang
@@ -436,6 +450,8 @@ function trOnClick(rowIndex) {
 function trOnDblclick(empId) {
   router.push(`/employee/${empId}`);
 }
+
+// #endregion
 </script>
 
 <style scoped>

@@ -135,8 +135,13 @@
 </template>
 
 <script setup>
+//#region import
 import { ref } from "vue";
 import $formatter from "@/js/common/formater";
+
+//#endregion
+
+//#region init
 const props = defineProps({
   label: String,
   inputText: String,
@@ -160,6 +165,10 @@ const selectedIdx = ref(-1);
 const maxYearLimit = date.getFullYear() + 12;
 const minYearLimit = date.getFullYear() - 150;
 
+//#endregion
+
+//#region function
+
 /**
  * Gán ngày hiển thị bằng ngày đã chọn
  *
@@ -182,6 +191,37 @@ function assignCurToReal() {
   realYear.value = curYear.value;
 }
 
+/**
+ * Cập nhật lại giá trị ngày cho cell
+ * @param {Number} year Id Đơn vị
+ * @param {Number} month Tên đơn vị
+ *
+ * Author: Dũng (08/05/2023)
+ */
+function updateCell(year, month) {
+  const fd = new Date(year, month - 1, 1);
+
+  //0-7
+  const firstDay = fd.getDay();
+
+  const dc = new Date(year, month, 0);
+  const dateCount = dc.getDate();
+  cell.value = [];
+  let day = 0;
+  for (let i = 0; i < 35; ++i) {
+    if (i >= firstDay - 1) {
+      ++day;
+    }
+    cell.value[i] = day;
+    if (day == dateCount) {
+      break;
+    }
+  }
+}
+
+//#endregion
+
+//#region handle event
 /**
  * Sự kiện click vào chọn ngày hôm nay
  *
@@ -260,34 +300,6 @@ function yearItemOnClick(_e, yearChoosed) {
   curYear.value = yearChoosed;
   boxText.value = `Năm ${yearChoosed}`;
   boxStatus.value = 1;
-}
-
-/**
- * Cập nhật lại giá trị ngày cho cell
- * @param {Number} year Id Đơn vị
- * @param {Number} month Tên đơn vị
- *
- * Author: Dũng (08/05/2023)
- */
-function updateCell(year, month) {
-  const fd = new Date(year, month - 1, 1);
-
-  //0-7
-  const firstDay = fd.getDay();
-
-  const dc = new Date(year, month, 0);
-  const dateCount = dc.getDate();
-  cell.value = [];
-  let day = 0;
-  for (let i = 0; i < 35; ++i) {
-    if (i >= firstDay - 1) {
-      ++day;
-    }
-    cell.value[i] = day;
-    if (day == dateCount) {
-      break;
-    }
-  }
 }
 
 /**
@@ -418,6 +430,8 @@ function nextOnClick() {
     }
   }
 }
+
+//#endregion
 </script>
 
 <style scoped>

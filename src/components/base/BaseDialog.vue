@@ -15,6 +15,7 @@
 </template>
 
 <script setup>
+//#region init
 defineProps({
   title: String,
   message: String,
@@ -22,6 +23,7 @@ defineProps({
   yesOnClick: Function,
   noOnClick: Function,
 });
+//#endregion
 </script>
 
 <style scoped>

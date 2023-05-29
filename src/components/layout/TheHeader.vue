@@ -30,17 +30,25 @@
 </template>
 
 <script setup>
+// #region import
 import { ref, inject, onBeforeUnmount } from "vue";
-
 const $emitter = inject("$emitter");
+// #endregion
+
+// #region init
 const isHeaderBig = ref(true);
+// #endregion
+
+// #region hook
 $emitter.on("resizeSidebar", (isSidebarBig) => {
   isHeaderBig.value = isSidebarBig;
   // console.log("hi");
 });
+
 onBeforeUnmount(() => {
   $emitter.off("resizeSidebar");
 });
+// #endregion
 </script>
 
 <style scoped>

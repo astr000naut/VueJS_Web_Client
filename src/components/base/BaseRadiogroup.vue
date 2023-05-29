@@ -17,12 +17,15 @@
 </template>
 
 <script setup>
+//#region init
 defineProps({
   label: String,
   options: Array,
   radioValue: Number,
 });
 defineEmits(["update:radioValue"]);
+
+//#endregion
 </script>
 
 <style scoped>

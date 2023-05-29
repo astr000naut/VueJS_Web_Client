@@ -77,6 +77,7 @@
 </template>
 
 <script setup>
+// #region import
 import EmployeeTable from "@/components/views/employee-management/EmployeeTable.vue";
 import { ref, onMounted, onBeforeUnmount, inject } from "vue";
 import { useRouter } from "vue-router";
@@ -87,7 +88,9 @@ import $api from "@/js/api";
 import { Employee } from "@/js/model/employee";
 import $error from "@/assets/resources/error";
 import $message from "@/assets/resources/message";
+// #endregion
 
+// #region init
 const router = useRouter();
 const $emitter = inject("$emitter");
 const rowList = ref([]);
@@ -116,7 +119,9 @@ const selectedEmpIds = ref([]);
 const selectedAmountInPage = ref(0);
 const toastList = ref([]);
 var toastId = 0;
+// #endregion
 
+// #region hook
 onMounted(async () => {
   await loadEmployeeData();
   $emitter.on("rerenderTable", () => {
@@ -130,7 +135,9 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   $emitter.off("rerenderTable");
 });
+// #endregion
 
+// #region function
 /**
  * Tìm kiếm nhân viên khi nhập vào ô tìm kiếm
  * Author: Dũng (26/05/2023)
@@ -139,7 +146,6 @@ async function doSearchEmployee() {
   pagingData.value.pageNumber = 1;
   await loadEmployeeData();
 }
-
 /**
  * Tạo toast message mới và đẩy vào toastList
  * @param {Object} toast object thông báo
@@ -190,6 +196,122 @@ function setToastTimeToLive(id, timeToLive) {
   }, timeToLive);
 }
 
+/**
+ * Hiển thị cảnh báo xóa nhân viên
+ * @param {String} empCode mã nhân viên
+ *
+ * Author: Dũng (08/05/2023)
+ */
+function showDeleteOneConfirmDialog(empCode) {
+  dialog.value.message = $message.employeeDeleteConfirm(empCode);
+  dialog.value.action = async () => {
+    dialog.value.isDisplay = false;
+    await deleteEmployee();
+  };
+  dialog.value.isDisplay = true;
+}
+
+/**
+ * Hiển thị cảnh báo xóa hàng loạt
+ *
+ * Author: Dũng (08/05/2023)
+ */
+function showBatchDeleteConfirmDialog() {
+  dialog.value.message = $message.employeeMultipleDeleteConfirm(
+    selectedEmpIds.value.length
+  );
+  dialog.value.isDisplay = true;
+  dialog.value.action = async () => {
+    dialog.value.isDisplay = false;
+    await deleteBatchEmployee();
+  };
+}
+
+/**
+ * Quản lý lỗi trả về từ api
+ * Author: Dũng (08/05/2023)
+ */
+function handleApiErrorResponse(error) {
+  if (error.code == "ERR_NETWORK") {
+    pushToast({
+      type: "fail",
+      message: $error.serverDisconnected,
+    });
+  } else {
+    pushToast({
+      type: "fail",
+      message: error.response.data.UserMessage,
+    });
+  }
+}
+
+/**
+ * Gọi API xóa nhân viên
+ * Author: Dũng (08/05/2023)
+ */
+async function deleteEmployee() {
+  try {
+    isLoadingPage.value = true;
+    await $axios.delete($api.employee.one(cache.value.empDeleteId));
+    rowList.value.splice(cache.value.empDeleteIndex, 1);
+
+    const index = selectedEmpIds.value.indexOf(cache.value.empDeleteId);
+    if (index > -1) selectedEmpIds.value.splice(index, 1);
+
+    // Update pagingData
+    pagingData.value.curAmount -= 1;
+    pagingData.value.totalRecord -= 1;
+    isLoadingPage.value = false;
+    // NEED REFACTOR
+    pushToast({
+      type: "success",
+      message: $message.employeeDeleted,
+      timeToLive: 1500,
+    });
+  } catch (error) {
+    console.log(error);
+    isLoadingPage.value = false;
+    handleApiErrorResponse(error);
+  }
+}
+
+/**
+ * Gọi API xóa hàng loạt nhân viên
+ * Author: Dũng (08/05/2023)
+ */
+async function deleteBatchEmployee() {
+  try {
+    let deletedSucess = 0;
+    let idList = [];
+    let batchAmount = 0;
+    isLoadingPage.value = true;
+
+    while (selectedEmpIds.value.length) {
+      batchAmount = Math.min(20, selectedEmpIds.value.length);
+      idList = [];
+      for (let i = 0; i < batchAmount; ++i)
+        idList.push(selectedEmpIds.value[i]);
+      await $axios.post($api.employee.deleteMultiple, idList);
+      deletedSucess += batchAmount;
+      selectedEmpIds.value.splice(0, batchAmount);
+    }
+    await loadEmployeeData();
+
+    isLoadingPage.value = false;
+    pushToast({
+      type: "success",
+      message: $message.employeeMultipeDeleted(deletedSucess),
+      timeToLive: 1500,
+    });
+  } catch (error) {
+    isLoadingPage.value = false;
+    handleApiErrorResponse(error);
+  }
+}
+
+// #endregion
+
+// #region handle event
 /**
  * Sự kiện khi cập nhật trạng thái của nhân viên (select, active, toggleAll)
  * @param {Object} data object thông báo
@@ -292,115 +414,6 @@ function cancelSelectOnClick() {
  */
 function dialogCloseOnClick() {
   dialog.value.isDisplay = false;
-}
-
-/**
- * Hiển thị cảnh báo xóa nhân viên
- * @param {String} empCode mã nhân viên
- *
- * Author: Dũng (08/05/2023)
- */
-function showDeleteOneConfirmDialog(empCode) {
-  dialog.value.message = $message.employeeDeleteConfirm(empCode);
-  dialog.value.action = async () => {
-    dialog.value.isDisplay = false;
-    await deleteEmployee();
-  };
-  dialog.value.isDisplay = true;
-}
-
-/**
- * Hiển thị cảnh báo xóa hàng loạt
- *
- * Author: Dũng (08/05/2023)
- */
-function showBatchDeleteConfirmDialog() {
-  dialog.value.message = $message.employeeMultipleDeleteConfirm(
-    selectedEmpIds.value.length
-  );
-  dialog.value.isDisplay = true;
-  dialog.value.action = async () => {
-    dialog.value.isDisplay = false;
-    await deleteBatchEmployee();
-  };
-}
-
-function handleApiErrorResponse(error) {
-  if (error.code == "ERR_NETWORK") {
-    pushToast({
-      type: "fail",
-      message: $error.serverDisconnected,
-    });
-  } else {
-    pushToast({
-      type: "fail",
-      message: error.response.data.UserMessage,
-    });
-  }
-}
-
-/**
- * Gọi API xóa nhân viên
- * Author: Dũng (08/05/2023)
- */
-async function deleteEmployee() {
-  try {
-    isLoadingPage.value = true;
-    await $axios.delete($api.employee.one(cache.value.empDeleteId));
-    rowList.value.splice(cache.value.empDeleteIndex, 1);
-
-    const index = selectedEmpIds.value.indexOf(cache.value.empDeleteId);
-    if (index > -1) selectedEmpIds.value.splice(index, 1);
-
-    // Update pagingData
-    pagingData.value.curAmount -= 1;
-    pagingData.value.totalRecord -= 1;
-    isLoadingPage.value = false;
-    // NEED REFACTOR
-    pushToast({
-      type: "success",
-      message: $message.employeeDeleted,
-      timeToLive: 1500,
-    });
-  } catch (error) {
-    console.log(error);
-    isLoadingPage.value = false;
-    handleApiErrorResponse(error);
-  }
-}
-
-/**
- * Gọi API xóa hàng loạt nhân viên
- * Author: Dũng (08/05/2023)
- */
-async function deleteBatchEmployee() {
-  try {
-    let deletedSucess = 0;
-    let idList = [];
-    let batchAmount = 0;
-    isLoadingPage.value = true;
-
-    while (selectedEmpIds.value.length) {
-      batchAmount = Math.min(20, selectedEmpIds.value.length);
-      idList = [];
-      for (let i = 0; i < batchAmount; ++i)
-        idList.push(selectedEmpIds.value[i]);
-      await $axios.post($api.employee.deleteMultiple, idList);
-      deletedSucess += batchAmount;
-      selectedEmpIds.value.splice(0, batchAmount);
-    }
-    await loadEmployeeData();
-
-    isLoadingPage.value = false;
-    pushToast({
-      type: "success",
-      message: $message.employeeMultipeDeleted(deletedSucess),
-      timeToLive: 1500,
-    });
-  } catch (error) {
-    isLoadingPage.value = false;
-    handleApiErrorResponse(error);
-  }
 }
 
 /**
@@ -544,6 +557,7 @@ async function employeeOnUpdate(type, data) {
   }
   // await loadEmployeeData();
 }
+
 /**
  * Sự kiện click vào nút thêm
  * Author: Dũng (08/05/2023)
@@ -551,6 +565,8 @@ async function employeeOnUpdate(type, data) {
 function btnAddOnClick() {
   router.replace("/employee/create");
 }
+
+// #endregion
 </script>
 
 <style scoped>

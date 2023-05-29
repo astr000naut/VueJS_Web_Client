@@ -265,6 +265,7 @@
 </template>
 
 <script setup>
+// #region import
 import BaseCombobox from "@/components/base/BaseCombobox.vue";
 import BaseDatepicker from "@/components/base/BaseDatepicker.vue";
 import BaseRadiogroup from "@/components/base/BaseRadiogroup.vue";
@@ -280,7 +281,9 @@ import $api from "../../../js/api/index";
 import { Department } from "@/js/model/department";
 import $formatter from "../../../js/common/formater";
 import $error from "../../../assets/resources/error";
+// #endregion
 
+// #region init
 const emits = defineEmits(["updateEmplist"]);
 const router = useRouter();
 const route = useRoute();
@@ -314,7 +317,9 @@ const empIdentitiNumberRef = ref(null);
 const empBankNameRef = ref(null);
 const departmentList = ref([]);
 resetFormState();
+// #endregion
 
+// #region hook
 onMounted(async () => {
   try {
     form.value.isLoading = true;
@@ -327,15 +332,24 @@ onMounted(async () => {
     handleResponseStatusCode(error.response.status, error);
   }
 });
+// #endregion
+
+// #region function
 
 /**
- * Sự kiện click vào btn yes khi đóng dialog
+ * Reset giá trị employee và trạng thái form
  *
- * Author: Dũng (27/05/2023)
+ * Author: Dũng (08/05/2023)
  */
-async function formDialogYesBtnOnClick() {
-  formDialog.value.isShow = false;
-  await btnSaveOnClick();
+function resetFormState() {
+  form.value = {
+    type: route.params.id ? $enum.form.infoType : $enum.form.createType,
+    empId: route.params.id ?? "",
+    isLoading: false,
+    checkbox1: false,
+    checkbox2: false,
+  };
+  employee.value = new Employee({});
 }
 
 /**
@@ -355,21 +369,6 @@ function handleResponseStatusCode(code, error) {
   }
 }
 
-/**
- * Reset giá trị employee và trạng thái form
- *
- * Author: Dũng (08/05/2023)
- */
-function resetFormState() {
-  form.value = {
-    type: route.params.id ? $enum.form.infoType : $enum.form.createType,
-    empId: route.params.id ?? "",
-    isLoading: false,
-    checkbox1: false,
-    checkbox2: false,
-  };
-  employee.value = new Employee({});
-}
 /**
  * Lấy mã nhân viên mới
  *
@@ -696,6 +695,51 @@ async function callEditEmployeeApi() {
 }
 
 /**
+ * Focus vào ô lỗi đầu tiên
+ *
+ * Author: Dũng (08/05/2023)
+ */
+function focusOnFirstErrorInput() {
+  if (formNoti.value.empCode != "") {
+    empCodeRef.value.refInput.focus();
+    return;
+  }
+  if (formNoti.value.empFullName != "") {
+    empFullNameRef.value.refInput.focus();
+    return;
+  }
+  if (formNoti.value.empDepartmentName != "") {
+    empDepartmentNameRef.value.refInput.focus();
+    return;
+  }
+}
+
+/**
+ * Gọi API lấy thông tin nhân viên
+ * @param {String} empId Id nhân viên
+ *
+ * Author: Dũng (08/05/2023)
+ */
+async function getEmployee(empId) {
+  const response = await $axios.get($api.employee.one(empId));
+  const empFromApi = response.data;
+  employee.value = new Employee(empFromApi);
+}
+
+// #endregion
+
+// #region handle event
+/**
+ * Sự kiện click vào btn yes khi đóng dialog
+ *
+ * Author: Dũng (27/05/2023)
+ */
+async function formDialogYesBtnOnClick() {
+  formDialog.value.isShow = false;
+  await btnSaveOnClick();
+}
+
+/**
  * Sự kiện click vào nút cất
  * @param {Boolean} goBackToEmployeeList có quay lại trang employee sau khi click không
  *
@@ -769,25 +813,6 @@ async function btnSaveAndAddOnClick() {
   }
 }
 
-/**
- * Focus vào ô lỗi đầu tiên
- *
- * Author: Dũng (08/05/2023)
- */
-function focusOnFirstErrorInput() {
-  if (formNoti.value.empCode != "") {
-    empCodeRef.value.refInput.focus();
-    return;
-  }
-  if (formNoti.value.empFullName != "") {
-    empFullNameRef.value.refInput.focus();
-    return;
-  }
-  if (formNoti.value.empDepartmentName != "") {
-    empDepartmentNameRef.value.refInput.focus();
-    return;
-  }
-}
 /**
  * Sự kiện click vào nút có trong notibox
  * Author: Dũng (08/05/2023)
@@ -875,18 +900,6 @@ function empCodeTextfieldOnShiftTab() {
 function saveAndAddBtnOnTabKeydown() {
   cancelBtnRef.value.refBtn.focus();
 }
-
-/**
- * Gọi API lấy thông tin nhân viên
- * @param {String} empId Id nhân viên
- *
- * Author: Dũng (08/05/2023)
- */
-async function getEmployee(empId) {
-  const response = await $axios.get($api.employee.one(empId));
-  const empFromApi = response.data;
-  employee.value = new Employee(empFromApi);
-}
 /**
  * Sự kiện click vào nút đóng form
  * Author: Dũng (08/05/2023)
@@ -894,6 +907,8 @@ async function getEmployee(empId) {
 function btnCloseOnClick() {
   formDialog.value.isShow = true;
 }
+
+// #endregion
 </script>
 
 <style scoped>

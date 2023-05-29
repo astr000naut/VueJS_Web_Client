@@ -15,11 +15,13 @@
 </template>
 
 <script setup>
+//#region init
 defineProps({
   type: String,
   message: String,
   yesOnClick: Function,
 });
+//#endregion
 </script>
 
 <style scoped>

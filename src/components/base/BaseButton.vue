@@ -3,7 +3,11 @@
 </template>
 
 <script setup>
+//#region import
 import { ref } from "vue";
+//#endregion
+
+//#region  init
 defineProps({
   // Ten button
   bname: String,
@@ -11,6 +15,7 @@ defineProps({
 // Template reference
 const refBtn = ref(null);
 defineExpose({ refBtn });
+//#endregion
 </script>
 
 <style scoped>
