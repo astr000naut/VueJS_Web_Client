@@ -85,7 +85,7 @@ function isNormalCharacterKey(key) {
  * Author: Dũng(25/05/2023)
  */
 function inputOnFocus() {
-  refInput.value.placeholder = props.autoFillMessage ?? "";
+  if (refInput.value) refInput.value.placeholder = props.autoFillMessage ?? "";
 }
 
 /**
@@ -94,7 +94,7 @@ function inputOnFocus() {
  * Author: Dũng(25/05/2023)
  */
 function inputOnBlur() {
-  refInput.value.placeholder = props.pholder;
+  if (refInput.value) refInput.value.placeholder = props.pholder;
 }
 
 /**
