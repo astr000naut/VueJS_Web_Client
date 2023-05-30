@@ -361,7 +361,7 @@ function thOnMouseEnter(name) {
  * Author: Dũng (08/05/2023)
  */
 async function nextPageOnClick() {
-  if (isLastPage.value) return;
+  if (isLastPage.value || props.isLoadingData) return;
   await props.pagingNextPage();
 }
 
@@ -370,7 +370,7 @@ async function nextPageOnClick() {
  * Author: Dũng (08/05/2023)
  */
 async function prevPageOnClick() {
-  if (props.pagingData.pageNumber <= 1) return;
+  if (props.pagingData.pageNumber <= 1 || props.isLoadingData) return;
   await props.pagingPrevPage();
   console.log("Prev");
 }
