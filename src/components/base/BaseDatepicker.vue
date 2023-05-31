@@ -130,7 +130,7 @@
         </div>
       </div>
     </div>
-    <div class="dpicker__noti noti"></div>
+    <div class="dpicker__noti noti">{{ noti }}</div>
   </div>
 </template>
 
@@ -145,6 +145,7 @@ import $formatter from "@/js/common/formater";
 const props = defineProps({
   label: String,
   inputText: String,
+  noti: String,
 });
 const emits = defineEmits(["update:inputText"]);
 const isBoxOpen = ref(false);

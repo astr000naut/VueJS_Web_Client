@@ -67,9 +67,9 @@
                   :isrequired="true"
                   :autoFill="generateEmpCode"
                   v-model:text="employee.employeeCode"
-                  v-model:noti="formNoti.empCode"
+                  v-model:noti="formNoti.employeeCode"
                   @keydown.shift.tab.prevent="empCodeTextfieldOnShiftTab"
-                  ref="empCodeRef"
+                  ref="employeeCodeRef"
                 />
               </div>
               <div class="fu__name">
@@ -78,8 +78,8 @@
                   label="Tên"
                   :isrequired="true"
                   v-model:text="employee.employeeFullName"
-                  v-model:noti="formNoti.empFullName"
-                  ref="empFullNameRef"
+                  v-model:noti="formNoti.employeeFullName"
+                  ref="employeeFullNameRef"
                 />
               </div>
             </div>
@@ -91,9 +91,9 @@
                   :option-list="departmentList"
                   :add-new-item="addNewDepartment"
                   v-model:text="employee.departmentName"
-                  v-model:noti="formNoti.empDepartmentName"
+                  v-model:noti="formNoti.departmentName"
                   v-model:selectedItemId="employee.departmentId"
-                  ref="empDepartmentNameRef"
+                  ref="departmentNameRef"
                 />
               </div>
             </div>
@@ -103,7 +103,8 @@
                   pholder=""
                   label="Chức danh"
                   v-model:text="employee.positionName"
-                  noti=""
+                  v-model:noti="formNoti.positionName"
+                  ref="positionNameRef"
                 />
               </div>
             </div>
@@ -114,6 +115,8 @@
                 <BaseDatepicker
                   label="Ngày sinh"
                   v-model:inputText="employee.dateOfBirth"
+                  v-model:noti="formNoti.dateOfBirth"
+                  ref="dateOfBirthRef"
                 />
               </div>
               <div class="fu__gender">
@@ -134,15 +137,17 @@
                   pholder=""
                   label="Số CMND"
                   v-model:text="employee.identityNumber"
-                  noti=""
+                  v-model:noti="formNoti.identityNumber"
                   tooltip="Số chứng minh nhân dân"
-                  ref="empIdentitiNumberRef"
+                  ref="identityNumberRef"
                 />
               </div>
               <div class="fu__cmnddate">
                 <BaseDatepicker
                   label="Ngày cấp"
                   v-model:inputText="employee.identityDate"
+                  v-model:noti="formNoti.identityDate"
+                  ref="identityDateRef"
                 />
               </div>
             </div>
@@ -151,8 +156,9 @@
                 <BaseTextfield
                   pholder=""
                   label="Nơi cấp"
-                  noti=""
                   v-model:text="employee.identityPlace"
+                  v-model:noti="formNoti.identityPlace"
+                  ref="identityPlaceRef"
                 />
               </div>
             </div>
@@ -165,8 +171,9 @@
               <BaseTextfield
                 pholder=""
                 label="Địa chỉ"
-                noti=""
                 v-model:text="employee.address"
+                v-model:noti="formNoti.address"
+                ref="addressRef"
               />
             </div>
           </div>
@@ -176,8 +183,9 @@
                 pholder=""
                 label="ĐT di động"
                 tooltip="Số điện thoại di động"
-                noti=""
                 v-model:text="employee.phoneNumber"
+                v-model:noti="formNoti.phoneNumber"
+                ref="phoneNumberRef"
               />
             </div>
             <div class="fl__homephone">
@@ -185,16 +193,18 @@
                 pholder=""
                 label="ĐT cố định"
                 tooltip="Số điện thoại cố định"
-                noti=""
                 v-model:text="employee.landlineNumber"
+                v-model:noti="formNoti.landlineNumber"
+                ref="landlineNumberRef"
               />
             </div>
             <div class="fl__email">
               <BaseTextfield
                 pholder=""
                 label="Email"
-                noti=""
                 v-model:text="employee.email"
+                v-model:noti="formNoti.email"
+                ref="emailRef"
               />
             </div>
           </div>
@@ -203,17 +213,18 @@
               <BaseTextfield
                 pholder=""
                 label="Tài khoản ngân hàng"
-                noti=""
                 v-model:text="employee.bankAccount"
+                v-model:noti="formNoti.bankAccount"
+                ref="bankAccountRef"
               />
             </div>
             <div class="fl__bankname">
               <BaseTextfield
                 pholder=""
                 label="Tên ngân hàng"
-                noti=""
                 v-model:text="employee.bankName"
-                ref="empBankNameRef"
+                v-model:noti="formNoti.bankName"
+                ref="bankNameRef"
               />
             </div>
             <div class="fl__bankarea">
@@ -221,8 +232,8 @@
                 pholder=""
                 label="Chi nhánh"
                 v-model:text="employee.bankBranch"
-                ref="bankBranchInputRef"
-                noti=""
+                v-model:noti="formNoti.bankBranch"
+                ref="bankBranchRef"
                 @keydown.tab.prevent="bankAreaInputOnTabKeyDown"
                 @keydown.shift.tab.prevent="bankAreaInputOnShiftTabKeyDown"
               />
@@ -299,22 +310,46 @@ const formNoti = ref({
   showNotibox: false,
   notiboxType: "",
   notiboxMessage: "",
-  empCode: "",
-  empFullName: "",
-  empDepartmentName: "",
+
+  employeeCode: "",
+  employeeFullName: "",
+  positionName: "",
+  dateOfBirth: "",
+  departmentName: "",
+  identityNumber: "",
+  identityDate: "",
+  identityPlace: "",
+  address: "",
+  phoneNumber: "",
+  landlineNumber: "",
+  email: "",
+  bankAccount: "",
+  bankName: "",
+  bankBranch: "",
 });
-const empCodeRef = ref(null);
+
 const formDialog = ref({
   isShow: false,
 });
+const employeeCodeRef = ref(null);
+const employeeFullNameRef = ref(null);
+const departmentNameRef = ref(null);
+const positionNameRef = ref(null);
+const dateOfBirthRef = ref(null);
+const identityNumberRef = ref(null);
+const identityDateRef = ref(null);
+const identityPlaceRef = ref(null);
+const addressRef = ref(null);
+const phoneNumberRef = ref(null);
+const landlineNumberRef = ref(null);
+const emailRef = ref(null);
+const bankAccountRef = ref(null);
+const bankNameRef = ref(null);
+const bankBranchRef = ref(null);
+
 const cancelBtnRef = ref(null);
 const saveBtnRef = ref(null);
 const saveAndAddBtnRef = ref(null);
-const bankBranchInputRef = ref(null);
-const empFullNameRef = ref(null);
-const empDepartmentNameRef = ref(null);
-const empIdentitiNumberRef = ref(null);
-const empBankNameRef = ref(null);
 const departmentList = ref([]);
 resetFormState();
 // #endregion
@@ -325,7 +360,7 @@ onMounted(async () => {
     form.value.isLoading = true;
     await getDataFromApi();
     form.value.isLoading = false;
-    empCodeRef.value.refInput.focus();
+    employeeCodeRef.value.refInput.focus();
   } catch (error) {
     console.log(error);
     form.value.isLoading = false;
@@ -471,16 +506,16 @@ async function validateData() {
   // Mã trống
   if (employee.value.employeeCode.trim() == "") {
     employee.value.employeeCode = "";
-    formNoti.value.empCode = $error.fieldCannotEmpty("Mã");
+    formNoti.value.employeeCode = $error.fieldCannotEmpty("Mã");
     if (firstMessage == "") {
-      firstMessage = formNoti.value.empCode;
+      firstMessage = formNoti.value.employeeCode;
     }
   } else {
     // Mã quá dài
     if (employee.value.employeeCode.length > 50) {
-      formNoti.value.empCode = $error.fieldTooLong("Mã nhân viên", 50);
+      formNoti.value.employeeCode = $error.fieldTooLong("Mã nhân viên", 50);
       if (firstMessage == "") {
-        firstMessage = formNoti.value.empCode;
+        firstMessage = formNoti.value.employeeCode;
       }
     } else {
       // Kiểm tra trùng mã
@@ -489,9 +524,9 @@ async function validateData() {
         form.value.empId
       );
       if (isCodeExist) {
-        formNoti.value.empCode = $error.employeeCodeHasExist;
+        formNoti.value.employeeCode = $error.employeeCodeHasExist;
         if (firstMessage == "") {
-          firstMessage = formNoti.value.empCode;
+          firstMessage = formNoti.value.employeeCode;
         }
       }
     }
@@ -499,24 +534,27 @@ async function validateData() {
   // Kiểm tra tên nhân viên
   // Tên bị trống
   if (employee.value.employeeFullName.trim() == "") {
-    formNoti.value.empFullName = $error.fieldCannotEmpty("Tên");
+    formNoti.value.employeeFullName = $error.fieldCannotEmpty("Tên");
     if (firstMessage == "") {
-      firstMessage = formNoti.value.empFullName;
+      firstMessage = formNoti.value.employeeFullName;
     }
   } else {
     // Tên quá dài
     if (employee.value.employeeFullName.length > 100) {
-      formNoti.value.empFullName = $error.fieldTooLong("Tên nhân viên", 100);
+      formNoti.value.employeeFullName = $error.fieldTooLong(
+        "Tên nhân viên",
+        100
+      );
       if (firstMessage == "") {
-        firstMessage = formNoti.value.empFullName;
+        firstMessage = formNoti.value.employeeFullName;
       }
     }
   }
   // Kiểm tra thông tin đơn vị
   if (employee.value.departmentName.trim() == "") {
-    formNoti.value.empDepartmentName = $error.fieldCannotEmpty("Đơn vị");
+    formNoti.value.departmentName = $error.fieldCannotEmpty("Đơn vị");
     if (firstMessage == "") {
-      firstMessage = formNoti.value.empDepartmentName;
+      firstMessage = formNoti.value.departmentName;
     }
   } else {
     // Đơn vị không có trong danh mục
@@ -528,9 +566,9 @@ async function validateData() {
       }
     }
     if (!isDepartmentInDepartmentList) {
-      formNoti.value.empDepartmentName = $error.departmentNotInList;
+      formNoti.value.departmentName = $error.departmentNotInList;
       if (firstMessage == "") {
-        firstMessage = formNoti.value.empDepartmentName;
+        firstMessage = formNoti.value.departmentName;
       }
     }
   }
@@ -700,16 +738,16 @@ async function callEditEmployeeApi() {
  * Author: Dũng (08/05/2023)
  */
 function focusOnFirstErrorInput() {
-  if (formNoti.value.empCode != "") {
-    empCodeRef.value.refInput.focus();
+  if (formNoti.value.employeeCode != "") {
+    employeeCodeRef.value.refInput.focus();
     return;
   }
-  if (formNoti.value.empFullName != "") {
-    empFullNameRef.value.refInput.focus();
+  if (formNoti.value.employeeFullName != "") {
+    employeeFullNameRef.value.refInput.focus();
     return;
   }
-  if (formNoti.value.empDepartmentName != "") {
-    empDepartmentNameRef.value.refInput.focus();
+  if (formNoti.value.departmentName != "") {
+    departmentNameRef.value.refInput.focus();
     return;
   }
 }
@@ -804,7 +842,7 @@ async function btnSaveAndAddOnClick() {
       await router.replace("/employee/create");
       resetFormState();
       await fetchNewEmployeeCode();
-      empCodeRef.value.refInput.focus();
+      employeeCodeRef.value.refInput.focus();
     }
   } catch (error) {
     console.log(error);
@@ -856,7 +894,7 @@ function cancelBtnOnShiftTabKeydown() {
  * Author: Dũng (08/05/2023)
  */
 function cancelBtnOnTabKeydown() {
-  empCodeRef.value.refInput.focus();
+  employeeCodeRef.value.refInput.focus();
 }
 /**
  * Sự kiện tab của ô chi nhánh
@@ -870,14 +908,14 @@ function bankAreaInputOnTabKeyDown() {
  * Author: Dũng (08/05/2023)
  */
 function saveBtnOnShiftTabKeydown() {
-  bankBranchInputRef.value.refInput.focus();
+  bankBranchRef.value.refInput.focus();
 }
 /**
  * Sự kiện shift tab của ô chi nhánh
  * Author: Dũng (08/05/2023)
  */
 function bankAreaInputOnShiftTabKeyDown() {
-  empBankNameRef.value.refInput.focus();
+  bankNameRef.value.refInput.focus();
 }
 /**
  * Sự kiện shift tab của nút cất và thêm
