@@ -58,7 +58,7 @@
             <div class="text-left mw-200">{{ lang.tableHeader.empDepart }}</div>
           </th>
           <th>
-            <div class="text-left mw-150">
+            <div class="text-right mw-150">
               {{ lang.tableHeader.empBankAcc }}
             </div>
           </th>
