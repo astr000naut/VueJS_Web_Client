@@ -20,13 +20,18 @@
           />
         </div>
         <button
-          class="select__button mi"
-          :class="[
-            cbox.isOptionboxOpen ? 'mi-cbox-arrowup' : 'mi-cbox-arrowdown',
-          ]"
+          class="select__button"
           tabindex="-1"
           @click="selectButtonOnClick"
-        ></button>
+        >
+          <i
+            :class="[
+              cbox.isOptionboxOpen
+                ? 'fas fa-chevron-up'
+                : 'fas fa-chevron-down',
+            ]"
+          ></i>
+        </button>
       </div>
       <div
         :class="[cbox.isOptionboxOpen ? '' : 'display--none']"

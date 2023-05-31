@@ -235,12 +235,3 @@ background-position: -124px -307px;
 background-position: -896px -358px;
 }
 
-/* Combobox */
-.mi-cbox-arrowdown {
-background-position: -1117px -352px;
-}
-
-.mi-cbox-arrowup {
-background-position: -1117px -350px;
-transform: rotate(180deg);
-}
