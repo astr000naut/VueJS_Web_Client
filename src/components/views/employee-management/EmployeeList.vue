@@ -261,6 +261,10 @@ async function deleteEmployee() {
     // Update pagingData
     pagingData.value.curAmount -= 1;
     pagingData.value.totalRecord -= 1;
+    if (pagingData.value.curAmount == 0) {
+      if (pagingData.value.pageNumber > 1) --pagingData.value.pageNumber;
+      await loadEmployeeData();
+    }
     isLoadingPage.value = false;
     // NEED REFACTOR
     pushToast({
@@ -295,6 +299,8 @@ async function deleteBatchEmployee() {
       deletedSucess += batchAmount;
       selectedEmpIds.value.splice(0, batchAmount);
     }
+    // Load lại từ trang 1
+    pagingData.value.pageNumber = 1;
     await loadEmployeeData();
 
     isLoadingPage.value = false;
@@ -533,6 +539,9 @@ async function employeeOnUpdate(type, data) {
         selected: false,
         emp: data,
       });
+      if (pagingData.value.curAmount > 50) {
+        await loadEmployeeData();
+      }
       pushToast({
         type: "success",
         message: $message.employeeCreated,
