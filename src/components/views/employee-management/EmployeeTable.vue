@@ -12,22 +12,23 @@
             <div class="align-center mw-40">
               <div
                 class="t__checkbox mi-24"
-                :class="[
-                  selectedAmountInPage &&
-                  selectedAmountInPage > Math.min(1, rowList.length - 1)
-                    ? 'selected'
-                    : '',
-                ]"
+                :class="[selectedAmountInPage > 0 ? 'selected' : '']"
                 @click="thCheckboxOnClick"
               >
-                <i class="fas fa-minus"></i>
+                <i
+                  :class="[
+                    selectedAmountInPage == rowList.length
+                      ? 'fas fa-check'
+                      : 'fas fa-minus',
+                  ]"
+                ></i>
               </div>
             </div>
           </th>
           <th><div class="text-left mw-100">Mã nhân viên</div></th>
           <th><div class="text-left mw-200">Tên nhân viên</div></th>
           <th><div class="text-left mw-70">Giới tính</div></th>
-          <th><div class="text-left mw-80">Ngày sinh</div></th>
+          <th><div class="text-left mw-90">Ngày sinh</div></th>
           <th class="zindex--8">
             <div class="text-left mw-120">
               <span
@@ -125,7 +126,7 @@
               </div>
             </td>
             <td>
-              <div class="text-right">{{ emp.identityNumber }}</div>
+              <div class="text-left">{{ emp.identityNumber }}</div>
             </td>
             <td>
               <div class="text-left">{{ emp.positionName }}</div>
@@ -196,81 +197,75 @@
       <div class="noti__img"></div>
       <div class="noti__text">Không có dữ liệu</div>
     </div>
-    <div class="table__pag">
-      <div class="pag__leftside">
-        <span
-          >Tổng số: <strong>{{ pagingData.totalRecord }}</strong> bản ghi</span
-        >
-      </div>
-      <div class="pag__rightside">
-        <div class="pag__recordcount">
-          <div
-            class="record__amount__select"
-            v-show="table.recordAmountOpen"
-            :class="[
-              pagingData.curAmount > 3
-                ? 'record__amount__select--top'
-                : 'record__amount__select--bottom',
-            ]"
-          >
-            <ul>
-              <li
-                v-for="recordAmount in table.recordAmountList"
-                :key="recordAmount"
+  </div>
+  <div class="table__pag">
+    <div class="pag__leftside">
+      <span
+        >Tổng số: <strong>{{ pagingData.totalRecord }}</strong> bản ghi</span
+      >
+    </div>
+    <div class="pag__rightside">
+      <div class="pag__recordcount">
+        <div class="record__amount__select" v-show="table.recordAmountOpen">
+          <ul>
+            <li
+              v-for="recordAmount in table.recordAmountList"
+              :key="recordAmount"
+            >
+              <div
+                class="record__amount__option"
+                :class="[
+                  recordAmount == pagingData.pageSize ? 'amount--selected' : '',
+                ]"
+                @click="recordAmountOptionOnClick(recordAmount)"
               >
-                <div
-                  class="record__amount__option"
-                  :class="[
-                    recordAmount == pagingData.pageSize
-                      ? 'amount--selected'
-                      : '',
-                  ]"
-                  @click="recordAmountOptionOnClick(recordAmount)"
-                >
-                  {{ recordAmount }} bản ghi trên 1 trang
-                </div>
-              </li>
-            </ul>
-          </div>
-          <span>Số bản ghi / trang: {{ pagingData.pageSize }}</span>
-          <div
-            class="pag__arrowdown mi mi-24 mi-arrowdown-small"
-            :class="[
-              table.recordAmountOpen
-                ? 'mi-arrowup-small'
-                : 'mi-arrowdown-small',
-            ]"
-            @click="pagArrowdownOnClick"
-          ></div>
+                {{ recordAmount }} bản ghi trên 1 trang
+              </div>
+            </li>
+          </ul>
         </div>
-        <div class="pag__info">
+        <span>Số bản ghi / trang: {{ pagingData.pageSize }}</span>
+        <div
+          class="pag__arrowdown mi mi-24 mi-arrowdown-small"
+          :class="[
+            table.recordAmountOpen ? 'mi-arrowup-small' : 'mi-arrowdown-small',
+          ]"
+          @click="pagArrowdownOnClick"
+        ></div>
+      </div>
+      <div class="pag__info">
+        <div class="info__left">
           {{
             pagingData.pageSize * (pagingData.pageNumber - 1) +
             (rowList.length > 0 ? 1 : 0)
           }}
-          -
-          <span v-show="!isLoadingData">
+        </div>
+        <div class="info__minus">-</div>
+        <div class="info__right">
+          <div class="right__number" v-show="!isLoadingData">
             <strong>{{
               pagingData.pageSize * (pagingData.pageNumber - 1) +
               pagingData.curAmount
             }}</strong>
-          </span>
-          <span v-show="isLoadingData"><strong>xx</strong> </span>
-          bản ghi
+          </div>
+          <div class="right__loading" v-show="isLoadingData">
+            <div class="loading-item"></div>
+          </div>
         </div>
-        <div
-          class="pag__prev minc mi-24 mi-arrowleft"
-          :class="[
-            !isLoadingData && pagingData.pageNumber <= 1 ? 'disabled' : '',
-          ]"
-          @click="prevPageOnClick"
-        ></div>
-        <div
-          class="pag__next minc mi-24 mi-arrowright"
-          :class="[!isLoadingData && isLastPage ? 'disabled' : '']"
-          @click="nextPageOnClick"
-        ></div>
+        <div class="info__text">bản ghi</div>
       </div>
+      <div
+        class="pag__prev minc mi-24 mi-arrowleft"
+        :class="[
+          !isLoadingData && pagingData.pageNumber <= 1 ? 'disabled' : '',
+        ]"
+        @click="prevPageOnClick"
+      ></div>
+      <div
+        class="pag__next minc mi-24 mi-arrowright"
+        :class="[!isLoadingData && isLastPage ? 'disabled' : '']"
+        @click="nextPageOnClick"
+      ></div>
     </div>
   </div>
 </template>
