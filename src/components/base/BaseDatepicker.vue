@@ -1,5 +1,5 @@
 <template>
-  <div class="dpicker">
+  <div class="dpicker" :class="[noti.length > 0 ? 'error-noti' : '']">
     <div class="dpicker__label">{{ label }}</div>
     <div class="dpicker__selector">
       <div class="dpicker__input">
@@ -7,7 +7,9 @@
           type="text"
           :placeholder="$formatter.dateFormat"
           :value="inputText"
+          ref="refInput"
           @input="$emit('update:inputText', $event.target.value)"
+          @keyup="inputKeyupHandler"
         />
         <div
           class="dpicker__icon mi mi-24 mi-calendar"
@@ -142,12 +144,14 @@ import $formatter from "@/js/common/formater";
 //#endregion
 
 //#region init
+const refInput = ref(null);
 const props = defineProps({
   label: String,
   inputText: String,
   noti: String,
 });
-const emits = defineEmits(["update:inputText"]);
+const emits = defineEmits(["update:inputText", "update:noti"]);
+defineExpose({ refInput });
 const isBoxOpen = ref(false);
 
 // 0 -> Day 1-> Month 2 -> Year
@@ -223,6 +227,16 @@ function updateCell(year, month) {
 //#endregion
 
 //#region handle event
+
+/**
+ * Sự kiện nhập vào ô input
+ *
+ * Author: Dũng (08/05/2023)
+ */
+function inputKeyupHandler() {
+  emits("update:noti", "");
+}
+
 /**
  * Sự kiện click vào chọn ngày hôm nay
  *
@@ -311,6 +325,7 @@ function yearItemOnClick(_e, yearChoosed) {
 function miCalendarOnClick() {
   // Init
   if (!isBoxOpen.value) {
+    emits("update:noti", "");
     if ($formatter.isValidDate(props.inputText)) {
       // Nếu ngày tháng nhập vào hợp lệ
       // Reset ngày tháng năm về ngày tháng đã nhập

@@ -306,6 +306,7 @@ const form = ref({
   checkbox2: false,
 });
 const employee = ref({});
+var firstErrorRef = null;
 const formNoti = ref({
   showNotibox: false,
   notiboxType: "",
@@ -499,24 +500,19 @@ async function getDataFromApi() {
  * Author: Dũng (08/05/2023)
  */
 async function validateData() {
-  // Giá trị text lỗi của ô bị lỗi đầu tiên
-  let firstMessage = "";
+  firstErrorRef = null;
 
   // Validate mã nhân viên
   // Mã trống
   if (employee.value.employeeCode.trim() == "") {
     employee.value.employeeCode = "";
     formNoti.value.employeeCode = $error.fieldCannotEmpty("Mã");
-    if (firstMessage == "") {
-      firstMessage = formNoti.value.employeeCode;
-    }
+    firstErrorRef = firstErrorRef ?? employeeCodeRef;
   } else {
     // Mã quá dài
     if (employee.value.employeeCode.length > 50) {
       formNoti.value.employeeCode = $error.fieldTooLong("Mã nhân viên", 50);
-      if (firstMessage == "") {
-        firstMessage = formNoti.value.employeeCode;
-      }
+      firstErrorRef = firstErrorRef ?? employeeCodeRef;
     } else {
       // Kiểm tra trùng mã
       const isCodeExist = await isEmpCodeExist(
@@ -525,9 +521,7 @@ async function validateData() {
       );
       if (isCodeExist) {
         formNoti.value.employeeCode = $error.employeeCodeHasExist;
-        if (firstMessage == "") {
-          firstMessage = formNoti.value.employeeCode;
-        }
+        firstErrorRef = firstErrorRef ?? employeeCodeRef;
       }
     }
   }
@@ -535,9 +529,7 @@ async function validateData() {
   // Tên bị trống
   if (employee.value.employeeFullName.trim() == "") {
     formNoti.value.employeeFullName = $error.fieldCannotEmpty("Tên");
-    if (firstMessage == "") {
-      firstMessage = formNoti.value.employeeFullName;
-    }
+    firstErrorRef = firstErrorRef ?? employeeFullNameRef;
   } else {
     // Tên quá dài
     if (employee.value.employeeFullName.length > 100) {
@@ -545,17 +537,14 @@ async function validateData() {
         "Tên nhân viên",
         100
       );
-      if (firstMessage == "") {
-        firstMessage = formNoti.value.employeeFullName;
-      }
+      firstErrorRef = firstErrorRef ?? employeeFullNameRef;
     }
   }
+
   // Kiểm tra thông tin đơn vị
   if (employee.value.departmentName.trim() == "") {
     formNoti.value.departmentName = $error.fieldCannotEmpty("Đơn vị");
-    if (firstMessage == "") {
-      firstMessage = formNoti.value.departmentName;
-    }
+    firstErrorRef = firstErrorRef ?? departmentNameRef;
   } else {
     // Đơn vị không có trong danh mục
     let isDepartmentInDepartmentList = false;
@@ -567,24 +556,20 @@ async function validateData() {
     }
     if (!isDepartmentInDepartmentList) {
       formNoti.value.departmentName = $error.departmentNotInList;
-      if (firstMessage == "") {
-        firstMessage = formNoti.value.departmentName;
-      }
+      firstErrorRef = firstErrorRef ?? departmentNameRef;
     }
   }
 
   // Kiểm tra thông tin chức danh
   if (employee.value.positionName.length > 255) {
-    if (firstMessage == "") {
-      firstMessage = $error.fieldTooLong("Chức danh", 255);
-    }
+    formNoti.value.positionName = $error.fieldTooLong("Chức danh", 255);
+    firstErrorRef = firstErrorRef ?? positionNameRef;
   }
 
   // Kiểm tra thông tin CMND
   if (!/^$|^\d{9}$|^\d{12}$/.test(employee.value.identityNumber)) {
-    if (firstMessage == "") {
-      firstMessage = $error.fieldWrongFormat("số CMND");
-    }
+    formNoti.value.identityNumber = $error.fieldWrongFormat("số CMND");
+    firstErrorRef = firstErrorRef ?? identityNumberRef;
   }
 
   // Kiểm tra ngày sinh
@@ -593,18 +578,16 @@ async function validateData() {
     employee.value.dateOfBirth.length > 0 &&
     !$formatter.isValidDate(employee.value.dateOfBirth)
   ) {
-    if (firstMessage == "") {
-      firstMessage = $error.fieldWrongFormat("ngày sinh");
-    }
+    formNoti.value.dateOfBirth = $error.fieldWrongFormat("ngày sinh");
+    firstErrorRef = firstErrorRef ?? dateOfBirthRef;
   }
   // Ngày sinh ở tương lai
   if (
     employee.value.dateOfBirth.length > 0 &&
     !$formatter.isPastDate(employee.value.dateOfBirth)
   ) {
-    if (firstMessage == "") {
-      firstMessage = $error.fieldNotValid("Ngày sinh");
-    }
+    formNoti.value.dateOfBirth = $error.fieldNotValid("Ngày sinh");
+    firstErrorRef = firstErrorRef ?? dateOfBirthRef;
   }
 
   // Kiểm tra ngày cấp CMND
@@ -612,73 +595,85 @@ async function validateData() {
     employee.value.identityDate.length > 0 &&
     !$formatter.isValidDate(employee.value.identityDate)
   ) {
-    if (firstMessage == "") {
-      firstMessage = $error.fieldWrongFormat("ngày cấp");
-    }
+    formNoti.value.identityDate = $error.fieldNotValid("Ngày cấp");
+    firstErrorRef = firstErrorRef ?? identityDateRef;
   }
   // Ngày cấp ở tương lai
   if (
     employee.value.identityDate.length > 0 &&
     !$formatter.isPastDate(employee.value.identityDate)
   ) {
-    if (firstMessage == "") {
-      firstMessage = $error.fieldNotValid("Ngày cấp");
-    }
+    formNoti.value.identityDate = $error.fieldNotValid("Ngày cấp");
+    firstErrorRef = firstErrorRef ?? identityDateRef;
+  }
+
+  // Nơi cấp
+  if (employee.value.identityPlace.length > 255) {
+    formNoti.value.identityPlace = $error.fieldTooLong("Nơi cấp", 255);
+    firstErrorRef = firstErrorRef ?? identityPlaceRef;
+  }
+
+  // Địa chỉ
+  if (employee.value.identityPlace.length > 255) {
+    formNoti.value.address = $error.fieldTooLong("Địa chỉ", 255);
+    firstErrorRef = firstErrorRef ?? addressRef;
   }
 
   // Kiểm tra số điện thoại di động
   if (!/^$|^\+?\d{0,50}$/.test(employee.value.phoneNumber)) {
-    if (firstMessage == "") {
-      firstMessage = $error.fieldWrongFormat("số điện thoại di động");
-    }
+    formNoti.value.phoneNumber = $error.fieldWrongFormat(
+      "số điện thoại di động"
+    );
+    firstErrorRef = firstErrorRef ?? phoneNumberRef;
   }
 
   // Kiểm tra số điện thoại cố định
   if (!/^$|^\+?\d{0,50}$/.test(employee.value.landlineNumber)) {
-    if (firstMessage == "") {
-      firstMessage = $error.fieldWrongFormat("số điện thoại cố định");
-    }
+    formNoti.value.landlineNumber = $error.fieldWrongFormat(
+      "số điện thoại cố định"
+    );
+    firstErrorRef = firstErrorRef ?? landlineNumberRef;
   }
   // Kiểm tra Email
   // Email đúng định dạng
   if (!/^$|^\w+@\w+\..*\w$/.test(employee.value.email)) {
-    if (firstMessage == "") {
-      firstMessage = $error.fieldWrongFormat("email");
-    }
+    formNoti.value.email = $error.fieldWrongFormat("email");
+    firstErrorRef = firstErrorRef ?? emailRef;
   }
 
   // Email quá dài
   if (employee.value.email.length > 50) {
-    if (firstMessage == "") {
-      firstMessage = $error.fieldTooLong("Email", 50);
-    }
+    formNoti.value.email = $error.fieldTooLong("Email", 50);
+    firstErrorRef = firstErrorRef ?? emailRef;
   }
 
   // Kiểm tra số tài khoản ngân hàng
   if (!/^$|^\d{0,50}$/.test(employee.value.bankAccount)) {
-    if (firstMessage == "") {
-      firstMessage = $error.fieldWrongFormat("số tài khoản ngân hàng");
-    }
+    formNoti.value.bankAccount = $error.fieldWrongFormat(
+      "số tài khoản ngân hàng"
+    );
+    firstErrorRef = firstErrorRef ?? bankAccountRef;
   }
 
   // Kiểm tra tên ngân hàng
   if (employee.value.bankName.length > 255) {
-    if (firstMessage == "") {
-      firstMessage = $error.fieldTooLong("Tên ngân hàng", 255);
-    }
+    formNoti.value.bankName = $error.fieldTooLong("Tên ngân hàng", 255);
+    firstErrorRef = firstErrorRef ?? bankNameRef;
   }
 
   // Kiểm tra chi nhánh ngân hàng
   if (employee.value.bankBranch.length > 255) {
-    if (firstMessage == "") {
-      firstMessage = $error.fieldTooLong("Chi nhánh ngân hàng", 255);
-    }
+    formNoti.value.bankBranch = $error.fieldTooLong("Chi nhánh ngân hàng", 255);
+    if (firstErrorRef == null) firstErrorRef = bankBranchRef;
+    // firstErrorRef =
+    //   firstErrorRef ?? bankBranchRef;
   }
 
-  if (firstMessage != "") {
+  if (firstErrorRef != null) {
     // Update notibox value
     formNoti.value.notiboxType = "alert";
-    formNoti.value.notiboxMessage = firstMessage;
+    formNoti.value.notiboxMessage =
+      "Dữ liệu không hợp lệ, vui lòng kiểm tra lại";
   } else {
     formNoti.value.notiboxMessage = "";
   }
@@ -738,18 +733,7 @@ async function callEditEmployeeApi() {
  * Author: Dũng (08/05/2023)
  */
 function focusOnFirstErrorInput() {
-  if (formNoti.value.employeeCode != "") {
-    employeeCodeRef.value.refInput.focus();
-    return;
-  }
-  if (formNoti.value.employeeFullName != "") {
-    employeeFullNameRef.value.refInput.focus();
-    return;
-  }
-  if (formNoti.value.departmentName != "") {
-    departmentNameRef.value.refInput.focus();
-    return;
-  }
+  firstErrorRef.value.refInput.focus();
 }
 
 /**
