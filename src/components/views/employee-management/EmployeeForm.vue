@@ -674,8 +674,7 @@ async function validateData() {
   if (firstErrorRef != null) {
     // Update notibox value
     formNoti.value.notiboxType = "alert";
-    formNoti.value.notiboxMessage =
-      "Dữ liệu không hợp lệ, vui lòng kiểm tra lại";
+    formNoti.value.notiboxMessage = $error.invalidInput;
   } else {
     formNoti.value.notiboxMessage = "";
   }
