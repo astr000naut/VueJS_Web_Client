@@ -471,14 +471,14 @@ async function validateData() {
   // Mã trống
   if (employee.value.employeeCode.trim() == "") {
     employee.value.employeeCode = "";
-    formNoti.value.empCode = $error.employeeCodeEmpty;
+    formNoti.value.empCode = $error.fieldCannotEmpty("Mã");
     if (firstMessage == "") {
       firstMessage = formNoti.value.empCode;
     }
   } else {
     // Mã quá dài
     if (employee.value.employeeCode.length > 50) {
-      formNoti.value.empCode = $error.employeeCodeTooLong;
+      formNoti.value.empCode = $error.fieldTooLong("Mã nhân viên", 50);
       if (firstMessage == "") {
         firstMessage = formNoti.value.empCode;
       }
@@ -499,14 +499,14 @@ async function validateData() {
   // Kiểm tra tên nhân viên
   // Tên bị trống
   if (employee.value.employeeFullName.trim() == "") {
-    formNoti.value.empFullName = $error.employeeNameEmpty;
+    formNoti.value.empFullName = $error.fieldCannotEmpty("Tên");
     if (firstMessage == "") {
       firstMessage = formNoti.value.empFullName;
     }
   } else {
     // Tên quá dài
     if (employee.value.employeeFullName.length > 100) {
-      formNoti.value.empFullName = $error.employeeNameTooLong;
+      formNoti.value.empFullName = $error.fieldTooLong("Tên nhân viên", 100);
       if (firstMessage == "") {
         firstMessage = formNoti.value.empFullName;
       }
@@ -514,7 +514,7 @@ async function validateData() {
   }
   // Kiểm tra thông tin đơn vị
   if (employee.value.departmentName.trim() == "") {
-    formNoti.value.empDepartmentName = $error.departmentEmpty;
+    formNoti.value.empDepartmentName = $error.fieldCannotEmpty("Đơn vị");
     if (firstMessage == "") {
       firstMessage = formNoti.value.empDepartmentName;
     }
@@ -538,14 +538,14 @@ async function validateData() {
   // Kiểm tra thông tin chức danh
   if (employee.value.positionName.length > 255) {
     if (firstMessage == "") {
-      firstMessage = $error.positionNameTooLong;
+      firstMessage = $error.fieldTooLong("Chức danh", 255);
     }
   }
 
   // Kiểm tra thông tin CMND
   if (!/^$|^\d{9}$|^\d{12}$/.test(employee.value.identityNumber)) {
     if (firstMessage == "") {
-      firstMessage = $error.identityNumberWrongFormat;
+      firstMessage = $error.fieldWrongFormat("số CMND");
     }
   }
 
@@ -556,7 +556,7 @@ async function validateData() {
     !$formatter.isValidDate(employee.value.dateOfBirth)
   ) {
     if (firstMessage == "") {
-      firstMessage = $error.dateOfBirthWrongFormat;
+      firstMessage = $error.fieldWrongFormat("ngày sinh");
     }
   }
   // Ngày sinh ở tương lai
@@ -565,7 +565,7 @@ async function validateData() {
     !$formatter.isPastDate(employee.value.dateOfBirth)
   ) {
     if (firstMessage == "") {
-      firstMessage = $error.dateOfBirthInvalid;
+      firstMessage = $error.fieldNotValid("Ngày sinh");
     }
   }
 
@@ -575,7 +575,7 @@ async function validateData() {
     !$formatter.isValidDate(employee.value.identityDate)
   ) {
     if (firstMessage == "") {
-      firstMessage = $error.identityDateWrongFormat;
+      firstMessage = $error.fieldWrongFormat("ngày cấp");
     }
   }
   // Ngày cấp ở tương lai
@@ -584,56 +584,56 @@ async function validateData() {
     !$formatter.isPastDate(employee.value.identityDate)
   ) {
     if (firstMessage == "") {
-      firstMessage = $error.identityDateInvalid;
+      firstMessage = $error.fieldNotValid("Ngày cấp");
     }
   }
 
   // Kiểm tra số điện thoại di động
   if (!/^$|^\+?\d{0,50}$/.test(employee.value.phoneNumber)) {
     if (firstMessage == "") {
-      firstMessage = $error.phoneNumberWrongFormat;
+      firstMessage = $error.fieldWrongFormat("số điện thoại di động");
     }
   }
 
   // Kiểm tra số điện thoại cố định
   if (!/^$|^\+?\d{0,50}$/.test(employee.value.landlineNumber)) {
     if (firstMessage == "") {
-      firstMessage = $error.landlineNumberWrongFormat;
+      firstMessage = $error.fieldWrongFormat("số điện thoại cố định");
     }
   }
   // Kiểm tra Email
   // Email đúng định dạng
   if (!/^$|^\w+@\w+\..*\w$/.test(employee.value.email)) {
     if (firstMessage == "") {
-      firstMessage = $error.emailWrongFormat;
+      firstMessage = $error.fieldWrongFormat("email");
     }
   }
 
   // Email quá dài
   if (employee.value.email.length > 50) {
     if (firstMessage == "") {
-      firstMessage = $error.emailTooLong;
+      firstMessage = $error.fieldTooLong("Email", 50);
     }
   }
 
   // Kiểm tra số tài khoản ngân hàng
   if (!/^$|^\d{0,50}$/.test(employee.value.bankAccount)) {
     if (firstMessage == "") {
-      firstMessage = $error.bankAccountWrongFormat;
+      firstMessage = $error.fieldWrongFormat("số tài khoản ngân hàng");
     }
   }
 
   // Kiểm tra tên ngân hàng
   if (employee.value.bankName.length > 255) {
     if (firstMessage == "") {
-      firstMessage = $error.bankNameTooLong;
+      firstMessage = $error.fieldTooLong("Tên ngân hàng", 255);
     }
   }
 
   // Kiểm tra chi nhánh ngân hàng
   if (employee.value.bankBranch.length > 255) {
     if (firstMessage == "") {
-      firstMessage = $error.bankBranchTooLong;
+      firstMessage = $error.fieldTooLong("Chi nhánh ngân hàng", 255);
     }
   }
 
