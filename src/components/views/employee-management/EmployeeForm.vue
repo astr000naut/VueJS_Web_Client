@@ -292,12 +292,14 @@ import $api from "../../../js/api/index";
 import { Department } from "@/js/model/department";
 import $formatter from "../../../js/common/formater";
 import $error from "../../../assets/resources/error";
+var _ = require("lodash");
 // #endregion
 
 // #region init
 const emits = defineEmits(["updateEmplist"]);
 const router = useRouter();
 const route = useRoute();
+var oldEmployee = null;
 const form = ref({
   type: "",
   empId: "",
@@ -746,6 +748,7 @@ async function getEmployee(empId) {
   const response = await $axios.get($api.employee.one(empId));
   const empFromApi = response.data;
   employee.value = new Employee(empFromApi);
+  oldEmployee = new Employee(empFromApi);
 }
 
 // #endregion
@@ -927,6 +930,9 @@ function saveAndAddBtnOnTabKeydown() {
  * Author: Dũng (08/05/2023)
  */
 function btnCloseOnClick() {
+  if (_.isEqual(oldEmployee, employee.value)) {
+    router.replace("/employee");
+  }
   formDialog.value.isShow = true;
 }
 
