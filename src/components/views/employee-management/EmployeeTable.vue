@@ -25,10 +25,18 @@
               </div>
             </div>
           </th>
-          <th><div class="text-left mw-100">Mã nhân viên</div></th>
-          <th><div class="text-left mw-200">Tên nhân viên</div></th>
-          <th><div class="text-left mw-70">Giới tính</div></th>
-          <th><div class="text-left mw-90">Ngày sinh</div></th>
+          <th>
+            <div class="text-left mw-100">{{ lang.tableHeader.empCode }}</div>
+          </th>
+          <th>
+            <div class="text-left mw-200">{{ lang.tableHeader.empName }}</div>
+          </th>
+          <th>
+            <div class="text-left mw-70">{{ lang.tableHeader.empGender }}</div>
+          </th>
+          <th>
+            <div class="text-left mw-90">{{ lang.tableHeader.empDob }}</div>
+          </th>
           <th class="zindex--8">
             <div class="text-left mw-120">
               <span
@@ -36,17 +44,29 @@
                 @mouseenter="thOnMouseEnter('isShowIdentityNumber')"
                 @mouseleave="thOnMouseLeave('isShowIdentityNumber')"
               >
-                Số CMND
+                {{ lang.tableHeader.empIdentity }}
               </span>
               <div class="th__tooltip" v-show="tooltip.isShowIdentityNumber">
-                Số chứng minh nhân dân
+                {{ lang.tableHeader.empIdentityTooltip }}
               </div>
             </div>
           </th>
-          <th><div class="text-left mw-150">Chức danh</div></th>
-          <th><div class="text-left mw-200">Tên đơn vị</div></th>
-          <th><div class="text-left mw-150">Số tài khoản</div></th>
-          <th><div class="text-left mw-150">Tên ngân hàng</div></th>
+          <th>
+            <div class="text-left mw-150">{{ lang.tableHeader.empPos }}</div>
+          </th>
+          <th>
+            <div class="text-left mw-200">{{ lang.tableHeader.empDepart }}</div>
+          </th>
+          <th>
+            <div class="text-left mw-150">
+              {{ lang.tableHeader.empBankAcc }}
+            </div>
+          </th>
+          <th>
+            <div class="text-left mw-150">
+              {{ lang.tableHeader.empBankName }}
+            </div>
+          </th>
           <th class="zindex--8">
             <div class="text-left mw-200">
               <span
@@ -54,15 +74,15 @@
                 @mouseenter="thOnMouseEnter('isShowBankPlace')"
                 @mouseleave="thOnMouseLeave('isShowBankPlace')"
               >
-                Chi nhánh TK ngân hàng
+                {{ lang.tableHeader.empBankBranch }}
               </span>
               <div class="th__tooltip" v-show="tooltip.isShowBankPlace">
-                Chi nhánh tài khoản ngân hàng
+                {{ lang.tableHeader.empBankBranchTooltip }}
               </div>
             </div>
           </th>
           <th class="thn--sticky">
-            <div class="text-left mw-80">Chức năng</div>
+            <div class="text-left mw-80">{{ lang.tableHeader.tool }}</div>
           </th>
         </tr>
       </thead>
@@ -272,8 +292,9 @@
 
 <script setup>
 // #region import
-import { ref, computed } from "vue";
+import { ref, computed, inject } from "vue";
 import { useRouter } from "vue-router";
+const lang = inject("lang");
 // #endregion
 
 // #region init

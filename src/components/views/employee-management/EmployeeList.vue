@@ -4,7 +4,7 @@
   </div>
   <div class="page__wrapper" v-show="dialog.isDisplay">
     <BaseDialog
-      title="Xác nhận xóa nhân viên"
+      :title="lang.dialog.deleteConfirmation.title"
       :message="dialog.message"
       :close-on-click="dialogCloseOnClick"
       :no-on-click="dialogCloseOnClick"
@@ -22,9 +22,9 @@
   ></router-view>
   <div class="pcontent">
     <div class="pcontent__heading">
-      <div class="pcontent__title">Nhân viên</div>
+      <div class="pcontent__title">{{ lang.employeeList.title }}</div>
       <BaseButton
-        bname="Thêm mới nhân viên"
+        :bname="lang.button.addEmployee"
         class="btn--primary"
         @click="btnAddOnClick"
       />
@@ -33,7 +33,7 @@
       <div class="pcontent__searchbar">
         <div class="searchbar__right">
           <BaseTextfield
-            pholder="Tìm kiếm nhân viên"
+            :pholder="lang.textfield.searchBar.pholder"
             class="txtfield--search mw-300"
             noti=""
             v-model:text="cache.empSearchPattern"
@@ -43,14 +43,16 @@
           <BaseButton class="mi mi-36 mi-refresh" @click="loadEmployeeData" />
           <div class="button__hoverbox">
             <div class="hover__arrow"></div>
-            <div class="hover__text">Tải lại dữ liệu</div>
+            <div class="hover__text">{{ lang.button.reload }}</div>
           </div>
         </div>
         <div class="searchbar__left" v-show="selectedEmpIds.length > 1">
           <div class="left__info">
             Đã chọn: <strong>{{ selectedEmpIds.length }}</strong>
           </div>
-          <div class="left__cancel" @click="cancelSelectOnClick">Bỏ chọn</div>
+          <div class="left__cancel" @click="cancelSelectOnClick">
+            {{ lang.button.cancelSelect }}
+          </div>
           <BaseButton
             bname="Xóa hàng loạt"
             class="btn--secondary"
@@ -88,6 +90,7 @@ import $api from "@/js/api";
 import { Employee } from "@/js/model/employee";
 import $error from "@/assets/resources/error";
 import $message from "@/assets/resources/message";
+const lang = inject("lang");
 // #endregion
 
 // #region init

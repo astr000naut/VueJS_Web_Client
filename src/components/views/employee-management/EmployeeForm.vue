@@ -9,8 +9,8 @@
     </div>
     <div class="form__wrapper" v-show="formDialog.isShow">
       <BaseDialog
-        title="Lưu lại thay đổi"
-        message="Dữ liệu đã bị thay đổi. Bạn có muốn cất không ?"
+        :title="lang.dialog.savingChanges.title"
+        :message="lang.dialog.savingChanges.message"
         :close-on-click="formDialogCloseBtnOnClick"
         :no-on-click="formDialogNoBtnOnClick"
         :yes-on-click="formDialogYesBtnOnClick"
@@ -25,8 +25,8 @@
           <div class="header__title">
             {{
               form.type == $enum.form.infoType
-                ? "Sửa thông tin nhân viên"
-                : "Thêm mới nhân viên"
+                ? lang.form.title.edit
+                : lang.form.title.add
             }}
           </div>
           <div class="header__option1">
@@ -35,7 +35,9 @@
               :class="[form.checkbox1 ? 'mi-checkbox-checked' : '']"
               @click="form.checkbox1 = !form.checkbox1"
             ></div>
-            <div class="checkbox__label">Là khách hàng</div>
+            <div class="checkbox__label">
+              {{ lang.checkboxLabel.isCustomer }}
+            </div>
           </div>
           <div class="header__option2">
             <div
@@ -43,7 +45,9 @@
               :class="[form.checkbox2 ? 'mi-checkbox-checked' : '']"
               @click="form.checkbox2 = !form.checkbox2"
             ></div>
-            <div class="checkbox__label">Là nhà cung cấp</div>
+            <div class="checkbox__label">
+              {{ lang.checkboxLabel.isProvider }}
+            </div>
           </div>
         </div>
         <div class="header__right">
@@ -62,8 +66,8 @@
               <div class="fu__index">
                 <BaseTextfield
                   pholder=""
-                  autoFillMessage="Shift + F8 để tự tạo mã"
-                  label="Mã"
+                  :autoFillMessage="lang.textfield.empCode.autofillMessage"
+                  :label="lang.textfield.empCode.label"
                   :isrequired="true"
                   :autoFill="generateEmpCode"
                   v-model:text="employee.employeeCode"
@@ -75,7 +79,7 @@
               <div class="fu__name">
                 <BaseTextfield
                   pholder=""
-                  label="Tên"
+                  :label="lang.textfield.empName.label"
                   :isrequired="true"
                   v-model:text="employee.employeeFullName"
                   v-model:noti="formNoti.employeeFullName"
@@ -86,7 +90,7 @@
             <div class="fu__left__mid">
               <div class="fu__unit">
                 <BaseCombobox
-                  label="Đơn vị"
+                  :label="lang.combobox.empDepart.label"
                   :isrequired="true"
                   :option-list="departmentList"
                   :add-new-item="addNewDepartment"
@@ -101,7 +105,7 @@
               <div class="fu__position">
                 <BaseTextfield
                   pholder=""
-                  label="Chức danh"
+                  :label="lang.textfield.empPos.label"
                   v-model:text="employee.positionName"
                   v-model:noti="formNoti.positionName"
                   ref="positionNameRef"
@@ -113,7 +117,7 @@
             <div class="fu__right__top">
               <div class="fu__dob">
                 <BaseDatepicker
-                  label="Ngày sinh"
+                  :label="lang.datepicker.empDob.label"
                   v-model:inputText="employee.dateOfBirth"
                   v-model:noti="formNoti.dateOfBirth"
                   ref="dateOfBirthRef"
@@ -121,11 +125,11 @@
               </div>
               <div class="fu__gender">
                 <BaseRadiogroup
-                  label="Giới tính"
+                  :label="lang.radioGroup.empGender.label"
                   :options="[
-                    { text: 'Nam', value: 0 },
-                    { text: 'Nữ', value: 1 },
-                    { text: 'Khác', value: 2 },
+                    { text: lang.radioGroup.empGender.male, value: 0 },
+                    { text: lang.radioGroup.empGender.female, value: 1 },
+                    { text: lang.radioGroup.empGender.other, value: 2 },
                   ]"
                   v-model:radioValue="employee.gender"
                 />
@@ -135,16 +139,16 @@
               <div class="fu__cmnd">
                 <BaseTextfield
                   pholder=""
-                  label="Số CMND"
+                  :label="lang.textfield.empIdentity.label"
                   v-model:text="employee.identityNumber"
                   v-model:noti="formNoti.identityNumber"
-                  tooltip="Số chứng minh nhân dân"
+                  :tooltip="lang.textfield.empIdentity.tooltip"
                   ref="identityNumberRef"
                 />
               </div>
               <div class="fu__cmnddate">
                 <BaseDatepicker
-                  label="Ngày cấp"
+                  :label="lang.datepicker.empIdentityDate.label"
                   v-model:inputText="employee.identityDate"
                   v-model:noti="formNoti.identityDate"
                   ref="identityDateRef"
@@ -155,7 +159,7 @@
               <div class="fu__cmndpos">
                 <BaseTextfield
                   pholder=""
-                  label="Nơi cấp"
+                  :label="lang.textfield.empIdentityPlace.label"
                   v-model:text="employee.identityPlace"
                   v-model:noti="formNoti.identityPlace"
                   ref="identityPlaceRef"
@@ -170,7 +174,7 @@
             <div class="fl__address">
               <BaseTextfield
                 pholder=""
-                label="Địa chỉ"
+                :label="lang.textfield.empAddress.label"
                 v-model:text="employee.address"
                 v-model:noti="formNoti.address"
                 ref="addressRef"
@@ -181,8 +185,8 @@
             <div class="fl__phone">
               <BaseTextfield
                 pholder=""
-                label="ĐT di động"
-                tooltip="Số điện thoại di động"
+                :label="lang.textfield.empPhone.label"
+                :tooltip="lang.textfield.empPhone.tooltip"
                 v-model:text="employee.phoneNumber"
                 v-model:noti="formNoti.phoneNumber"
                 ref="phoneNumberRef"
@@ -191,8 +195,8 @@
             <div class="fl__homephone">
               <BaseTextfield
                 pholder=""
-                label="ĐT cố định"
-                tooltip="Số điện thoại cố định"
+                :label="lang.textfield.empLandline.label"
+                :tooltip="lang.textfield.empLandline.tooltip"
                 v-model:text="employee.landlineNumber"
                 v-model:noti="formNoti.landlineNumber"
                 ref="landlineNumberRef"
@@ -201,7 +205,7 @@
             <div class="fl__email">
               <BaseTextfield
                 pholder=""
-                label="Email"
+                :label="lang.textfield.empEmail.label"
                 v-model:text="employee.email"
                 v-model:noti="formNoti.email"
                 ref="emailRef"
@@ -212,7 +216,7 @@
             <div class="fl__bankacc">
               <BaseTextfield
                 pholder=""
-                label="Tài khoản ngân hàng"
+                :label="lang.textfield.empBankAcc.label"
                 v-model:text="employee.bankAccount"
                 v-model:noti="formNoti.bankAccount"
                 ref="bankAccountRef"
@@ -221,7 +225,7 @@
             <div class="fl__bankname">
               <BaseTextfield
                 pholder=""
-                label="Tên ngân hàng"
+                :label="lang.textfield.empBankName.label"
                 v-model:text="employee.bankName"
                 v-model:noti="formNoti.bankName"
                 ref="bankNameRef"
@@ -230,7 +234,7 @@
             <div class="fl__bankarea">
               <BaseTextfield
                 pholder=""
-                label="Chi nhánh"
+                :label="lang.textfield.empBankBranch.label"
                 v-model:text="employee.bankBranch"
                 v-model:noti="formNoti.bankBranch"
                 ref="bankBranchRef"
@@ -246,7 +250,7 @@
         <div class="footer__left">
           <BaseButton
             ref="cancelBtnRef"
-            bname="Hủy"
+            :bname="lang.button.cancel"
             class="btn--secondary"
             @keydown.tab.prevent="cancelBtnOnTabKeydown"
             @keydown.shift.tab.prevent="cancelBtnOnShiftTabKeydown"
@@ -255,14 +259,14 @@
         </div>
         <div class="footer__right">
           <BaseButton
-            bname="Cất"
+            :bname="lang.button.save"
             class="btn--secondary"
             ref="saveBtnRef"
             @click="btnSaveOnClick"
             @keydown.shift.tab.prevent="saveBtnOnShiftTabKeydown"
           />
           <BaseButton
-            bname="Cất và Thêm"
+            :bname="lang.button.saveAndAdd"
             class="btn--primary"
             ref="saveAndAddBtnRef"
             @keydown.tab.prevent="saveAndAddBtnOnTabKeydown"
@@ -292,6 +296,7 @@ import $api from "../../../js/api/index";
 import { Department } from "@/js/model/department";
 import $formatter from "../../../js/common/formater";
 import $error from "../../../assets/resources/error";
+const lang = inject("lang");
 var _ = require("lodash");
 // #endregion
 
