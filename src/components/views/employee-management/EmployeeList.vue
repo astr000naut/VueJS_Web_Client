@@ -88,8 +88,8 @@ import BaseDialog from "@/components/base/BaseDialog.vue";
 import BaseToastbox from "@/components/base/BaseToastbox.vue";
 import $api from "@/js/api";
 import { Employee } from "@/js/model/employee";
-import $error from "@/assets/resources/error";
-import $message from "@/assets/resources/message";
+import $error from "../../../js/resources/error";
+import $message from "../../../js/resources/message";
 const lang = inject("lang");
 // #endregion
 
