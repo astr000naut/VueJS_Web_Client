@@ -9,7 +9,7 @@
     justify-content: space-between;
     user-select: none;
     transform: translate3d(0, 0, 0);
-    z-index: 20;
+    z-index: 21;
   }
   
   .sidebar__main {

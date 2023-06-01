@@ -31,7 +31,12 @@
         </div>
       </router-link>
     </div>
-    <div class="sidebar__footer" @click="resizeSidebar">
+    <div
+      class="sidebar__footer"
+      @click="resizeSidebar"
+      @mouseenter="displayExpandTooltip = true"
+      @mouseleave="displayExpandTooltip = false"
+    >
       <div
         class="item__icon mi mi-24"
         :class="
@@ -40,6 +45,13 @@
       ></div>
       <div v-show="isSidebarBig" class="item__text" data-text="Thu gọn">
         Thu gọn
+      </div>
+      <div
+        v-show="!isSidebarBig && displayExpandTooltip"
+        class="item__hoverbox"
+      >
+        <div class="hover__arrow"></div>
+        <div class="hover__text">Mở rộng</div>
       </div>
     </div>
   </div>
@@ -60,6 +72,7 @@ sidebarItems.value.forEach((item) => {
   item.displayLabel = false;
   item.labelPos = 0;
 });
+const displayExpandTooltip = ref(false);
 // #endregion
 
 // #region function
