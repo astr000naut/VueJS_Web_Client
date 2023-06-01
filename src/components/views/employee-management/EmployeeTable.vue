@@ -1,11 +1,6 @@
 <template>
   <div class="tablebox">
-    <table
-      class="m-table"
-      :style="{
-        'z-index': !isLoadingData && rowList.length <= 6 ? 30 : 0,
-      }"
-    >
+    <table class="m-table">
       <thead>
         <tr>
           <th class="th1--sticky">
