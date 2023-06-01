@@ -131,11 +131,11 @@
               <div class="text-left">
                 {{
                   emp.gender == 0
-                    ? "Nam"
+                    ? lang.gender.male
                     : emp.gender == 1
-                    ? "Nữ"
+                    ? lang.gender.female
                     : emp.gender == 2
-                    ? "Khác"
+                    ? lang.gender.other
                     : ""
                 }}
               </div>
@@ -173,7 +173,7 @@
                   class="option__edit"
                   @click="btnEditOnClick(emp.employeeId)"
                 >
-                  Sửa
+                  {{ lang.table_items.edit }}
                 </button>
                 <button
                   class="btn__expand mi mi-16 mi-expand-down"
@@ -193,16 +193,20 @@
                   v-show="table.expandEmpId == emp.employeeId"
                   @mouseleave="table.expandEmpId = ''"
                 >
-                  <li><div class="li-data">Nhân bản</div></li>
+                  <li>
+                    <div class="li-data">{{ lang.table_items.dupplicate }}</div>
+                  </li>
                   <li>
                     <div
                       class="li-data"
                       @click="deleteEmployeeFunction(emp.employeeId)"
                     >
-                      Xóa
+                      {{ lang.table_items.delete }}
                     </div>
                   </li>
-                  <li><div class="li-data">Ngừng sử dụng</div></li>
+                  <li>
+                    <div class="li-data">{{ lang.table_items.stop }}</div>
+                  </li>
                 </ul>
               </div>
             </td>
@@ -215,13 +219,15 @@
       v-show="!haveDataAfterCallApi && !isLoadingData"
     >
       <div class="noti__img"></div>
-      <div class="noti__text">Không có dữ liệu</div>
+      <div class="noti__text">{{ lang.tableNoti.dataNotFound }}</div>
     </div>
   </div>
   <div class="table__pag">
     <div class="pag__leftside">
       <span
-        >Tổng số: <strong>{{ pagingData.totalRecord }}</strong> bản ghi</span
+        >{{ lang.tablePag.total.left }}
+        <strong>{{ pagingData.totalRecord }}</strong>
+        {{ lang.tablePag.total.right }}</span
       >
     </div>
     <div class="pag__rightside">
@@ -239,12 +245,12 @@
                 ]"
                 @click="recordAmountOptionOnClick(recordAmount)"
               >
-                {{ recordAmount }} bản ghi trên 1 trang
+                {{ recordAmount }} {{ lang.tablePag.recordAmount }}
               </div>
             </li>
           </ul>
         </div>
-        <span>Số bản ghi / trang: {{ pagingData.pageSize }}</span>
+        <span>{{ lang.tablePag.recordPerPage }} {{ pagingData.pageSize }}</span>
         <div
           class="pag__arrowdown mi mi-24 mi-arrowdown-small"
           :class="[
@@ -272,7 +278,7 @@
             <div class="loading-item"></div>
           </div>
         </div>
-        <div class="info__text">bản ghi</div>
+        <div class="info__text">{{ lang.tablePag.record }}</div>
       </div>
       <div
         class="pag__prev minc mi-24 mi-arrowleft"

@@ -44,14 +44,14 @@
         "
       ></div>
       <div v-show="isSidebarBig" class="item__text" data-text="Thu gọn">
-        Thu gọn
+        {{ lang.sidebar_items.minimize }}
       </div>
       <div
         v-show="!isSidebarBig && displayExpandTooltip"
         class="item__hoverbox"
       >
         <div class="hover__arrow"></div>
-        <div class="hover__text">Mở rộng</div>
+        <div class="hover__text">{{ lang.sidebar_items.maximize }}</div>
       </div>
     </div>
   </div>
@@ -60,6 +60,7 @@
 <script setup>
 // #region import
 import { ref, inject } from "vue";
+const lang = inject("$lang");
 const $common = inject("$common");
 const $emitter = inject("$emitter");
 // #endregion

@@ -15,6 +15,8 @@ const lang = {
     budget: "Ngân sách",
     report: "Báo cáo",
     finance: "Phân tích tài chính",
+    minimize: "Thu gọn",
+    maximize: "Mở rộng",
   },
   dialog: {
     savingChanges: {
@@ -23,7 +25,6 @@ const lang = {
     },
     deleteConfirmation: {
       title: "Xác nhận xóa nhân viên",
-      message: "",
     },
   },
   form: {
@@ -112,14 +113,15 @@ const lang = {
     reload: "Tải lại dữ liệu",
     cancelSelect: "Bỏ chọn",
   },
-  items: {
+  employeeList: {
+    title: "Nhân viên",
+  },
+  table_items: {
+    edit: "Sửa",
     batch: "Gộp",
     delete: "Xóa",
     dupplicate: "Nhân bản",
     stop: "Ngừng sử dụng",
-  },
-  employeeList: {
-    title: "Nhân viên",
   },
   tableHeader: {
     empCode: "Mã nhân viên",
@@ -144,6 +146,14 @@ const lang = {
     recordAmount: "bản ghi trên 1 trang",
     recordPerPage: "Số bản ghi / trang",
     record: "bản ghi",
+  },
+  tableNoti: {
+    dataNotFound: "Không có dữ liệu",
+  },
+  gender: {
+    male: "Nam",
+    female: "Nữ",
+    other: "Khác",
   },
 };
 export default lang;
