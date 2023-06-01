@@ -101,7 +101,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="i in 5" :key="i">
+                <tr v-for="i in calendar.rowAmount" :key="i">
                   <td
                     v-for="j in 7"
                     :key="j"
@@ -153,6 +153,9 @@ const props = defineProps({
 const emits = defineEmits(["update:inputText", "update:noti"]);
 defineExpose({ refInput });
 const isBoxOpen = ref(false);
+const calendar = ref({
+  rowAmount: 0,
+});
 
 // 0 -> Day 1-> Month 2 -> Year
 const boxStatus = ref(0);
@@ -213,14 +216,13 @@ function updateCell(year, month) {
   const dateCount = dc.getDate();
   cell.value = [];
   let day = 0;
-  for (let i = 0; i < 35; ++i) {
-    if (i >= firstDay - 1) {
-      ++day;
-    }
+  let i = 0;
+  calendar.value.rowAmount = 0;
+  while (day < dateCount) {
+    if (i >= firstDay - 1) ++day;
     cell.value[i] = day;
-    if (day == dateCount) {
-      break;
-    }
+    if (i % 7 == 0) ++calendar.value.rowAmount;
+    ++i;
   }
 }
 
