@@ -296,7 +296,7 @@ import $api from "../../../js/api/index";
 import { Department } from "@/js/model/department";
 import $formatter from "../../../js/common/formater";
 import $error from "../../../js/resources/error";
-const lang = inject("lang");
+const lang = inject("$lang");
 var _ = require("lodash");
 // #endregion
 

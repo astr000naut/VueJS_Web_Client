@@ -90,7 +90,7 @@ import $api from "@/js/api";
 import { Employee } from "@/js/model/employee";
 import $error from "../../../js/resources/error";
 import $message from "../../../js/resources/message";
-const lang = inject("lang");
+const lang = inject("$lang");
 // #endregion
 
 // #region init

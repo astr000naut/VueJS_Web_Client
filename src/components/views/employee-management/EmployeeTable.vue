@@ -294,7 +294,7 @@
 // #region import
 import { ref, computed, inject } from "vue";
 import { useRouter } from "vue-router";
-const lang = inject("lang");
+const lang = inject("$lang");
 // #endregion
 
 // #region init
