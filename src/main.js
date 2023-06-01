@@ -6,7 +6,7 @@ import BaseTextfield from "./components/base/BaseTextfield.vue";
 import router from "./js/router/router";
 import commonVal from "./js/common/value";
 import axios from "axios";
-import lang from "./assets/resources/lang";
+import lang from "./js/resources/lang";
 
 var Emitter = require("tiny-emitter");
 const emitter = new Emitter();
