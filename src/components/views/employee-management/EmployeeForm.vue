@@ -573,12 +573,6 @@ async function validateData() {
     firstErrorRef = firstErrorRef ?? positionNameRef;
   }
 
-  // Kiểm tra thông tin CMND
-  if (!/^$|^\d{9}$|^\d{12}$/.test(employee.value.identityNumber)) {
-    formNoti.value.identityNumber = $error.fieldWrongFormat("số CMND");
-    firstErrorRef = firstErrorRef ?? identityNumberRef;
-  }
-
   // Kiểm tra ngày sinh
   // Định dạng
   if (
@@ -595,6 +589,12 @@ async function validateData() {
   ) {
     formNoti.value.dateOfBirth = $error.fieldNotValid("Ngày sinh");
     firstErrorRef = firstErrorRef ?? dateOfBirthRef;
+  }
+
+  // Kiểm tra thông tin CMND
+  if (!/^$|^\d{9}$|^\d{12}$/.test(employee.value.identityNumber)) {
+    formNoti.value.identityNumber = $error.fieldWrongFormat("số CMND");
+    firstErrorRef = firstErrorRef ?? identityNumberRef;
   }
 
   // Kiểm tra ngày cấp CMND
