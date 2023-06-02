@@ -63,6 +63,7 @@
   /* Header right */
   
   .header__right {
+    position: relative;
     display: flex;
     column-gap: 8px;
   }
@@ -171,6 +172,7 @@
   }
   
   .footer__right {
+    position: relative;
     display: flex;
     column-gap: 12px;
   }
@@ -198,4 +200,32 @@
     right: 0;
     background-color: #88888893;
     z-index: 12;
+  }
+
+  .btn__tooltip {
+    position: absolute;
+    background-color: #393a3d;
+    color: #fff;
+    padding: 4px;
+    border-radius: 4px;
+  }
+
+  .btn__tooltip--help {
+    bottom: -25px;
+    left: -15px;
+  }
+
+  .btn__tooltip--close {
+    bottom: -25px;
+    right: -25px;
+  }
+
+  .btn__tooltip--save {
+    bottom: -30px;
+    left: 0px;
+  }
+
+  .btn__tooltip--saveandadd {
+    bottom: -30px;
+    right: -28px;
   }

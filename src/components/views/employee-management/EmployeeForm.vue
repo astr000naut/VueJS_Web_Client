@@ -51,12 +51,31 @@
           </div>
         </div>
         <div class="header__right">
-          <BaseButton bname="" class="mi-36 btn--help" />
+          <BaseButton
+            bname=""
+            class="mi-36 btn--help"
+            @mouseenter="formTooltip.help = true"
+            @mouseleave="formTooltip.help = false"
+          />
           <BaseButton
             bname=""
             class="mi-36 btn--close"
             @click="btnCloseOnClick"
+            @mouseenter="formTooltip.close = true"
+            @mouseleave="formTooltip.close = false"
           />
+          <div
+            class="btn__tooltip btn__tooltip--help"
+            v-show="formTooltip.help"
+          >
+            Giúp (F1)
+          </div>
+          <div
+            class="btn__tooltip btn__tooltip--close"
+            v-show="formTooltip.close"
+          >
+            Đóng (ESC)
+          </div>
         </div>
       </div>
       <div class="form__body">
@@ -264,6 +283,8 @@
             ref="saveBtnRef"
             @click="btnSaveOnClick"
             @keydown.shift.tab.prevent="saveBtnOnShiftTabKeydown"
+            @mouseenter="formTooltip.save = true"
+            @mouseleave="formTooltip.save = false"
           />
           <BaseButton
             :bname="lang.button.saveAndAdd"
@@ -272,7 +293,21 @@
             @keydown.tab.prevent="saveAndAddBtnOnTabKeydown"
             @keydown.shift.tab.prevent="saveAndAddBtnOnShiftTabKeydown"
             @click="btnSaveAndAddOnClick"
+            @mouseenter="formTooltip.saveAndAdd = true"
+            @mouseleave="formTooltip.saveAndAdd = false"
           />
+          <div
+            class="btn__tooltip btn__tooltip--save"
+            v-show="formTooltip.save"
+          >
+            Cất (Ctr + S)
+          </div>
+          <div
+            class="btn__tooltip btn__tooltip--saveandadd"
+            v-show="formTooltip.saveAndAdd"
+          >
+            Cất và thêm (Ctr + Shift + S)
+          </div>
         </div>
       </div>
     </div>
@@ -338,6 +373,12 @@ const formNoti = ref({
 
 const formDialog = ref({
   isShow: false,
+});
+const formTooltip = ref({
+  help: false,
+  close: false,
+  save: false,
+  saveAndAdd: false,
 });
 const employeeCodeRef = ref(null);
 const employeeFullNameRef = ref(null);
