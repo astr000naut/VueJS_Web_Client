@@ -333,6 +333,7 @@ import $formatter from "../../../js/common/formater";
 import $error from "../../../js/resources/error";
 const lang = inject("$lang");
 var _ = require("lodash");
+import { onKeyStroke, useMagicKeys, whenever } from "@vueuse/core";
 // #endregion
 
 // #region init
@@ -416,6 +417,28 @@ onMounted(async () => {
     handleResponseStatusCode(error.response.status, error);
   }
 });
+
+// Handle key event
+const keys = useMagicKeys();
+const { current } = useMagicKeys();
+
+const { ctrl_s } = useMagicKeys({
+  passive: false,
+  onEventFired(e) {
+    if (e.ctrlKey && e.key === "s" && e.type === "keydown") {
+      e.preventDefault();
+    }
+  },
+});
+
+const ctrl_shift_s = keys["Ctrl+Shift+S"];
+
+onKeyStroke("Escape", onEscapeKeydown, { dedupe: true });
+
+whenever(ctrl_s, ctrlSCombination);
+
+whenever(ctrl_shift_s, ctrlShiftSCombination);
+
 // #endregion
 
 // #region function
@@ -799,6 +822,42 @@ async function getEmployee(empId) {
 // #endregion
 
 // #region handle event
+/**
+ * Sự kiện nhấn Escape
+ *
+ * Author: Dũng (02/06/2023)
+ */
+function onEscapeKeydown() {
+  if (formNoti.value.showNotibox) return;
+  if (formDialog.value.isShow) return;
+  btnCloseOnClick();
+}
+
+/**
+ * Sự kiện nhấn Ctrl S
+ *
+ * Author: Dũng (02/06/2023)
+ */
+async function ctrlSCombination() {
+  if (current.has("shift")) return;
+  if (formNoti.value.showNotibox) return;
+  if (formDialog.value.isShow) return;
+  if (firstErrorRef != null) firstErrorRef.value.refInput.blur();
+  await btnSaveOnClick();
+}
+
+/**
+ * Sự kiện nhấn Ctrl Shift S
+ *
+ * Author: Dũng (02/06/2023)
+ */
+async function ctrlShiftSCombination() {
+  if (formNoti.value.showNotibox) return;
+  if (formDialog.value.isShow) return;
+  if (firstErrorRef != null) firstErrorRef.value.refInput.blur();
+  await btnSaveAndAddOnClick();
+}
+
 /**
  * Sự kiện click vào btn yes khi đóng dialog
  *
