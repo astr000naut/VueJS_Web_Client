@@ -8,8 +8,8 @@ button {
     outline: none;
   }
 
-  button:focus {
-    outline: 2px solid #cdcdcd;
+  .form__footer button:focus, .form__wrapper button:focus {
+    outline: 2px solid #cdcdcd !important;
   }
 
   /* Primary */

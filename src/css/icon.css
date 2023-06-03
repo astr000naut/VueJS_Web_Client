@@ -201,12 +201,20 @@ background-position: -78px -357px;
 
 /* Button icon */
 
+.mi-excel {
+background-position: -699px -193px;
+}
+
+.mi-excel:hover {
+background-position: -699px -249px;
+}
+
 .mi-refresh {
 background-position: -418px -194px;
 }
 
 .mi-refresh:hover {
-background-position: -1090px -82px;
+background-position: -1090px -81px;
 }
 .mi-refresh:active {
 background-position: -1091px -82px;

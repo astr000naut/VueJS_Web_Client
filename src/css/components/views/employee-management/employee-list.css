@@ -96,7 +96,7 @@
   
   .searchbar__right {
     display: flex;
-    column-gap: 24px;
+    column-gap: 12px;
   }
   .button__hoverbox {
     display: none;

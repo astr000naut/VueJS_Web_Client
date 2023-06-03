@@ -41,6 +41,7 @@
             :doSearch="doSearchEmployee"
           />
           <BaseButton class="mi mi-36 mi-refresh" @click="loadEmployeeData" />
+          <BaseButton class="mi mi-36 mi-excel" />
           <div class="button__hoverbox">
             <div class="hover__arrow"></div>
             <div class="hover__text">{{ lang.button.reload }}</div>
