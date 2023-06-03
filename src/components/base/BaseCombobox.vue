@@ -17,6 +17,9 @@
             @input="$emit('update:text', $event.target.value)"
             @keyup="inputKeyupHandler"
             @keypress="inputKeyPressHandler"
+            @keydown.down.prevent="inputArrowDownHandler"
+            @keydown.up.prevent="inputArrowUpHandler"
+            @keydown.enter.prevent="inputEnterHandler"
           />
         </div>
         <button
@@ -46,11 +49,10 @@
           :class="[cbox.hasScrollbar ? 'hascrollbar' : '']"
         >
           <template
-            v-for="(option, index) in optionList"
+            v-for="option in optionListDisplay"
             :key="option.departmentId"
           >
             <div
-              v-show="!optionIdHide.includes(index)"
               class="option__item"
               @click="
                 optionOnClick(
@@ -62,7 +64,8 @@
               :class="[
                 option.departmentId == selectedItemId ? 'item--selected' : '',
                 cbox.cusorItemId != null &&
-                option.departmentId == optionList[cbox.cusorItemId].departmentId
+                option.departmentId ==
+                  optionListDisplay[cbox.cusorItemId].departmentId
                   ? 'item--highlighted'
                   : '',
               ]"
@@ -71,14 +74,8 @@
               <div class="option__icon"></div>
             </div>
           </template>
-          <div
-            v-show="cbox.suggestAddingItem.length > 0"
-            class="option__item"
-            @click="addingItemOnClick"
-          >
-            <div class="option__text">
-              Thêm mới <strong>{{ cbox.suggestAddingItem }}</strong>
-            </div>
+          <div v-show="optionListDisplay.length == 0" class="option__item">
+            <div class="option__text">Không tìm thấy đơn vị này</div>
           </div>
         </div>
       </div>
@@ -98,6 +95,7 @@ import BaseLoader from "./BaseLoader.vue";
 const typingTimers = [];
 const timeoutVal = 500;
 const optionIdHide = ref([]);
+const optionListDisplay = ref([]);
 const refInput = ref(null);
 
 const props = defineProps({
@@ -105,7 +103,6 @@ const props = defineProps({
   text: String,
   isrequired: Boolean,
   selectedItemId: String,
-  addNewItem: Function,
   optionList: Array,
   noti: String,
 });
@@ -120,7 +117,6 @@ defineExpose({ refInput });
 const cbox = ref({
   isOptionboxOpen: false,
   isLoading: false,
-  suggestAddingItem: "",
   cusorItemId: null,
   hasScrollbar: false,
 });
@@ -145,19 +141,21 @@ function isNormalCharacterKey(key) {
  * Author: Dũng (08/05/2023)
  */
 function filterData(input) {
-  const IdHideList = [];
+  //const IdHideList = [];
+  const optionDisplayList = [];
   for (let i = 0; i < props.optionList.length; ++i) {
     if (
-      !props.optionList[i].departmentName
+      props.optionList[i].departmentName
         .toLowerCase()
         .includes(input.toLowerCase().trim())
     ) {
-      IdHideList.push(i);
+      //IdHideList.push(i);
+      optionDisplayList.push(props.optionList[i]);
     }
   }
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(IdHideList);
+      resolve(optionDisplayList);
     }, 200);
   });
 }
@@ -165,6 +163,70 @@ function filterData(input) {
 //#endregion
 
 //#region handle event
+
+/**
+ * Sự kiện nhấn Enter tại ô input
+ *
+ * Author: Dũng (03/06/2023)
+ */
+function inputEnterHandler() {
+  if (cbox.value.cusorItemId != null) {
+    // Update dữ liệu lên Form Object
+    emits(
+      "update:text",
+      optionListDisplay.value[cbox.value.cusorItemId].departmentName
+    );
+    emits("update:noti", "");
+
+    // Đóng optionbox
+    cbox.value.isOptionboxOpen = false;
+    emits(
+      "update:selectedItemId",
+      optionListDisplay.value[cbox.value.cusorItemId].departmentId
+    );
+  }
+}
+
+/**
+ * Sự kiện nhấn arrow up tại ô input
+ *
+ * Author: Dũng (03/06/2023)
+ */
+function inputArrowUpHandler() {
+  if (cbox.value.isOptionboxOpen && cbox.value.cusorItemId > 0)
+    --cbox.value.cusorItemId;
+}
+
+/**
+ * Focus vào một dòng trong optionbox
+ *
+ * Author: Dũng (03/06/2023)
+ */
+function focusOnARow() {
+  for (let i = 0; i < optionListDisplay.value.length; ++i) {
+    if (optionListDisplay.value[i].departmentId == props.selectedItemId) {
+      cbox.value.cusorItemId = i;
+      break;
+    }
+  }
+  if (cbox.value.cusorItemId == null) cbox.value.cusorItemId = 0;
+}
+
+/**
+ * Sự kiện nhấn arrow down tại ô input
+ *
+ * Author: Dũng (03/06/2023)
+ */
+function inputArrowDownHandler() {
+  if (!cbox.value.isOptionboxOpen) {
+    cbox.value.isOptionboxOpen = true;
+    optionListDisplay.value = props.optionList;
+    focusOnARow();
+  } else {
+    if (cbox.value.cusorItemId < optionListDisplay.value.length - 1)
+      ++cbox.value.cusorItemId;
+  }
+}
 
 /**
  * Sự kiện click vào item trong danh sách combobox option
@@ -183,35 +245,25 @@ function optionOnClick(_$event, optionId, optionName) {
   // Đóng optionbox
   cbox.value.isOptionboxOpen = false;
   emits("update:selectedItemId", optionId);
-  // Xóa bỏ gợi ý thêm mới đơn vị
-  cbox.value.suggestAddingItem = "";
 }
 
 /**
  * Sự kiện click vào mũi tên mở rộng combobox
- * NEED xóa cusor hoặc code lại
  *
  * Author: Dũng (08/05/2023)
  */
 function selectButtonOnClick() {
-  cbox.value.cusorItemId = null;
-
   // Kiểm tra xem chọn đúng đơn vị trong danh sách
   if (cbox.value.isOptionboxOpen == true) {
     optionIdHide.value = [];
+    optionListDisplay.value = props.optionList;
+    cbox.value.isOptionboxOpen = false;
+  } else {
+    cbox.value.isOptionboxOpen = true;
+    optionListDisplay.value = props.optionList;
+    refInput.value.focus();
+    focusOnARow();
   }
-  cbox.value.isOptionboxOpen = !cbox.value.isOptionboxOpen;
-}
-
-/**
- * Sự kiện click vào thêm mới Item
- * Author: Dũng (08/05/2023)
- */
-async function addingItemOnClick() {
-  // await props.addNewItem(cbox.value.suggestAddingItem);
-  cbox.value.isOptionboxOpen = false;
-  cbox.value.suggestAddingItem = "";
-  optionIdHide.value = [];
 }
 
 /**
@@ -250,14 +302,11 @@ function inputKeyupHandler($event) {
       // Display loading
       cbox.value.isLoading = true;
       emits("update:selectedItemId", "");
-      filterData(props.text).then((IdHideList) => {
-        optionIdHide.value = IdHideList;
-        if (IdHideList.length != props.optionList.length) {
-          cbox.value.suggestAddingItem = "";
-        } else {
-          cbox.value.suggestAddingItem = props.text;
-        }
+      filterData(props.text).then((optionDisplayList) => {
+        optionListDisplay.value = optionDisplayList;
         cbox.value.isLoading = false;
+        if (optionDisplayList.length) cbox.value.cusorItemId = 0;
+        else cbox.value.cusorItemId = null;
       });
     }, timeoutVal)
   );

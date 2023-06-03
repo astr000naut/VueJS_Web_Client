@@ -114,7 +114,6 @@
                   :label="lang.combobox.empDepart.label"
                   :isrequired="true"
                   :option-list="departmentList"
-                  :add-new-item="addNewDepartment"
                   v-model:text="employee.departmentName"
                   v-model:noti="formNoti.departmentName"
                   v-model:selectedItemId="employee.departmentId"
@@ -751,31 +750,6 @@ async function validateData() {
     formNoti.value.notiboxMessage = $error.invalidInput;
   } else {
     formNoti.value.notiboxMessage = "";
-  }
-}
-
-/**
- * Gọi API tạo mới Department
- * @param {String} name tên Department
- *
- * Author: Dũng (08/05/2023)
- */
-async function addNewDepartment(name) {
-  form.value.isLoading = true;
-  try {
-    console.log(name);
-    const response = await $axios.post($api.department.index, {
-      departmentCode: "",
-      departmentName: name,
-      description: "",
-    });
-    console.log(response);
-    await getDepartmentList();
-    form.value.isLoading = false;
-  } catch (error) {
-    console.log(error);
-    form.value.isLoading = false;
-    await handleResponseStatusCode(error.response.status, error);
   }
 }
 

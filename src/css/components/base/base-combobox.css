@@ -144,13 +144,10 @@
     color: #000;
   }
   
-  .item--selected {
-    color: var(--clr-lg500);
-  }
+
   
   .item--highlighted {
-    background-color: var(--clr-lg500);
-    color: #fff;
+    background-color: var(--clr-lg100);
   }
   
   .option__item:not(.item--selected) .option__icon {
