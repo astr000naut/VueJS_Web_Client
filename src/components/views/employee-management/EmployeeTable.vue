@@ -53,7 +53,7 @@
             <div class="text-left mw-200">{{ lang.tableHeader.empDepart }}</div>
           </th>
           <th>
-            <div class="text-right mw-150">
+            <div class="text-left mw-150">
               {{ lang.tableHeader.empBankAcc }}
             </div>
           </th>
@@ -150,7 +150,7 @@
               <div class="text-left">{{ emp.departmentName }}</div>
             </td>
             <td>
-              <div class="text-right">{{ emp.bankAccount }}</div>
+              <div class="text-left">{{ emp.bankAccount }}</div>
             </td>
             <td>
               <div class="text-left">{{ emp.bankName }}</div>
