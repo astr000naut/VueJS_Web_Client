@@ -455,7 +455,11 @@ whenever(ctrl_shift_s, ctrlShiftSCombination);
  */
 function resetFormState() {
   form.value = {
-    type: route.params.id ? $enum.form.infoType : $enum.form.createType,
+    type: route.params.id
+      ? route.path.includes("dupplicate")
+        ? $enum.form.dupplicateType
+        : $enum.form.infoType
+      : $enum.form.createType,
     empId: route.params.id ?? "",
     isLoading: false,
     checkbox1: false,
@@ -538,20 +542,6 @@ async function fetchNewEmployeeCode() {
 }
 
 /**
- * Cập nhật Department name cho employee
- *
- * Author: Dũng (11/05/2023)
- */
-function updateDepartmentInfo() {
-  for (const department of departmentList.value) {
-    if (department.departmentId == employee.value.departmentId) {
-      employee.value.departmentName = department.departmentName;
-      employee.value.departmentCode = department.departmentCode;
-    }
-  }
-}
-
-/**
  * Gọi API khởi tạo dữ liệu cho form
  *
  * Author: Dũng (08/05/2023)
@@ -562,10 +552,21 @@ async function getDataFromApi() {
   if (form.value.type == $enum.form.createType) {
     // Fetch new employee code
     await fetchNewEmployeeCode();
-  } else {
+    return;
+  }
+
+  if (form.value.type == $enum.form.infoType) {
     // Fetch employee information
-    await getEmployee(form.value.empId);
-    updateDepartmentInfo();
+    await fetchEmployeeInfoToEmployeeObject(form.value.empId, form.value.type);
+    oldEmployee = employee.value;
+    return;
+  }
+
+  if (form.value.type == $enum.form.dupplicateType) {
+    // Fetch employee information
+    await fetchEmployeeInfoToEmployeeObject(form.value.empId, form.value.type);
+    await fetchNewEmployeeCode();
+    return;
   }
 }
 
@@ -791,11 +792,24 @@ function focusOnFirstErrorInput() {
  *
  * Author: Dũng (08/05/2023)
  */
-async function getEmployee(empId) {
+async function fetchEmployeeInfoToEmployeeObject(empId, type) {
   const response = await $axios.get($api.employee.one(empId));
   const empFromApi = response.data;
+
+  if (type == $enum.form.dupplicateType) {
+    response.data.employeeId = "";
+    response.data.employeeCode = "";
+  }
+
   employee.value = new Employee(empFromApi);
-  oldEmployee = new Employee(empFromApi);
+
+  // Gắn thông tin đơn vị vào Employee
+  for (const department of departmentList.value) {
+    if (department.departmentId == employee.value.departmentId) {
+      employee.value.departmentName = department.departmentName;
+      employee.value.departmentCode = department.departmentCode;
+    }
+  }
 }
 
 // #endregion
@@ -873,16 +887,17 @@ async function btnSaveOnClick() {
       // show notibox
       await displayNotiBox();
     } else {
-      if (form.value.type == $enum.form.createType) {
-        // create employee
-        const newEmployeeId = await callCreateEmployeeApi();
-        employee.value.employeeId = newEmployeeId;
-        emits("updateEmplist", "create", employee.value);
-      } else {
+      if (form.value.type == $enum.form.infoType) {
         // edit employee
         await callEditEmployeeApi();
         emits("updateEmplist", "edit", employee.value);
+      } else {
+        // create or dupplicate employee
+        const newEmployeeId = await callCreateEmployeeApi();
+        employee.value.employeeId = newEmployeeId;
+        emits("updateEmplist", "create", employee.value);
       }
+
       form.value.isLoading = false;
       router.replace("/employee");
     }
@@ -907,16 +922,17 @@ async function btnSaveAndAddOnClick() {
       // show notibox
       await displayNotiBox();
     } else {
-      if (form.value.type == $enum.form.createType) {
-        // create employee
-        const newEmployeeId = await callCreateEmployeeApi();
-        employee.value.employeeId = newEmployeeId;
-        emits("updateEmplist", "create", employee.value);
-      } else {
+      if (form.value.type == $enum.form.infoType) {
         // edit employee
         await callEditEmployeeApi();
         emits("updateEmplist", "edit", employee.value);
+      } else {
+        // create or dupplicate employee
+        const newEmployeeId = await callCreateEmployeeApi();
+        employee.value.employeeId = newEmployeeId;
+        emits("updateEmplist", "create", employee.value);
       }
+
       form.value.isLoading = false;
       // Reset anything
       await router.replace("/employee/create");
@@ -1034,7 +1050,6 @@ async function btnCloseOnClick() {
   }
   formDialog.value.isShow = true;
   await nextTick();
-  console.log(dialogRef.value.yesBtn.refBtn);
   await dialogRef.value.yesBtn.refBtn.focus();
 }
 

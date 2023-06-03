@@ -189,7 +189,12 @@
                   @mouseleave="table.expandEmpId = ''"
                 >
                   <li>
-                    <div class="li-data">{{ lang.table_items.dupplicate }}</div>
+                    <div
+                      class="li-data"
+                      @click="dupplicateEmployeeOnClick(emp.employeeId)"
+                    >
+                      {{ lang.table_items.dupplicate }}
+                    </div>
                   </li>
                   <li>
                     <div
@@ -343,6 +348,13 @@ const isLastPage = computed(() => {
 // #endregion
 
 // #region handle event
+/**
+ * Sự kiện click vào nhân bản
+ * Author: Dũng (03/06/2023)
+ */
+function dupplicateEmployeeOnClick(empId) {
+  router.push(`/employee/dupplicate/${empId}`);
+}
 
 /**
  * Sự kiện click vào ô check all

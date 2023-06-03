@@ -2,6 +2,7 @@ const $enum = {
   form: {
     infoType: "info",
     createType: "create",
+    dupplicateType: "dupplicate",
   },
   gender: {
     male: 0,
