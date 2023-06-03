@@ -18,13 +18,6 @@ const routes = [
         },
       },
       {
-        path: "dupplicate/:id",
-        components: {
-          default: EmployeeList,
-          EmployeeForm: EmployeeForm,
-        },
-      },
-      {
         path: ":id",
         components: {
           default: EmployeeList,

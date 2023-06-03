@@ -18,6 +18,7 @@
   />
   <router-view
     name="EmployeeForm"
+    v-model:metadata="formMetadata"
     @update-emplist="employeeOnUpdate"
   ></router-view>
   <div class="pcontent">
@@ -74,6 +75,7 @@
         :paging-prev-page="pagingPrevPage"
         @update-paging-data="pagingDataOnUpdate"
         @update-row-status="rowStatusOnUpdate"
+        @update-dupplicate-emp="dupplicateEmpOnUpdate"
       />
     </div>
   </div>
@@ -123,6 +125,10 @@ const selectedEmpIds = ref([]);
 const selectedAmountInPage = ref(0);
 const toastList = ref([]);
 var toastId = 0;
+const formMetadata = ref({
+  isDupplicate: false,
+  employeeDupplicate: null,
+});
 // #endregion
 
 // #region hook
@@ -325,6 +331,19 @@ async function deleteBatchEmployee() {
 // #endregion
 
 // #region handle event
+
+/**
+ * Sự kiện Employee Table emit dupplicate lên Employee List
+ * @param {Object} emp object employee được dupplicate
+ *
+ * Author: Dũng (10/05/2023)
+ */
+function dupplicateEmpOnUpdate(emp) {
+  formMetadata.value.isDupplicate = true;
+  formMetadata.value.employeeDupplicate = emp;
+  router.push("/employee/create");
+}
+
 /**
  * Sự kiện khi cập nhật trạng thái của nhân viên (select, active, toggleAll)
  * @param {Object} data object thông báo

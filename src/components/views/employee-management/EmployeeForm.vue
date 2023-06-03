@@ -338,7 +338,10 @@ import { onKeyStroke, useMagicKeys, whenever } from "@vueuse/core";
 // #endregion
 
 // #region init
-const emits = defineEmits(["updateEmplist"]);
+const emits = defineEmits(["updateEmplist", "update:metadata"]);
+const props = defineProps({
+  metadata: Object,
+});
 const router = useRouter();
 const route = useRoute();
 var oldEmployee = null;
@@ -456,15 +459,21 @@ whenever(ctrl_shift_s, ctrlShiftSCombination);
 function resetFormState() {
   form.value = {
     type: route.params.id
-      ? route.path.includes("dupplicate")
-        ? $enum.form.dupplicateType
-        : $enum.form.infoType
+      ? $enum.form.infoType
+      : props.metadata.isDupplicate
+      ? $enum.form.dupplicateType
       : $enum.form.createType,
     empId: route.params.id ?? "",
     isLoading: false,
     checkbox1: false,
     checkbox2: false,
   };
+  if (form.value.type == $enum.form.dupplicateType) {
+    emits("update:metadata", {
+      isDupplicate: false,
+      employeeDupplicate: props.metadata.employeeDupplicate,
+    });
+  }
   employee.value = new Employee({});
 }
 
@@ -549,6 +558,7 @@ async function fetchNewEmployeeCode() {
 async function getDataFromApi() {
   // Fetch Department List
   await getDepartmentList();
+
   if (form.value.type == $enum.form.createType) {
     // Fetch new employee code
     await fetchNewEmployeeCode();
@@ -558,13 +568,19 @@ async function getDataFromApi() {
   if (form.value.type == $enum.form.infoType) {
     // Fetch employee information
     await fetchEmployeeInfoToEmployeeObject(form.value.empId, form.value.type);
-    oldEmployee = employee.value;
+    const oldEmp = new Employee({});
+    oldEmp.cloneFromOtherEmployee(employee.value);
+    oldEmployee = oldEmp;
     return;
   }
 
   if (form.value.type == $enum.form.dupplicateType) {
     // Fetch employee information
-    await fetchEmployeeInfoToEmployeeObject(form.value.empId, form.value.type);
+    const emp = new Employee({});
+    emp.cloneFromOtherEmployee(props.metadata.employeeDupplicate);
+    employee.value = emp;
+    employee.value.employeeCode = "";
+    employee.value.employeeId = "";
     await fetchNewEmployeeCode();
     return;
   }
@@ -787,19 +803,14 @@ function focusOnFirstErrorInput() {
 }
 
 /**
- * Gọi API lấy thông tin nhân viên
+ * Gọi API lấy thông tin nhân viên và gán vào employee object
  * @param {String} empId Id nhân viên
  *
  * Author: Dũng (08/05/2023)
  */
-async function fetchEmployeeInfoToEmployeeObject(empId, type) {
+async function fetchEmployeeInfoToEmployeeObject(empId) {
   const response = await $axios.get($api.employee.one(empId));
   const empFromApi = response.data;
-
-  if (type == $enum.form.dupplicateType) {
-    response.data.employeeId = "";
-    response.data.employeeCode = "";
-  }
 
   employee.value = new Employee(empFromApi);
 
@@ -880,8 +891,9 @@ async function displayNotiBox() {
 async function btnSaveOnClick() {
   try {
     form.value.isLoading = true;
+
     await validateData();
-    // check null ?
+
     if (formNoti.value.notiboxMessage.length) {
       form.value.isLoading = false;
       // show notibox

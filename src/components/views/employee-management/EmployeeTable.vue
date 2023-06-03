@@ -191,7 +191,7 @@
                   <li>
                     <div
                       class="li-data"
-                      @click="dupplicateEmployeeOnClick(emp.employeeId)"
+                      @click="dupplicateEmployeeOnClick(emp)"
                     >
                       {{ lang.table_items.dupplicate }}
                     </div>
@@ -318,7 +318,11 @@ const props = defineProps({
   haveDataAfterCallApi: Boolean,
 });
 
-const emits = defineEmits(["updatePagingData", "updateRowStatus"]);
+const emits = defineEmits([
+  "updatePagingData",
+  "updateRowStatus",
+  "updateDupplicateEmp",
+]);
 
 const table = ref({
   recordAmountOpen: false,
@@ -352,8 +356,9 @@ const isLastPage = computed(() => {
  * Sự kiện click vào nhân bản
  * Author: Dũng (03/06/2023)
  */
-function dupplicateEmployeeOnClick(empId) {
-  router.push(`/employee/dupplicate/${empId}`);
+function dupplicateEmployeeOnClick(emp) {
+  emits("updateDupplicateEmp", emp);
+  // router.push(`/employee/dupplicate/${empId}`);
 }
 
 /**

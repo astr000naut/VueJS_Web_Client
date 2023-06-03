@@ -53,6 +53,35 @@ export class Employee {
   }
 
   /**
+   * Copy dữ liệu từ employee khác
+   *
+   * Author: Dũng (04/06/2023)
+   */
+  cloneFromOtherEmployee(e) {
+    this.address = e.address ?? "";
+    this.dateOfBirth = e.dateOfBirth ?? "";
+    this.departmentCode = e.departmentCode ?? "";
+    this.departmentId = e.departmentId ?? "";
+    this.departmentName = e.departmentName ?? "";
+    this.email = e.email ?? "";
+    this.employeeCode = e.employeeCode ?? "";
+    this.employeeId = e.employeeId ?? "";
+    this.employeeFullName = e.employeeFullName ?? "";
+    this.gender = e.gender ?? -1;
+    this.identityDate = e.identityDate ?? "";
+    this.identityNumber = e.identityNumber ?? "";
+    this.identityPlace = e.identityPlace ?? "";
+    this.phoneNumber = e.phoneNumber ?? "";
+    this.landlineNumber = e.landlineNumber ?? "";
+    this.positionName = e.positionName ?? "";
+    this.positionId = e.positionId ?? "";
+    this.positionCode = e.positionCode ?? "";
+    this.bankAccount = e.bankAccount ?? "";
+    this.bankName = e.bankName ?? "";
+    this.bankBranch = e.bankBranch ?? "";
+  }
+
+  /**
    * Trả về Object với định dạng là Body của request
    * @param {Boolean} isEditApi là api sửa thông tin nhân viên hay không
    *
