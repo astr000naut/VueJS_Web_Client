@@ -5,6 +5,7 @@
         :type="formNoti.notiboxType"
         :message="formNoti.notiboxMessage"
         :yes-on-click="formNotiboxYesBtnOnClick"
+        ref="notiRef"
       />
     </div>
     <div class="form__wrapper" v-show="formDialog.isShow">
@@ -14,6 +15,7 @@
         :close-on-click="formDialogCloseBtnOnClick"
         :no-on-click="formDialogNoBtnOnClick"
         :yes-on-click="formDialogYesBtnOnClick"
+        ref="dialogRef"
       />
     </div>
     <div class="form__loader" v-show="form.isLoading">
@@ -323,7 +325,7 @@ import BaseLoader from "@/components/base/BaseLoader.vue";
 import BaseDialog from "@/components/base/BaseDialog.vue";
 import BaseNotibox from "@/components/base/BaseNotibox.vue";
 import $enum from "@/js/common/enum";
-import { ref, inject, onMounted } from "vue";
+import { ref, inject, onMounted, nextTick } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { Employee } from "../../../js/model/employee";
 const $axios = inject("$axios");
@@ -397,10 +399,14 @@ const bankAccountRef = ref(null);
 const bankNameRef = ref(null);
 const bankBranchRef = ref(null);
 
+const dialogRef = ref(null);
+const notiRef = ref(null);
+
 const cancelBtnRef = ref(null);
 const saveBtnRef = ref(null);
 const saveAndAddBtnRef = ref(null);
 const departmentList = ref([]);
+
 resetFormState();
 // #endregion
 
@@ -414,7 +420,7 @@ onMounted(async () => {
   } catch (error) {
     console.log(error);
     form.value.isLoading = false;
-    handleResponseStatusCode(error.response.status, error);
+    await handleResponseStatusCode(error.response.status, error);
   }
 });
 
@@ -464,16 +470,15 @@ function resetFormState() {
  * @param {code}
  * Author: Dũng (08/05/2023)
  */
-function handleResponseStatusCode(code, error) {
+async function handleResponseStatusCode(code, error) {
+  formNoti.value.notiboxType = "alert";
   if (code == 400) {
-    formNoti.value.notiboxType = "alert";
     formNoti.value.notiboxMessage = $error.invalidInput;
-    formNoti.value.showNotibox = true;
+    await displayNotiBox();
   } else {
-    formNoti.value.notiboxType = "alert";
     formNoti.value.notiboxMessage = error.response.data.UserMessage;
-    formNoti.value.showNotibox = true;
   }
+  await displayNotiBox();
 }
 
 /**
@@ -770,7 +775,7 @@ async function addNewDepartment(name) {
   } catch (error) {
     console.log(error);
     form.value.isLoading = false;
-    handleResponseStatusCode(error.response.status, error);
+    await handleResponseStatusCode(error.response.status, error);
   }
 }
 
@@ -827,10 +832,10 @@ async function getEmployee(empId) {
  *
  * Author: Dũng (02/06/2023)
  */
-function onEscapeKeydown() {
+async function onEscapeKeydown() {
   if (formNoti.value.showNotibox) return;
   if (formDialog.value.isShow) return;
-  btnCloseOnClick();
+  await btnCloseOnClick();
 }
 
 /**
@@ -869,6 +874,16 @@ async function formDialogYesBtnOnClick() {
 }
 
 /**
+ * Hiển thị notibox thông báo
+ * Author: Duxng(03/06/2023)
+ */
+async function displayNotiBox() {
+  formNoti.value.showNotibox = true;
+  await nextTick();
+  notiRef.value.yesBtn.refBtn.focus();
+}
+
+/**
  * Sự kiện click vào nút cất
  * @param {Boolean} goBackToEmployeeList có quay lại trang employee sau khi click không
  *
@@ -882,7 +897,7 @@ async function btnSaveOnClick() {
     if (formNoti.value.notiboxMessage.length) {
       form.value.isLoading = false;
       // show notibox
-      formNoti.value.showNotibox = true;
+      await displayNotiBox();
     } else {
       if (form.value.type == $enum.form.createType) {
         // create employee
@@ -900,7 +915,7 @@ async function btnSaveOnClick() {
   } catch (error) {
     console.log(error);
     form.value.isLoading = false;
-    handleResponseStatusCode(error.response.status, error);
+    await handleResponseStatusCode(error.response.status, error);
   }
 }
 
@@ -916,7 +931,7 @@ async function btnSaveAndAddOnClick() {
     if (formNoti.value.notiboxMessage != "") {
       form.value.isLoading = false;
       // show notibox
-      formNoti.value.showNotibox = true;
+      await displayNotiBox();
     } else {
       if (form.value.type == $enum.form.createType) {
         // create employee
@@ -938,7 +953,7 @@ async function btnSaveAndAddOnClick() {
   } catch (error) {
     console.log(error);
     form.value.isLoading = false;
-    handleResponseStatusCode(error.response.status, error);
+    await handleResponseStatusCode(error.response.status, error);
   }
 }
 
@@ -954,8 +969,14 @@ function formNotiboxYesBtnOnClick() {
  * Sự kiện click vào nút đóng dialog
  * Author: Dũng (08/05/2023)
  */
-function formDialogCloseBtnOnClick() {
+async function formDialogCloseBtnOnClick() {
   formDialog.value.isShow = false;
+  await nextTick();
+  if (firstErrorRef != null) {
+    focusOnFirstErrorInput();
+  } else {
+    employeeCodeRef.value.refInput.focus();
+  }
 }
 
 /**
@@ -1033,11 +1054,14 @@ function saveAndAddBtnOnTabKeydown() {
  * Sự kiện click vào nút đóng form
  * Author: Dũng (08/05/2023)
  */
-function btnCloseOnClick() {
+async function btnCloseOnClick() {
   if (_.isEqual(oldEmployee, employee.value)) {
     router.replace("/employee");
   }
   formDialog.value.isShow = true;
+  await nextTick();
+  console.log(dialogRef.value.yesBtn.refBtn);
+  await dialogRef.value.yesBtn.refBtn.focus();
 }
 
 // #endregion

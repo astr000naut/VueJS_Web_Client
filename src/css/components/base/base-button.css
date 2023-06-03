@@ -5,8 +5,13 @@ button {
     cursor: pointer;
     overflow: hidden;
     height: var(--h-default);
+    outline: none;
   }
-  
+
+  button:focus {
+    outline: 2px solid #cdcdcd;
+  }
+
   /* Primary */
   
   .btn--primary {
@@ -97,5 +102,5 @@ button {
   
   .btn--close {
     width: var(--h-default);
-    background: url(../../../assets/img/Sprites.64af8f61.svg) no-repeat -137px -139px;
+    background: url(../../../assets/img/Sprites.64af8f61.svg) no-repeat -138px -138px;
   }

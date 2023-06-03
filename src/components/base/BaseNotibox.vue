@@ -9,18 +9,30 @@
     </div>
     <hr />
     <div class="notibox__footer">
-      <BaseButton bname="Đồng ý" class="btn--primary" @click="yesOnClick" />
+      <BaseButton
+        ref="yesBtn"
+        bname="Đồng ý"
+        class="btn--primary"
+        @click="yesOnClick"
+        @keydown.enter.stop
+        @keydown.tab.prevent
+      />
     </div>
   </div>
 </template>
 
 <script setup>
+//#region import
+import { ref } from "vue";
+//#endregion
 //#region init
+const yesBtn = ref(null);
 defineProps({
   type: String,
   message: String,
   yesOnClick: Function,
 });
+defineExpose({ yesBtn });
 //#endregion
 </script>
 
