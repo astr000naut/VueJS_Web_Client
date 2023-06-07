@@ -85,6 +85,7 @@ const lang = {
   combobox: {
     empDepart: {
       label: "Đơn vị",
+      notFound: "Không tìm thấy đơn vị này",
     },
   },
   radioGroup: {
@@ -96,6 +97,17 @@ const lang = {
     },
   },
   datepicker: {
+    thead: {
+      mon: "T2",
+      tue: "T3",
+      wed: "T4",
+      thu: "T5",
+      fri: "T6",
+      sat: "T7",
+      sun: "CN",
+    },
+    todayBtn: "Hôm nay",
+    cancelBtn: "Hủy bỏ",
     empIdentityDate: {
       label: "Ngày cấp",
     },
@@ -111,6 +123,7 @@ const lang = {
     addEmployee: "Thêm mới nhân viên",
     batchOperaton: "Thực hiện hàng loạt",
     reload: "Tải lại dữ liệu",
+    export: "Xuất dữ liệu",
     cancelSelect: "Bỏ chọn",
   },
   employeeList: {

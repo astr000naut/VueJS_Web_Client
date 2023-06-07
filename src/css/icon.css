@@ -205,7 +205,8 @@ background-position: -78px -357px;
 background-position: -699px -193px;
 }
 
-.mi-excel:hover {
+.mi-excel:not(.disabled):hover {
+cursor: pointer;
 background-position: -699px -249px;
 }
 

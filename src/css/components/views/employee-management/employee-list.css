@@ -98,12 +98,12 @@
     display: flex;
     column-gap: 12px;
   }
-  .button__hoverbox {
+  .button__hoverbox--refresh {
     display: none;
     z-index: 20;
     position: absolute;
     top: -24px;
-    right: -22px;
+    right: 28px;
   }
   
   .hover__text {
@@ -122,7 +122,19 @@
     transform: translateY(-50%) rotate(45deg);
   }
   
-  .mi-refresh:hover + .button__hoverbox {
+  .mi-refresh:hover + .button__hoverbox--refresh {
+    display: block;
+  }
+
+  .button__hoverbox--export {
+    display: none;
+    z-index: 20;
+    position: absolute;
+    top: -24px;
+    right: -20px;
+  }
+
+  .mi-excel:hover + .button__hoverbox--export {
     display: block;
   }
   
@@ -141,4 +153,12 @@
     top: 50px;
     left: 40vw;
     z-index: 51;
+  }
+
+  .export__loader {
+    width: 48px;
+    height: 48px;
+    position: absolute;
+    right: -6px;
+    top: -5px;
   }

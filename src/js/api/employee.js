@@ -7,6 +7,7 @@ const employeeApi = (baseUrl) => {
     filter: baseUrl + controller + "/Filter",
     deleteMultiple: baseUrl + controller + "/DeleteMultiple",
     checkCodeExist: baseUrl + controller + "/CheckCodeExist",
+    exportExcel: baseUrl + controller + "/ExportEmployeesData",
   };
 };
 

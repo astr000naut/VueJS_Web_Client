@@ -63,7 +63,9 @@
             </table>
           </div>
           <div class="dpicker__cancelbox">
-            <button class="dp__cancel" @click="cancelBtnOnClick">Hủy bỏ</button>
+            <button class="dp__cancel" @click="cancelBtnOnClick">
+              {{ lang.datepicker.cancelBtn }}
+            </button>
           </div>
         </div>
         <div v-show="boxStatus == 1" class="dpicker__yearlist">
@@ -91,13 +93,13 @@
             <table>
               <thead>
                 <tr>
-                  <th>T2</th>
-                  <th>T3</th>
-                  <th>T4</th>
-                  <th>T5</th>
-                  <th>T6</th>
-                  <th>T7</th>
-                  <th>CN</th>
+                  <th>{{ lang.datepicker.thead.mon }}</th>
+                  <th>{{ lang.datepicker.thead.tue }}</th>
+                  <th>{{ lang.datepicker.thead.wed }}</th>
+                  <th>{{ lang.datepicker.thead.thu }}</th>
+                  <th>{{ lang.datepicker.thead.fri }}</th>
+                  <th>{{ lang.datepicker.thead.sat }}</th>
+                  <th>{{ lang.datepicker.thead.sun }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -127,7 +129,9 @@
             </table>
           </div>
           <div class="dpicker__curdate">
-            <button class="dp__now" @click="todayBtnOnClick">Hôm nay</button>
+            <button class="dp__now" @click="todayBtnOnClick">
+              {{ lang.datepicker.todayBtn }}
+            </button>
           </div>
         </div>
       </div>
@@ -138,7 +142,7 @@
 
 <script setup>
 //#region import
-import { ref } from "vue";
+import { ref, inject } from "vue";
 import $formatter from "@/js/common/formater";
 
 //#endregion
@@ -150,6 +154,7 @@ const props = defineProps({
   inputText: String,
   noti: String,
 });
+const lang = inject("$lang");
 const emits = defineEmits(["update:inputText", "update:noti"]);
 defineExpose({ refInput });
 const isBoxOpen = ref(false);

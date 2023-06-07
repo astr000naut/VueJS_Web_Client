@@ -42,10 +42,21 @@
             :doSearch="doSearchEmployee"
           />
           <BaseButton class="mi mi-36 mi-refresh" @click="loadEmployeeData" />
-          <BaseButton class="mi mi-36 mi-excel" />
-          <div class="button__hoverbox">
+          <div class="button__hoverbox--refresh">
             <div class="hover__arrow"></div>
             <div class="hover__text">{{ lang.button.reload }}</div>
+          </div>
+          <div
+            :class="[isLoadingExport ? 'disabled' : '']"
+            class="minc mi-36 mi-excel"
+            @click="exportExcelOnClick"
+          ></div>
+          <div class="button__hoverbox--export">
+            <div class="hover__arrow"></div>
+            <div class="hover__text">{{ lang.button.export }}</div>
+          </div>
+          <div class="export__loader" v-show="isLoadingExport">
+            <BaseLoader></BaseLoader>
           </div>
         </div>
         <div class="searchbar__left" v-show="selectedEmpIds.length > 1">
@@ -100,8 +111,9 @@ const lang = inject("$lang");
 const router = useRouter();
 const $emitter = inject("$emitter");
 const rowList = ref([]);
-const isLoadingData = ref(true);
+const isLoadingData = ref(false);
 const isLoadingPage = ref(false);
+const isLoadingExport = ref(false);
 const $axios = inject("$axios");
 const tableKey = ref(0);
 const haveDataAfterCallApi = ref(true);
@@ -333,6 +345,48 @@ async function deleteBatchEmployee() {
 // #region handle event
 
 /**
+ * Sự kiện click Export Excel
+ *
+ * Author: Dũng (04/06/2023)
+ */
+async function exportExcelOnClick() {
+  try {
+    if (isLoadingExport.value) return;
+    isLoadingExport.value = true;
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const response = await $axios.get($api.employee.exportExcel, {
+      responseType: "blob",
+    });
+
+    // Tạo URL cho blob data
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+
+    // Tạo link element
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "Danh_sach_nhan_vien.xlsx");
+
+    // Append link element vào DOM và click để tự download
+    document.body.appendChild(link);
+    link.click();
+
+    // Remove các element
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+    isLoadingExport.value = false;
+  } catch (error) {
+    isLoadingExport.value = false;
+    console.log(error);
+    pushToast({
+      type: "fail",
+      message: $error.exportFailed,
+      timeToLive: 1500,
+    });
+  }
+}
+
+/**
  * Sự kiện Employee Table emit dupplicate lên Employee List
  * @param {Object} emp object employee được dupplicate
  *
@@ -506,6 +560,7 @@ async function pagingPrevPage() {
  */
 async function loadEmployeeData() {
   try {
+    if (isLoadingData.value == true) return;
     selectedAmountInPage.value = 0;
     isLoadingData.value = true;
     await new Promise((resolve) => setTimeout(resolve, 800));

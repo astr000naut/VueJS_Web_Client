@@ -75,7 +75,9 @@
             </div>
           </template>
           <div v-show="optionListDisplay.length == 0" class="option__item">
-            <div class="option__text">Không tìm thấy đơn vị này</div>
+            <div class="option__text">
+              {{ lang.combobox.empDepart.notFound }}
+            </div>
           </div>
         </div>
       </div>
@@ -86,7 +88,7 @@
 
 <script setup>
 //#region import
-import { ref } from "vue";
+import { ref, inject } from "vue";
 import BaseLoader from "./BaseLoader.vue";
 //#endregion
 
@@ -97,6 +99,7 @@ const timeoutVal = 500;
 const optionIdHide = ref([]);
 const optionListDisplay = ref([]);
 const refInput = ref(null);
+const lang = inject("$lang");
 
 const props = defineProps({
   label: String,
