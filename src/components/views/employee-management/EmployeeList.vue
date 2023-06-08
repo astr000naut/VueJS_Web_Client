@@ -283,6 +283,8 @@ async function deleteEmployee() {
       selectedAmountInPage.value -= 1;
     }
 
+    isLoadingPage.value = false;
+
     // Update pagingData
     pagingData.value.curAmount -= 1;
     pagingData.value.totalRecord -= 1;
@@ -290,7 +292,7 @@ async function deleteEmployee() {
       if (pagingData.value.pageNumber > 1) --pagingData.value.pageNumber;
       await loadEmployeeData();
     }
-    isLoadingPage.value = false;
+
     // NEED REFACTOR
     pushToast({
       type: "success",
@@ -326,9 +328,9 @@ async function deleteBatchEmployee() {
     }
     // Load lại từ trang 1
     pagingData.value.pageNumber = 1;
+    isLoadingPage.value = false;
     await loadEmployeeData();
 
-    isLoadingPage.value = false;
     pushToast({
       type: "success",
       message: $message.employeeMultipeDeleted(deletedSucess),
