@@ -502,6 +502,7 @@ async function generateEmpCode() {
   try {
     form.value.isLoading = true;
     await fetchNewEmployeeCode();
+    formNoti.value.employeeCode = "";
     form.value.isLoading = false;
   } catch (error) {
     console.log(error);
