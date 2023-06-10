@@ -622,7 +622,7 @@ async function employeeOnUpdate(type, data) {
         selected: false,
         emp: data,
       });
-      if (pagingData.value.curAmount > 50) {
+      if (pagingData.value.curAmount > 2 * pagingData.value.pageSize) {
         await loadEmployeeData();
       }
       pushToast({
