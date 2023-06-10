@@ -254,6 +254,7 @@ function showBatchDeleteConfirmDialog() {
  * Author: Dũng (08/05/2023)
  */
 function handleApiErrorResponse(error) {
+  console.log(error);
   if (error.code == "ERR_NETWORK") {
     pushToast({
       type: "fail",
@@ -300,7 +301,6 @@ async function deleteEmployee() {
       timeToLive: 1500,
     });
   } catch (error) {
-    console.log(error);
     isLoadingPage.value = false;
     handleApiErrorResponse(error);
   }
@@ -383,7 +383,6 @@ async function exportExcelOnClick() {
     pushToast({
       type: "fail",
       message: $error.exportFailed,
-      timeToLive: 1500,
     });
   }
 }
@@ -596,8 +595,6 @@ async function loadEmployeeData() {
     haveDataAfterCallApi.value = pagingData.value.totalRecord != 0;
     isLoadingData.value = false;
   } catch (error) {
-    console.log("LOAD FAILED");
-    console.log(error);
     isLoadingData.value = false;
     handleApiErrorResponse(error);
   }

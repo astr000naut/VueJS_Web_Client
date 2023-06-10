@@ -420,7 +420,6 @@ onMounted(async () => {
     form.value.isLoading = false;
     employeeCodeRef.value.refInput.focus();
   } catch (error) {
-    console.log(error);
     form.value.isLoading = false;
     await handleResponseStatusCode(error.response.status, error);
   }
@@ -486,7 +485,6 @@ async function handleResponseStatusCode(code, error) {
   formNoti.value.notiboxType = "alert";
   if (code == 400) {
     formNoti.value.notiboxMessage = $error.invalidInput;
-    await displayNotiBox();
   } else {
     formNoti.value.notiboxMessage = error.response.data.UserMessage;
   }
@@ -505,7 +503,8 @@ async function generateEmpCode() {
     formNoti.value.employeeCode = "";
     form.value.isLoading = false;
   } catch (error) {
-    console.log(error);
+    form.value.isLoading = false;
+    await handleResponseStatusCode(error.response.status, error);
   }
 }
 
@@ -915,7 +914,6 @@ async function btnSaveOnClick() {
       router.replace("/employee");
     }
   } catch (error) {
-    console.log(error);
     form.value.isLoading = false;
     await handleResponseStatusCode(error.response.status, error);
   }
@@ -954,7 +952,6 @@ async function btnSaveAndAddOnClick() {
       employeeCodeRef.value.refInput.focus();
     }
   } catch (error) {
-    console.log(error);
     form.value.isLoading = false;
     await handleResponseStatusCode(error.response.status, error);
   }
