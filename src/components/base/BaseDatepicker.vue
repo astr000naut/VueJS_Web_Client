@@ -1,5 +1,9 @@
 <template>
-  <div class="dpicker" :class="[noti.length > 0 ? 'error-noti' : '']">
+  <div
+    class="dpicker"
+    :class="[noti.length > 0 ? 'error-noti' : '']"
+    v-on-click-outside="dpickerOnClickOutside"
+  >
     <div class="dpicker__label">{{ label }}</div>
     <div class="dpicker__selector">
       <div class="dpicker__input">
@@ -144,6 +148,7 @@
 //#region import
 import { ref, inject } from "vue";
 import $formatter from "@/js/common/formater";
+import { vOnClickOutside } from "@vueuse/components";
 
 //#endregion
 
@@ -234,6 +239,15 @@ function updateCell(year, month) {
 //#endregion
 
 //#region handle event
+
+/**
+ * Sự kiện click outside dpicker box
+ *
+ * Author: Dũng (11/06/2023)
+ */
+function dpickerOnClickOutside() {
+  if (isBoxOpen.value) isBoxOpen.value = false;
+}
 
 /**
  * Sự kiện nhập vào ô input

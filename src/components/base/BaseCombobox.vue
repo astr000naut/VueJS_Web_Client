@@ -5,6 +5,7 @@
       isrequired ? 'field--required' : '',
       noti.length > 0 ? 'error-noti' : '',
     ]"
+    v-on-click-outside="cboxOnClickOutside"
   >
     <div class="cbox__label label">{{ label }}</div>
     <div class="cbox__select">
@@ -90,6 +91,7 @@
 //#region import
 import { ref, inject } from "vue";
 import BaseLoader from "./BaseLoader.vue";
+import { vOnClickOutside } from "@vueuse/components";
 //#endregion
 
 //#region init
@@ -166,6 +168,15 @@ function filterData(input) {
 //#endregion
 
 //#region handle event
+
+/**
+ * Sự kiện click ouside combobox
+ *
+ * Author: Dũng (10/06/2023)
+ */
+function cboxOnClickOutside() {
+  if (cbox.value.isOptionboxOpen) cbox.value.isOptionboxOpen = false;
+}
 
 /**
  * Sự kiện nhấn Enter tại ô input
