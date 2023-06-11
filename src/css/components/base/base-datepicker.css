@@ -9,7 +9,7 @@
 
 .dpicker__input {
   position: relative;
-  background-color: green;
+  /* background-color: green; */
   width: fit-content;
 }
 

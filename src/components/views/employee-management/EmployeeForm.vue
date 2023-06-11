@@ -415,6 +415,10 @@ resetFormState();
 // #region hook
 onMounted(async () => {
   try {
+    if (form.value.type == $enum.form.infoType && !isUUID(form.value.empId)) {
+      await router.replace("/employee");
+      return;
+    }
     form.value.isLoading = true;
     await getDataFromApi();
     form.value.isLoading = false;
@@ -451,6 +455,17 @@ whenever(ctrl_shift_s, ctrlShiftSCombination);
 // #region function
 
 /**
+ * Kiểm tra một string có phải UUID không
+ *
+ * Author: Dũng (11/06/2023)
+ */
+function isUUID(str) {
+  const uuidRegex =
+    /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+  return uuidRegex.test(str);
+}
+
+/**
  * Reset giá trị employee và trạng thái form
  *
  * Author: Dũng (08/05/2023)
@@ -485,10 +500,13 @@ async function handleResponseStatusCode(code, error) {
   formNoti.value.notiboxType = "alert";
   if (code == 400) {
     formNoti.value.notiboxMessage = $error.invalidInput;
+    await displayNotiBox();
+  } else if (code == 404) {
+    await router.replace("/employee");
   } else {
     formNoti.value.notiboxMessage = error.response.data.UserMessage;
+    await displayNotiBox();
   }
-  await displayNotiBox();
 }
 
 /**
