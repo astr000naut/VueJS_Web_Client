@@ -106,6 +106,7 @@ const lang = {
       sat: "T7",
       sun: "CN",
     },
+    monthText: "Thg",
     todayBtn: "Hôm nay",
     cancelBtn: "Hủy bỏ",
     empIdentityDate: {

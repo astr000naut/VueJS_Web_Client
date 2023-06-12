@@ -82,14 +82,18 @@
                     :key="j"
                     @click="monthItemOnClick($event, 4 * (i - 1) + j)"
                   >
-                    <div class="month-item">Thg {{ 4 * (i - 1) + j }}</div>
+                    <div class="month-item">
+                      {{ lang.datepicker.monthText }} {{ 4 * (i - 1) + j }}
+                    </div>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div class="dpicker__cancelbox">
-            <button class="dp__cancel" @click="cancelBtnOnClick">Hủy bỏ</button>
+            <button class="dp__cancel" @click="cancelBtnOnClick">
+              {{ lang.datepicker.cancelBtn }}
+            </button>
           </div>
         </div>
         <div v-show="boxStatus == 0" class="dpicker__daylist">
