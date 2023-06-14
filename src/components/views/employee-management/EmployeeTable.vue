@@ -30,7 +30,7 @@
             <div class="text-left mw-90">{{ lang.tableHeader.empGender }}</div>
           </th>
           <th>
-            <div class="text-left mw-90">{{ lang.tableHeader.empDob }}</div>
+            <div class="text-center mw-90">{{ lang.tableHeader.empDob }}</div>
           </th>
           <th class="zindex--8">
             <div class="text-left mw-120">
@@ -136,7 +136,7 @@
               </div>
             </td>
             <td>
-              <div class="text-left">
+              <div class="text-center">
                 {{ emp.dateOfBirth }}
               </div>
             </td>
