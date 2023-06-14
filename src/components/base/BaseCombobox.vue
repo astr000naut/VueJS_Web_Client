@@ -175,7 +175,12 @@ function filterData(input) {
  * Author: Dũng (10/06/2023)
  */
 function cboxOnClickOutside() {
-  if (cbox.value.isOptionboxOpen) cbox.value.isOptionboxOpen = false;
+  if (cbox.value.isOptionboxOpen) {
+    cbox.value.isOptionboxOpen = false;
+    if (props.text.length != 0 && props.selectedItemId.length == 0) {
+      emits("update:text", "");
+    }
+  }
 }
 
 /**
@@ -272,6 +277,9 @@ function selectButtonOnClick() {
     optionIdHide.value = [];
     optionListDisplay.value = props.optionList;
     cbox.value.isOptionboxOpen = false;
+    if (props.text.length != 0 && props.selectedItemId.length == 0) {
+      emits("update:text", "");
+    }
   } else {
     cbox.value.isOptionboxOpen = true;
     optionListDisplay.value = props.optionList;
