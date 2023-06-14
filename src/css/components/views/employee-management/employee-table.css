@@ -50,6 +50,14 @@
     padding: 0 12px;
   }
 
+  td div {
+    max-width: 240px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+
   td:nth-last-child(2),:last-child {
     border-right: unset;
   }
