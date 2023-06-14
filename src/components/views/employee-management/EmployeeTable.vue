@@ -21,13 +21,13 @@
             </div>
           </th>
           <th>
-            <div class="text-left mw-100">{{ lang.tableHeader.empCode }}</div>
+            <div class="text-left mw-120">{{ lang.tableHeader.empCode }}</div>
           </th>
           <th>
             <div class="text-left mw-200">{{ lang.tableHeader.empName }}</div>
           </th>
           <th>
-            <div class="text-left mw-70">{{ lang.tableHeader.empGender }}</div>
+            <div class="text-left mw-90">{{ lang.tableHeader.empGender }}</div>
           </th>
           <th>
             <div class="text-left mw-90">{{ lang.tableHeader.empDob }}</div>
@@ -77,7 +77,7 @@
             </div>
           </th>
           <th class="thn--sticky">
-            <div class="text-left mw-80">{{ lang.tableHeader.tool }}</div>
+            <div class="text-left mw-90">{{ lang.tableHeader.tool }}</div>
           </th>
         </tr>
       </thead>
