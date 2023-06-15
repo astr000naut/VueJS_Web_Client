@@ -70,13 +70,13 @@
             class="btn__tooltip btn__tooltip--help"
             v-show="formTooltip.help"
           >
-            Giúp (F1)
+            {{ lang.tooltip.help }}
           </div>
           <div
             class="btn__tooltip btn__tooltip--close"
             v-show="formTooltip.close"
           >
-            Đóng (ESC)
+            {{ lang.tooltip.closeForm }}
           </div>
         </div>
       </div>
@@ -301,13 +301,13 @@
             class="btn__tooltip btn__tooltip--save"
             v-show="formTooltip.save"
           >
-            Cất (Ctr + S)
+            {{ lang.tooltip.save }}
           </div>
           <div
             class="btn__tooltip btn__tooltip--saveandadd"
             v-show="formTooltip.saveAndAdd"
           >
-            Cất và thêm (Ctr + Shift + S)
+            {{ lang.tooltip.saveAndAdd }}
           </div>
         </div>
       </div>

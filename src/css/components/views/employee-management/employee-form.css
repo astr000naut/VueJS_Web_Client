@@ -212,7 +212,7 @@
 
   .btn__tooltip--help {
     bottom: -25px;
-    left: -15px;
+    left: -1px;
   }
 
   .btn__tooltip--close {

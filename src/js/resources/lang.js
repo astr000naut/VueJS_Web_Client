@@ -169,5 +169,11 @@ const lang = {
     female: "Nữ",
     other: "Khác",
   },
+  tooltip: {
+    saveAndAdd: "Cất và thêm (Ctr + Shift + S)",
+    save: "Cất (Ctr + S)",
+    closeForm: "Đóng (ESC)",
+    help: "Giúp",
+  },
 };
 export default lang;
