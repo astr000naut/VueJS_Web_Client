@@ -12,7 +12,7 @@
         <div class="header__sidebaric mi mi-24 mi-header-three-line"></div>
         <div class="header__title">
           <div class="header__brandname">
-            CÔNG TY TNNH SẢN XUẤT - THƯƠNG MẠI - DỊCH VỤ QUI PHÚC
+            CÔNG TY TNHH SẢN XUẤT - THƯƠNG MẠI - DỊCH VỤ QUI PHÚC
           </div>
           <div class="header__title__arrow mi mi-14 mi-arrowdown"></div>
         </div>
