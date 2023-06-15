@@ -30,10 +30,10 @@
             <div class="text-left mw-90">{{ lang.tableHeader.empGender }}</div>
           </th>
           <th>
-            <div class="text-center mw-90">{{ lang.tableHeader.empDob }}</div>
+            <div class="text-center mw-120">{{ lang.tableHeader.empDob }}</div>
           </th>
           <th class="zindex--8">
-            <div class="text-left mw-120">
+            <div class="text-left mw-150">
               <span
                 class="text"
                 @mouseenter="thOnMouseEnter('isShowIdentityNumber')"
@@ -47,10 +47,10 @@
             </div>
           </th>
           <th>
-            <div class="text-left mw-150">{{ lang.tableHeader.empPos }}</div>
+            <div class="text-left mw-180">{{ lang.tableHeader.empPos }}</div>
           </th>
           <th>
-            <div class="text-left mw-200">{{ lang.tableHeader.empDepart }}</div>
+            <div class="text-left mw-240">{{ lang.tableHeader.empDepart }}</div>
           </th>
           <th>
             <div class="text-left mw-150">

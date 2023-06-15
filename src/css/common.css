@@ -66,9 +66,17 @@
   .mw-150 {
     min-width: 150px;
   }
+
+  .mw-180 {
+    min-width: 180px;
+  }
   
   .mw-200 {
     min-width: 200px;
+  }
+
+  .mw-240 {
+    min-width: 240px;
   }
   
   .mw-300 {
