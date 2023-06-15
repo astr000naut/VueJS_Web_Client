@@ -238,6 +238,8 @@ function focusOnARow() {
  */
 function inputArrowDownHandler() {
   if (!cbox.value.isOptionboxOpen) {
+    cbox.value.isLoading = false;
+    cbox.value.cusorItemId = 0;
     cbox.value.isOptionboxOpen = true;
     optionListDisplay.value = props.optionList;
     focusOnARow();
@@ -282,6 +284,8 @@ function selectButtonOnClick() {
     }
   } else {
     cbox.value.isOptionboxOpen = true;
+    cbox.value.isLoading = false;
+    cbox.value.cusorItemId = 0;
     optionListDisplay.value = props.optionList;
     refInput.value.focus();
     focusOnARow();
