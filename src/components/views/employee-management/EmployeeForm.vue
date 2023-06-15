@@ -415,13 +415,16 @@ resetFormState();
 // #region hook
 onMounted(async () => {
   try {
+    // Nếu form là kiểu thông tin nhân viên mà id của router không hợp lệ thì quay lại trang /employee
     if (form.value.type == $enum.form.infoType && !isUUID(form.value.empId)) {
       await router.replace("/employee");
       return;
     }
     form.value.isLoading = true;
+    // Lấy dữ liệu từ Server
     await getDataFromApi();
     form.value.isLoading = false;
+    // Focus vào ô mã nhân viên
     employeeCodeRef.value.refInput.focus();
   } catch (error) {
     form.value.isLoading = false;
@@ -434,9 +437,11 @@ const keys = useMagicKeys();
 const { current } = useMagicKeys();
 
 const { ctrl_s } = useMagicKeys({
+  // When using `e.preventDefault()`, you will need to pass `passive: false` to useMagicKeys()
   passive: false,
   onEventFired(e) {
     if (e.ctrlKey && e.key === "s" && e.type === "keydown") {
+      // Tắt event Ctrl S mặc định của trình duyệt
       e.preventDefault();
     }
   },
@@ -482,6 +487,7 @@ function resetFormState() {
     checkbox1: false,
     checkbox2: false,
   };
+  // Nếu form là dupplicate thì tắt bỏ cờ báo isDupplicate để lần sau mở lại form không bị vào trường hợp dupplicate nữa
   if (form.value.type == $enum.form.dupplicateType) {
     emits("update:metadata", {
       isDupplicate: false,
@@ -499,11 +505,14 @@ function resetFormState() {
 async function handleResponseStatusCode(code, error) {
   formNoti.value.notiboxType = "alert";
   if (code == 400) {
+    // Trường hợp backend trả về BadRequest
     formNoti.value.notiboxMessage = $error.invalidInput;
     await displayNotiBox();
   } else if (code == 404) {
+    // Trường hợp không tìm thấy ID của nhân viên trên URL
     await router.replace("/employee");
   } else {
+    // Các trường hợp còn lại
     formNoti.value.notiboxMessage = error.response.data.UserMessage;
     await displayNotiBox();
   }
@@ -902,10 +911,16 @@ async function onEscapeKeydown() {
  * Author: Dũng (02/06/2023)
  */
 async function ctrlSCombination() {
+  // Nếu có shift nghĩa là đang nhấn Ctrl Shift S -> do đó return
   if (current.has("shift")) return;
+
+  // Nếu đang hiện thông báo lỗi hoặc dialog thì return
   if (formNoti.value.showNotibox) return;
   if (formDialog.value.isShow) return;
+
+  // Nếu một ô input lỗi đang được focus thì blur ô đó
   if (firstErrorRef != null) firstErrorRef.value.refInput.blur();
+
   await btnSaveOnClick();
 }
 
@@ -951,21 +966,29 @@ async function btnSaveOnClick() {
   try {
     form.value.isLoading = true;
 
+    // Validate dữ liệu của các trường thông tin
     await validateData();
 
+    // Nếu có một lỗi nào đó sau khi validate
     if (formNoti.value.notiboxMessage.length) {
       form.value.isLoading = false;
       // show notibox
       await displayNotiBox();
     } else {
+      // Nếu Validate thành công
+
+      // Nếu form là form cập nhật thông tin
       if (form.value.type == $enum.form.infoType) {
-        // edit employee
+        // Gọi API sửa nhân viên
         await callEditEmployeeApi();
+        // Emit sự kiện cập nhật Employee lên EmployeeList để cập nhật trên table
         emits("updateEmplist", "edit", employee.value);
       } else {
-        // create or dupplicate employee
+        // Nếu form là form thêm mới hoặc nhân bản
+        // Gọi API thêm mới nhân viên
         const newEmployeeId = await callCreateEmployeeApi();
         employee.value.employeeId = newEmployeeId;
+        // Emit sự kiện thêm mới Employee lên EmployeeList để cập nhật trên table
         emits("updateEmplist", "create", employee.value);
       }
 
@@ -986,28 +1009,44 @@ async function btnSaveOnClick() {
 async function btnSaveAndAddOnClick() {
   try {
     form.value.isLoading = true;
+    // Validate dữ liệu
     await validateData();
+
+    // Nếu có một lỗi nào đó sau khi validate
     if (formNoti.value.notiboxMessage != "") {
       form.value.isLoading = false;
       // show notibox
       await displayNotiBox();
     } else {
+      // Nếu validate thành công
+
+      // Nếu form là form cập nhật thông tin
       if (form.value.type == $enum.form.infoType) {
         // edit employee
         await callEditEmployeeApi();
+
+        // Emit sự kiện cập nhật Employee lên EmployeeList để cập nhật trên table
         emits("updateEmplist", "edit", employee.value);
       } else {
-        // create or dupplicate employee
+        // Nếu form là form thêm mới hoặc nhân bản
         const newEmployeeId = await callCreateEmployeeApi();
         employee.value.employeeId = newEmployeeId;
+
+        // Emit sự kiện thêm mới Employee lên EmployeeList để cập nhật trên table
         emits("updateEmplist", "create", employee.value);
       }
 
       form.value.isLoading = false;
-      // Reset anything
+      // Quay lại trang /employee/create
       await router.replace("/employee/create");
+
+      // Reset lại các trường thông tin trên form
       resetFormState();
+
+      // Lấy mã nhân viên mới
       await fetchNewEmployeeCode();
+
+      // Focus vào ô mã nhân viên
       employeeCodeRef.value.refInput.focus();
     }
   } catch (error) {
@@ -1030,6 +1069,7 @@ function formNotiboxYesBtnOnClick() {
  */
 async function formDialogCloseBtnOnClick() {
   formDialog.value.isShow = false;
+  // Next tick để đợi đến khi formDialog được ẩn đi
   await nextTick();
   if (firstErrorRef != null) {
     focusOnFirstErrorInput();

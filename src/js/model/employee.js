@@ -53,7 +53,7 @@ export class Employee {
   }
 
   /**
-   * Copy dữ liệu từ employee khác
+   * Copy dữ liệu từ employee khác vào object hiện tại
    *
    * Author: Dũng (04/06/2023)
    */

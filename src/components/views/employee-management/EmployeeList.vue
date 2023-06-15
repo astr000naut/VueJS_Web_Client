@@ -146,7 +146,9 @@ const formMetadata = ref({
 
 // #region hook
 onMounted(async () => {
+  // Gọi API lấy danh sách nhân viên
   await loadEmployeeData();
+  // Lắng nghe sự kiện sau khi thay đổi kích cỡ sidebar thì vẽ lại table
   $emitter.on("rerenderTable", () => {
     tableKey.value += 1;
     if (tableKey.value > 100) {
@@ -276,11 +278,14 @@ function handleApiErrorResponse(error) {
 async function deleteEmployee() {
   try {
     isLoadingPage.value = true;
+    // Gọi API xóa nhân viên theo ID
     await $axios.delete($api.employee.one(cache.value.empDeleteId));
+    // Xóa nhân viên đó trên table
     rowList.value.splice(cache.value.empDeleteIndex, 1);
 
     const index = selectedEmpIds.value.indexOf(cache.value.empDeleteId);
     if (index > -1) {
+      // Nếu employee đó đang được select thì xóa khỏi danh sách select
       selectedEmpIds.value.splice(index, 1);
       selectedAmountInPage.value -= 1;
     }
@@ -288,14 +293,16 @@ async function deleteEmployee() {
     isLoadingPage.value = false;
 
     // Update pagingData
+    // Cập nhật lại thông tin số bản ghi nhân viên
     pagingData.value.curAmount -= 1;
     pagingData.value.totalRecord -= 1;
     if (pagingData.value.curAmount == 0) {
+      // Nếu trang hiện tại bị xóa hết thì load lại trang trước đó
       if (pagingData.value.pageNumber > 1) --pagingData.value.pageNumber;
       await loadEmployeeData();
     }
 
-    // NEED REFACTOR
+    // Đẩy toast xóa thành công
     pushToast({
       type: "success",
       message: $message.employeeDeleted,
@@ -313,12 +320,14 @@ async function deleteEmployee() {
  */
 async function deleteBatchEmployee() {
   try {
+    // Số lượng nhân viên đã bị xóa thành công
     let deletedSucess = 0;
     let idList = [];
     let batchAmount = 0;
     isLoadingPage.value = true;
 
     while (selectedEmpIds.value.length) {
+      // Số lượng nhân viên bị xóa tối đa trong một lượt
       batchAmount = Math.min(20, selectedEmpIds.value.length);
       idList = [];
       for (let i = 0; i < batchAmount; ++i)
@@ -327,7 +336,7 @@ async function deleteBatchEmployee() {
       deletedSucess += batchAmount;
       selectedEmpIds.value.splice(0, batchAmount);
     }
-    // Load lại từ trang 1
+    // Load lại dữ liệu cho table từ trang 1
     pagingData.value.pageNumber = 1;
     isLoadingPage.value = false;
     await loadEmployeeData();
@@ -358,6 +367,7 @@ async function exportExcelOnClick() {
     isLoadingExport.value = true;
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
+    // Gọi api xuất file excel
     const response = await $axios.get($api.employee.exportExcel, {
       responseType: "blob",
     });
@@ -365,16 +375,16 @@ async function exportExcelOnClick() {
     // Tạo URL cho blob data
     const url = window.URL.createObjectURL(new Blob([response.data]));
 
-    // Tạo link element
+    // Tạo thẻ a và gắn url blob data vào
     const link = document.createElement("a");
     link.href = url;
     link.setAttribute("download", $enum.exportedFileName);
 
-    // Append link element vào DOM và click để tự download
+    // Append link element vào DOM và tự click để download
     document.body.appendChild(link);
     link.click();
 
-    // Remove các element
+    // Remove các element vừa mới tạo khỏi trang
     window.URL.revokeObjectURL(url);
     document.body.removeChild(link);
     isLoadingExport.value = false;
@@ -562,10 +572,13 @@ async function pagingPrevPage() {
  */
 async function loadEmployeeData() {
   try {
+    // Nếu dữ liệu đang được gọi thì return
     if (isLoadingData.value == true) return;
     selectedAmountInPage.value = 0;
     isLoadingData.value = true;
     await new Promise((resolve) => setTimeout(resolve, 800));
+
+    // Gọi API filter nhân viên
     const response = await $axios.get($api.employee.filter, {
       params: {
         skip: pagingData.value.pageSize * (pagingData.value.pageNumber - 1),
@@ -577,6 +590,7 @@ async function loadEmployeeData() {
     // console.log(response.data);
     if (response.data.filteredList) {
       for (const emp of response.data.filteredList) {
+        // Chuyển đổi từ employee nhận từ server sang Class employee của frontend
         const empConverted = new Employee(emp);
         const isSelected = selectedEmpIds.value.includes(
           empConverted.employeeId
@@ -591,8 +605,11 @@ async function loadEmployeeData() {
     }
     // console.log(1);
     // console.log(rowList.value);
+    // Số bản ghi ở trang hiện tại
     pagingData.value.curAmount = response.data.filteredList.length ?? 0;
+    // Tổng số bản ghi
     pagingData.value.totalRecord = response.data.totalRecord ?? 0;
+    // Số bản ghi ở trang hiện tại có trống hay không
     haveDataAfterCallApi.value = pagingData.value.totalRecord != 0;
     isLoadingData.value = false;
   } catch (error) {
