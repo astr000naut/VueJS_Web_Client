@@ -1,8 +1,8 @@
 const $error = {
   // Validation error
   fieldCannotEmpty: (name) => `${name} không được để trống`,
-  fieldTooLong: (name, limit) => `${name} không quá ${limit} ký tự`,
-  fieldWrongFormat: (name) => `Sai định dạng ${name}`,
+  fieldTooLong: (name, limit) => `${name} không được quá ${limit} ký tự`,
+  fieldWrongFormat: (name) => `${name} sai định dạng`,
   fieldNotValid: (name) => `${name} không hợp lệ`,
 
   employeeCodeHasExist: "Mã nhân viên đã tồn tại",

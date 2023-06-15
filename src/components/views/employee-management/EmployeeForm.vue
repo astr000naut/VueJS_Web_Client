@@ -616,12 +616,17 @@ async function validateData() {
   // Mã trống
   if (employee.value.employeeCode.trim() == "") {
     employee.value.employeeCode = "";
-    formNoti.value.employeeCode = $error.fieldCannotEmpty("Mã");
+    formNoti.value.employeeCode = $error.fieldCannotEmpty(
+      lang.textfield.empCode.label
+    );
     firstErrorRef = firstErrorRef ?? employeeCodeRef;
   } else {
     // Mã quá dài
     if (employee.value.employeeCode.length > 50) {
-      formNoti.value.employeeCode = $error.fieldTooLong("Mã nhân viên", 50);
+      formNoti.value.employeeCode = $error.fieldTooLong(
+        lang.textfield.empCode.label,
+        50
+      );
       firstErrorRef = firstErrorRef ?? employeeCodeRef;
     } else {
       // Kiểm tra trùng mã
@@ -638,13 +643,15 @@ async function validateData() {
   // Kiểm tra tên nhân viên
   // Tên bị trống
   if (employee.value.employeeFullName.trim() == "") {
-    formNoti.value.employeeFullName = $error.fieldCannotEmpty("Tên");
+    formNoti.value.employeeFullName = $error.fieldCannotEmpty(
+      lang.textfield.empName.label
+    );
     firstErrorRef = firstErrorRef ?? employeeFullNameRef;
   } else {
     // Tên quá dài
     if (employee.value.employeeFullName.length > 100) {
       formNoti.value.employeeFullName = $error.fieldTooLong(
-        "Tên nhân viên",
+        lang.textfield.empName.label,
         100
       );
       firstErrorRef = firstErrorRef ?? employeeFullNameRef;
@@ -653,7 +660,9 @@ async function validateData() {
 
   // Kiểm tra thông tin đơn vị
   if (employee.value.departmentName.trim() == "") {
-    formNoti.value.departmentName = $error.fieldCannotEmpty("Đơn vị");
+    formNoti.value.departmentName = $error.fieldCannotEmpty(
+      lang.combobox.empDepart.label
+    );
     firstErrorRef = firstErrorRef ?? departmentNameRef;
   } else {
     // Đơn vị không có trong danh mục
@@ -672,7 +681,10 @@ async function validateData() {
 
   // Kiểm tra thông tin chức danh
   if (employee.value.positionName.length > 255) {
-    formNoti.value.positionName = $error.fieldTooLong("Chức danh", 255);
+    formNoti.value.positionName = $error.fieldTooLong(
+      lang.textfield.empPos.label,
+      255
+    );
     firstErrorRef = firstErrorRef ?? positionNameRef;
   }
 
@@ -682,21 +694,28 @@ async function validateData() {
     employee.value.dateOfBirth.length > 0 &&
     !$formatter.isValidDate(employee.value.dateOfBirth)
   ) {
-    formNoti.value.dateOfBirth = $error.fieldWrongFormat("ngày sinh");
+    formNoti.value.dateOfBirth = $error.fieldWrongFormat(
+      lang.datepicker.empDob.label
+    );
     firstErrorRef = firstErrorRef ?? dateOfBirthRef;
   }
   // Ngày sinh ở tương lai
   if (
     employee.value.dateOfBirth.length > 0 &&
+    $formatter.isValidDate(employee.value.dateOfBirth) &&
     !$formatter.isPastDate(employee.value.dateOfBirth)
   ) {
-    formNoti.value.dateOfBirth = $error.fieldNotValid("Ngày sinh");
+    formNoti.value.dateOfBirth = $error.fieldNotValid(
+      lang.datepicker.empDob.label
+    );
     firstErrorRef = firstErrorRef ?? dateOfBirthRef;
   }
 
   // Kiểm tra thông tin CMND
   if (!/^$|^\d{9}$|^\d{12}$/.test(employee.value.identityNumber)) {
-    formNoti.value.identityNumber = $error.fieldWrongFormat("số CMND");
+    formNoti.value.identityNumber = $error.fieldWrongFormat(
+      lang.textfield.empIdentity.label
+    );
     firstErrorRef = firstErrorRef ?? identityNumberRef;
   }
 
@@ -705,34 +724,45 @@ async function validateData() {
     employee.value.identityDate.length > 0 &&
     !$formatter.isValidDate(employee.value.identityDate)
   ) {
-    formNoti.value.identityDate = $error.fieldNotValid("Ngày cấp");
+    formNoti.value.identityDate = $error.fieldWrongFormat(
+      lang.datepicker.empIdentityDate.label
+    );
     firstErrorRef = firstErrorRef ?? identityDateRef;
   }
   // Ngày cấp ở tương lai
   if (
     employee.value.identityDate.length > 0 &&
+    $formatter.isValidDate(employee.value.identityDate) &&
     !$formatter.isPastDate(employee.value.identityDate)
   ) {
-    formNoti.value.identityDate = $error.fieldNotValid("Ngày cấp");
+    formNoti.value.identityDate = $error.fieldNotValid(
+      lang.datepicker.empIdentityDate.label
+    );
     firstErrorRef = firstErrorRef ?? identityDateRef;
   }
 
   // Nơi cấp
   if (employee.value.identityPlace.length > 255) {
-    formNoti.value.identityPlace = $error.fieldTooLong("Nơi cấp", 255);
+    formNoti.value.identityPlace = $error.fieldTooLong(
+      lang.textfield.empIdentityPlace.label,
+      255
+    );
     firstErrorRef = firstErrorRef ?? identityPlaceRef;
   }
 
   // Địa chỉ
-  if (employee.value.identityPlace.length > 255) {
-    formNoti.value.address = $error.fieldTooLong("Địa chỉ", 255);
+  if (employee.value.address.length > 255) {
+    formNoti.value.address = $error.fieldTooLong(
+      lang.textfield.empAddress.label,
+      255
+    );
     firstErrorRef = firstErrorRef ?? addressRef;
   }
 
   // Kiểm tra số điện thoại di động
   if (!/^$|^\+?\d{0,50}$/.test(employee.value.phoneNumber)) {
     formNoti.value.phoneNumber = $error.fieldWrongFormat(
-      "số điện thoại di động"
+      lang.textfield.empPhone.tooltip
     );
     firstErrorRef = firstErrorRef ?? phoneNumberRef;
   }
@@ -740,40 +770,51 @@ async function validateData() {
   // Kiểm tra số điện thoại cố định
   if (!/^$|^\+?\d{0,50}$/.test(employee.value.landlineNumber)) {
     formNoti.value.landlineNumber = $error.fieldWrongFormat(
-      "số điện thoại cố định"
+      lang.textfield.empLandline.tooltip
     );
     firstErrorRef = firstErrorRef ?? landlineNumberRef;
   }
   // Kiểm tra Email
   // Email đúng định dạng
   if (!/^$|^\w+@\w+\..*\w$/.test(employee.value.email)) {
-    formNoti.value.email = $error.fieldWrongFormat("email");
+    formNoti.value.email = $error.fieldWrongFormat(
+      lang.textfield.empEmail.label
+    );
     firstErrorRef = firstErrorRef ?? emailRef;
   }
 
   // Email quá dài
   if (employee.value.email.length > 50) {
-    formNoti.value.email = $error.fieldTooLong("Email", 50);
+    formNoti.value.email = $error.fieldTooLong(
+      lang.textfield.empEmail.label,
+      50
+    );
     firstErrorRef = firstErrorRef ?? emailRef;
   }
 
   // Kiểm tra số tài khoản ngân hàng
   if (!/^$|^\d{0,50}$/.test(employee.value.bankAccount)) {
     formNoti.value.bankAccount = $error.fieldWrongFormat(
-      "số tài khoản ngân hàng"
+      lang.textfield.empBankAcc.label
     );
     firstErrorRef = firstErrorRef ?? bankAccountRef;
   }
 
   // Kiểm tra tên ngân hàng
   if (employee.value.bankName.length > 255) {
-    formNoti.value.bankName = $error.fieldTooLong("Tên ngân hàng", 255);
+    formNoti.value.bankName = $error.fieldTooLong(
+      lang.textfield.empBankName.label,
+      255
+    );
     firstErrorRef = firstErrorRef ?? bankNameRef;
   }
 
   // Kiểm tra chi nhánh ngân hàng
   if (employee.value.bankBranch.length > 255) {
-    formNoti.value.bankBranch = $error.fieldTooLong("Chi nhánh ngân hàng", 255);
+    formNoti.value.bankBranch = $error.fieldTooLong(
+      lang.textfield.empBankBranch.label,
+      255
+    );
     if (firstErrorRef == null) firstErrorRef = bankBranchRef;
     // firstErrorRef =
     //   firstErrorRef ?? bankBranchRef;
