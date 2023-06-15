@@ -154,11 +154,11 @@ const lang = {
   },
   tablePag: {
     total: {
-      left: "Tổng số",
+      left: "Tổng số:",
       right: "bản ghi",
     },
     recordAmount: "bản ghi trên 1 trang",
-    recordPerPage: "Số bản ghi / trang",
+    recordPerPage: "Số bản ghi / trang: ",
     record: "bản ghi",
   },
   tableNoti: {
