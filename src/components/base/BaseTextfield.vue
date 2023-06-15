@@ -110,6 +110,10 @@ function inputKeyupHandler($event) {
     if (props.text.length == 0 && $event.key == "Backspace") {
       emits("update:noti", `${props.label} không được để trống`);
     }
+  } else {
+    if (props.text.length == 0 && $event.key == "Backspace") {
+      emits("update:noti", "");
+    }
   }
   if (isNormalCharacterKey($event.key) && props.realTimeSearch) {
     // Xóa các timeout trước trong khi typing
