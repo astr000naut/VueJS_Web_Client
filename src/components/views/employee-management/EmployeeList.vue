@@ -104,6 +104,7 @@ import $api from "@/js/api";
 import { Employee } from "@/js/model/employee";
 import $error from "../../../js/resources/error";
 import $message from "../../../js/resources/message";
+import $enum from "@/js/common/enum";
 const lang = inject("$lang");
 // #endregion
 
@@ -367,7 +368,7 @@ async function exportExcelOnClick() {
     // Tạo link element
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", "Danh_sach_nhan_vien.xlsx");
+    link.setAttribute("download", $enum.exportedFileName);
 
     // Append link element vào DOM và click để tự download
     document.body.appendChild(link);

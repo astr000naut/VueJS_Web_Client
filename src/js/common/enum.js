@@ -12,6 +12,7 @@ const $enum = {
   notibox: {
     alertType: "alert",
   },
+  exportedFileName: "Danh_sach_nhan_vien.xlsx",
 };
 
 export default $enum;
